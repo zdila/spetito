@@ -6,6 +6,7 @@ import createEmotionCache from "../utility/createEmotionCache";
 import lightTheme from "../styles/theme/lightTheme";
 import "../styles/globals.css";
 import { EmotionCache } from "@emotion/cache";
+import { SessionProvider } from "next-auth/react";
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -15,13 +16,15 @@ function MyApp({
   pageProps,
 }: AppProps & { emotionCache: EmotionCache }) {
   return (
-    <CacheProvider value={emotionCache}>
-      <ThemeProvider theme={lightTheme}>
-        <CssBaseline />
+    <SessionProvider session={pageProps.session}>
+      <CacheProvider value={emotionCache}>
+        <ThemeProvider theme={lightTheme}>
+          <CssBaseline />
 
-        <Component {...pageProps} />
-      </ThemeProvider>
-    </CacheProvider>
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </CacheProvider>
+    </SessionProvider>
   );
 }
 

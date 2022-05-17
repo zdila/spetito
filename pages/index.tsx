@@ -10,12 +10,23 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import type { NextPage } from "next";
+import { Offer } from "@prisma/client";
+import type { GetServerSideProps, NextPage } from "next";
+import { getSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
-import { Offer } from "../components/Offer";
+import { NewOffer } from "../components/NewOffer";
+import { Offer as OfferComponent } from "../components/Offer";
+import { prisma } from "../lib/prisma";
 
-const Home: NextPage = () => {
-  const testDate = new Date("2022--5-16T12:37:04");
+type Props = {
+  friendsOffers: Offer[];
+  yourOffers: Offer[];
+};
+
+const Home: NextPage<Props> = ({ yourOffers, friendsOffers }) => {
+  const router = useRouter();
 
   return (
     <Layout title="Offers">
@@ -23,74 +34,90 @@ const Home: NextPage = () => {
         Create offer
       </Typography>
 
-      <Paper
-        sx={{
-          p: 2,
-          display: "flex",
-          gap: 2,
-          flexWrap: "wrap",
+      <NewOffer
+        onCreate={() => {
+          router.replace(router.asPath);
         }}
-      >
-        <TextField label="Offer" fullWidth multiline sx={{ flexGrow: 1 }} />
-
-        <FormControl>
-          <InputLabel id="demo-simple-select-label">Audience</InputLabel>
-
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value="everyone"
-            label="Audience"
-            // onChange={handleChange}
-          >
-            <MenuItem value="everyone">Everyone</MenuItem>
-          </Select>
-        </FormControl>
-
-        <TextField
-          label="From"
-          type="datetime-local"
-          InputLabelProps={{ shrink: true }}
-        />
-
-        <TextField
-          label="To"
-          type="datetime-local"
-          InputLabelProps={{ shrink: true }}
-        />
-
-        <Box sx={{ flexGrow: 1 }}>
-          <Button
-            sx={{ marginLeft: "auto", display: "block", height: "100%" }}
-            variant="contained"
-          >
-            Add
-          </Button>
-        </Box>
-      </Paper>
+      />
 
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
         Your offers
       </Typography>
 
-      <Offer
-        owner="Martin"
-        from={testDate}
-        audience={["Rodina", "Kamaráti"]}
-        text="Dnes budem na záhrade, kľudne príďte, len sa mi prosím predtým ozvite. Ak do piatej, tak kúpim nejaký proviant naviac, ináč si doneste vlastný 🙂"
-      />
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        {yourOffers.map((offer) => (
+          <OfferComponent
+            key={offer.id}
+            owner="Martin"
+            from={offer.validFrom}
+            to={offer.validTo}
+            audience={["Rodina", "Kamaráti"]}
+            text={offer.message}
+          />
+        ))}
+      </Box>
 
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
         Friend&apos;s offers
       </Typography>
 
-      <Offer
-        owner="Pepo"
-        from={testDate}
-        text="Idem sa bikovať na Lajošku, privítam spoločnosť."
-      />
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        {friendsOffers.map((offer) => (
+          <OfferComponent
+            key={offer.id}
+            owner="Martin"
+            from={offer.validFrom}
+            to={offer.validTo}
+            audience={["Rodina", "Kamaráti"]}
+            text={offer.message}
+          />
+        ))}
+      </Box>
     </Layout>
   );
+};
+
+export const getServerSideProps: GetServerSideProps<Props> = async (
+  context
+) => {
+  const session = await getSession(context);
+
+  const email = session?.user?.email;
+
+  if (!email) {
+    return {
+      redirect: {
+        // destination: "/login",
+        destination: "/api/auth/signin?callbackUrl=/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      friendsOffers: await prisma.offer.findMany({
+        where: {
+          author: {
+            followedBy: {
+              some: {
+                follower: {
+                  email,
+                },
+              },
+            },
+          },
+        },
+      }),
+      yourOffers: await prisma.offer.findMany({
+        where: {
+          author: {
+            email,
+          },
+        },
+      }),
+    },
+  };
 };
 
 export default Home;

@@ -6,6 +6,7 @@ import {
   ListItemButton,
   Typography,
 } from "@mui/material";
+import { signOut } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -61,6 +62,10 @@ export function Layout({ children, title }: Props) {
                   Settings
                 </ListItemButton>
               </Link>
+            </ListItem>
+
+            <ListItem disablePadding>
+              <ListItemButton onClick={signOut}>Log out</ListItemButton>
             </ListItem>
           </List>
         </Grid>
