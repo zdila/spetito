@@ -2,13 +2,27 @@
 import { Offer } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import { prisma } from "../../lib/prisma";
+import { prisma } from "../../../lib/prisma";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Offer>
 ) {
+  if (req.method !== "POST") {
+    res.status(405).end();
+
+    return;
+  }
+
   const session = await getSession({ req });
+
+  const email = session?.user?.email;
+
+  if (!email) {
+    res.status(403).end();
+
+    return;
+  }
 
   // TODO validate
   const { message, validFrom, validTo } = req.body as {
@@ -24,7 +38,7 @@ export default async function handler(
       validTo,
       author: {
         connect: {
-          email: session?.user?.email ?? undefined,
+          email,
         },
       },
     },

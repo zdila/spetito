@@ -1,23 +1,12 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Paper,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { Offer } from "@prisma/client";
 import type { GetServerSideProps, NextPage } from "next";
 import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { Layout } from "../components/Layout";
 import { NewOffer } from "../components/NewOffer";
-import { Offer as OfferComponent } from "../components/Offer";
+import { OfferItem } from "../components/Offer";
 import { prisma } from "../lib/prisma";
 
 type Props = {
@@ -28,17 +17,17 @@ type Props = {
 const Home: NextPage<Props> = ({ yourOffers, friendsOffers }) => {
   const router = useRouter();
 
+  const refresh = useCallback(() => {
+    router.replace(router.asPath);
+  }, [router]);
+
   return (
     <Layout title="Offers">
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
         Create offer
       </Typography>
 
-      <NewOffer
-        onCreate={() => {
-          router.replace(router.asPath);
-        }}
-      />
+      <NewOffer onCreate={refresh} />
 
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
         Your offers
@@ -46,14 +35,7 @@ const Home: NextPage<Props> = ({ yourOffers, friendsOffers }) => {
 
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {yourOffers.map((offer) => (
-          <OfferComponent
-            key={offer.id}
-            owner="Martin"
-            from={offer.validFrom}
-            to={offer.validTo}
-            audience={["Rodina", "Kamaráti"]}
-            text={offer.message}
-          />
+          <OfferItem key={offer.id} offer={offer} onDelete={refresh} />
         ))}
       </Box>
 
@@ -63,14 +45,7 @@ const Home: NextPage<Props> = ({ yourOffers, friendsOffers }) => {
 
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {friendsOffers.map((offer) => (
-          <OfferComponent
-            key={offer.id}
-            owner="Martin"
-            from={offer.validFrom}
-            to={offer.validTo}
-            audience={["Rodina", "Kamaráti"]}
-            text={offer.message}
-          />
+          <OfferItem key={offer.id} offer={offer} />
         ))}
       </Box>
     </Layout>

@@ -24,7 +24,7 @@ export function NewOffer({ onCreate }: Props) {
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
 
-    fetch("/api/offer", {
+    fetch("/api/offers", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

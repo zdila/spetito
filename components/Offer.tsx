@@ -1,25 +1,40 @@
-import { Paper, Typography } from "@mui/material";
+import { Button, Paper, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import { Fragment } from "react";
+import { Offer } from "@prisma/client";
+import { Fragment, useCallback } from "react";
 
 type Props = {
-  owner: string;
-  text: string;
-  from: Date | null;
-  to: Date | null;
-  audience?: string[];
+  offer: Offer;
+  onDelete?: () => void;
 };
 
-export function Offer({ owner, from, to, text, audience }: Props) {
+export function OfferItem({ offer, onDelete }: Props) {
+  const { id, validFrom, validTo, message } = offer;
+
+  const handleDeleteClick = useCallback(() => {
+    fetch("/api/offers/" + id, { method: "DELETE" }).then(() => {
+      onDelete?.();
+    });
+  }, [id, onDelete]);
+
+  const owner = "Martin"; // TODO
+
+  const audience: string[] = [];
+
   return (
     <Paper sx={{ p: 2 }}>
       <Typography variant="body2" sx={{ mb: 1 }}>
         {owner}｜
-        {from
-          ? from.toLocaleDateString() + " " + from.toLocaleTimeString()
+        {validFrom
+          ? validFrom.toLocaleDateString() +
+            " " +
+            validFrom.toLocaleTimeString()
           : null}
-        {to
-          ? " - " + to.toLocaleDateString() + " " + to.toLocaleTimeString()
+        {validTo
+          ? " - " +
+            validTo.toLocaleDateString() +
+            " " +
+            validTo.toLocaleTimeString()
           : null}
         {audience ? (
           <>
@@ -35,8 +50,14 @@ export function Offer({ owner, from, to, text, audience }: Props) {
       </Typography>
 
       <Box>
-        <Typography variant="body1">{text}</Typography>
+        <Typography variant="body1">{message}</Typography>
       </Box>
+
+      {onDelete && (
+        <Button type="button" onClick={handleDeleteClick}>
+          Delete
+        </Button>
+      )}
     </Paper>
   );
 }
