@@ -65,7 +65,7 @@ export function Layout({ children, title }: Props) {
             </ListItem>
 
             <ListItem disablePadding>
-              <ListItemButton onClick={signOut}>Log out</ListItemButton>
+              <ListItemButton onClick={() => signOut()}>Log out</ListItemButton>
             </ListItem>
           </List>
         </Grid>

@@ -11,36 +11,60 @@ datasource db {
 }
 
 model Offer {
-  id        String    @id @default(cuid())
-  createdAt DateTime  @default(now()) @map(name: "created_at")
-  updatedAt DateTime  @updatedAt @map(name: "updated_at")
-  validFrom DateTime? @map(name: "valid_from")
-  validTo   DateTime? @map(name: "valid_to")
-  message   String
-  author    User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String?
+  id          String       @id @default(cuid())
+  createdAt   DateTime     @default(now()) @map(name: "created_at")
+  updatedAt   DateTime     @updatedAt @map(name: "updated_at")
+  validFrom   DateTime?    @map(name: "valid_from")
+  validTo     DateTime?    @map(name: "valid_to")
+  message     String
+  author      User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String?
+  public      Boolean      @default(true)
+  offerGroups OfferGroup[]
+  offerUsers  OfferUsers[]
 
   @@map(name: "offers")
 }
 
 model Group {
-  id      String         @id @default(cuid())
-  name    String
-  owner   User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId  String
-  members GroupMemeber[]
+  id          String         @id @default(cuid())
+  name        String
+  owner       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  members     GroupMemeber[]
+  offerGroups OfferGroup[]
 
   @@map(name: "groups")
 }
 
 model GroupMemeber {
-  id      String @id @default(cuid())
   group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
   member  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId  String
   groupId String
 
+  @@id([userId, groupId])
   @@map(name: "group_members")
+}
+
+model OfferGroup {
+  offer   Offer  @relation(fields: [offerId], references: [id])
+  group   Group  @relation(fields: [groupId], references: [id])
+  offerId String
+  groupId String
+
+  @@id([offerId, groupId])
+  @@map(name: "offer_groups")
+}
+
+model OfferUsers {
+  offer   Offer  @relation(fields: [offerId], references: [id])
+  user    User   @relation(fields: [userId], references: [id])
+  offerId String
+  userId  String
+
+  @@id([offerId, userId])
+  @@map(name: "offer_users")
 }
 
 model Account {
@@ -49,12 +73,12 @@ model Account {
   type               String
   provider           String
   providerAccountId  String  @map("provider_account_id")
-  refresh_token      String?
-  access_token       String?
+  refresh_token      String? @db.Text
+  access_token       String? @db.Text
   expires_at         Int?
   token_type         String?
   scope              String?
-  id_token           String?
+  id_token           String? @db.Text
   session_state      String?
   oauth_token_secret String?
   oauth_token        String?
@@ -89,6 +113,9 @@ model User {
   groupMemebers GroupMemeber[]
   followedBy    Follows[]      @relation("follower")
   following     Follows[]      @relation("following")
+  invitedBy     Invitation[]   @relation("inviter")
+  inviting      Invitation[]   @relation("inviting")
+  offerUsers    OfferUsers[]
 
   @@map(name: "users")
 }
@@ -102,6 +129,17 @@ model Follows {
 
   @@id([followerId, followingId])
   @@map(name: "follows")
+}
+
+model Invitation {
+  inviter    User     @relation("inviter", fields: [inviterId], references: [id], onDelete: Cascade)
+  inviting   User     @relation("inviting", fields: [invitingId], references: [id], onDelete: Cascade)
+  inviterId  String
+  invitingId String
+  createdAt  DateTime @default(now())
+
+  @@id([inviterId, invitingId])
+  @@map(name: "invites")
 }
 
 model VerificationToken {

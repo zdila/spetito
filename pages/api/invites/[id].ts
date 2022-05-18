@@ -1,12 +1,12 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { Offer } from "@prisma/client";
+import { Invitation } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { prisma } from "../../../lib/prisma";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Offer>
+  res: NextApiResponse<Invitation>
 ) {
   if (req.method !== "DELETE") {
     res.status(405).end();
@@ -32,10 +32,10 @@ export default async function handler(
     return;
   }
 
-  await prisma.offer.deleteMany({
+  await prisma.invitation.deleteMany({
     where: {
-      id,
-      userId,
+      inviterId: userId,
+      invitingId: id,
     },
   });
 

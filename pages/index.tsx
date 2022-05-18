@@ -82,6 +82,43 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
               },
             },
           },
+          OR: [
+            {
+              public: true,
+            },
+            {
+              offerUsers: {
+                some: {
+                  user: {
+                    email,
+                  },
+                },
+              },
+            },
+            {
+              offerGroups: {
+                some: {
+                  group: {
+                    members: {
+                      some: {
+                        member: {
+                          email,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            {
+              offerUsers: {
+                none: {},
+              },
+              offerGroups: {
+                none: {},
+              },
+            },
+          ],
         },
       }),
       yourOffers: await prisma.offer.findMany({

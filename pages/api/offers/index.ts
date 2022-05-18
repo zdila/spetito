@@ -16,9 +16,9 @@ export default async function handler(
 
   const session = await getSession({ req });
 
-  const email = session?.user?.email;
+  const userId = session?.user?.id;
 
-  if (!email) {
+  if (!userId) {
     res.status(403).end();
 
     return;
@@ -36,11 +36,7 @@ export default async function handler(
       message,
       validFrom,
       validTo,
-      author: {
-        connect: {
-          email,
-        },
-      },
+      userId,
     },
   });
 
