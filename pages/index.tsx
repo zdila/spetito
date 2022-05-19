@@ -57,9 +57,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 ) => {
   const session = await getSession(context);
 
-  const email = session?.user?.email;
+  const id = session?.user?.id;
 
-  if (!email) {
+  if (!id) {
     return {
       redirect: {
         // destination: "/login",
@@ -77,7 +77,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
             followedBy: {
               some: {
                 follower: {
-                  email,
+                  id,
                 },
               },
             },
@@ -90,7 +90,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
               offerUsers: {
                 some: {
                   user: {
-                    email,
+                    id,
                   },
                 },
               },
@@ -102,7 +102,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
                     members: {
                       some: {
                         member: {
-                          email,
+                          id,
                         },
                       },
                     },
@@ -124,7 +124,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
       yourOffers: await prisma.offer.findMany({
         where: {
           author: {
-            email,
+            id,
           },
         },
       }),
