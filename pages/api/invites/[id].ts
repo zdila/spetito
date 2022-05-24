@@ -27,7 +27,7 @@ export default async function handler(
       return;
     }
 
-    await prisma.$transaction((async (prisma: PrismaClient) => {
+    await prisma.$transaction(async (prisma) => {
       const [x] = await prisma.invitation.findMany({
         where: {
           inviterId: id,
@@ -52,7 +52,7 @@ export default async function handler(
           invitingId: userId,
         },
       });
-    }) as any);
+    });
   } else if (req.method === "DELETE") {
     const { id } = req.query;
 
@@ -71,6 +71,8 @@ export default async function handler(
 
       return;
     }
+
+    console.log({ id, userId });
 
     await prisma.invitation.deleteMany({
       where: {

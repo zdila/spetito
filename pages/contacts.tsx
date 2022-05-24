@@ -15,10 +15,11 @@ import { Layout } from "../components/Layout";
 import { prisma } from "../lib/prisma";
 
 type Props = {
-  friendRequests: User[];
+  usersInvitedByMe: User[];
+  usersInvitingMe: User[];
 };
 
-const Contacts: NextPage<Props> = ({ friendRequests }) => {
+const Contacts: NextPage<Props> = ({ usersInvitedByMe, usersInvitingMe }) => {
   const [options, setOptions] = useState<readonly User[]>([]);
 
   const [inputValue, setInputValue] = useState("");
@@ -36,7 +37,7 @@ const Contacts: NextPage<Props> = ({ friendRequests }) => {
 
     (async () => {
       const res = await fetch(
-        "/api/users?q=" + encodeURIComponent(inputValue.trim()),
+        "/api/users?q=" + encodeURIComponent(inputValue.trim()) + "&notInvited",
         { signal: controller.signal }
       );
 
@@ -67,6 +68,14 @@ const Contacts: NextPage<Props> = ({ friendRequests }) => {
       router.replace(router.asPath);
     });
   });
+
+  function deleteRequest(id: string) {
+    fetch("/api/invites/" + encodeURIComponent(id), {
+      method: "DELETE",
+    }).then(() => {
+      router.replace(router.asPath);
+    });
+  }
 
   return (
     <Layout title="Contacts">
@@ -107,8 +116,14 @@ const Contacts: NextPage<Props> = ({ friendRequests }) => {
         </Button>
 
         <ul>
-          {friendRequests.map((friendRequest) => (
-            <li key={friendRequest.id}>{friendRequest.name}</li>
+          {usersInvitedByMe.map((user) => (
+            <li key={user.id}>
+              {user.name}
+
+              <Button type="button" onClick={() => deleteRequest(user.id)}>
+                Delete
+              </Button>
+            </li>
           ))}
         </ul>
       </Paper>
@@ -117,7 +132,19 @@ const Contacts: NextPage<Props> = ({ friendRequests }) => {
         Invites
       </Typography>
 
-      <Paper sx={{ p: 2 }}></Paper>
+      <Paper sx={{ p: 2 }}>
+        <ul>
+          {usersInvitingMe.map((user) => (
+            <li key={user.id}>
+              {user.name}
+
+              <Button type="button" onClick={() => deleteRequest(user.id)}>
+                Delete
+              </Button>
+            </li>
+          ))}
+        </ul>
+      </Paper>
 
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
         Groups
@@ -145,17 +172,30 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
     };
   }
 
+  const usersInvitedByMe = await prisma.user.findMany({
+    where: {
+      invitedBy: {
+        some: {
+          inviterId: id,
+        },
+      },
+    },
+  });
+
+  const usersInvitingMe = await prisma.user.findMany({
+    where: {
+      inviting: {
+        some: {
+          invitingId: id,
+        },
+      },
+    },
+  });
+
   return {
     props: {
-      friendRequests: await prisma.user.findMany({
-        where: {
-          invitedBy: {
-            some: {
-              inviterId: id,
-            },
-          },
-        },
-      }),
+      usersInvitedByMe,
+      usersInvitingMe,
     },
   };
 };

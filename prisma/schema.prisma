@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
 }
 
 datasource db {
@@ -111,10 +112,10 @@ model User {
   sessions      Session[]
   groups        Group[]
   groupMemebers GroupMemeber[]
-  followedBy    Follows[]      @relation("follower")
-  following     Follows[]      @relation("following")
-  invitedBy     Invitation[]   @relation("inviter")
-  inviting      Invitation[]   @relation("inviting")
+  followedBy    Follows[]      @relation("following")
+  following     Follows[]      @relation("follower")
+  invitedBy     Invitation[]   @relation("inviting")
+  inviting      Invitation[]   @relation("inviter")
   offerUsers    OfferUsers[]
 
   @@map(name: "users")

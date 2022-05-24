@@ -1,5 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { Invitation } from "@prisma/client";
+import { Invitation, Prisma } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { User } from "next-auth";
 import { getSession } from "next-auth/react";
@@ -33,13 +33,29 @@ export default async function handler(
     return;
   }
 
+  const noneOf: Prisma.UserWhereInput[] = [
+    // exclude self
+    { id },
+  ];
+
+  if ("notInvited" in req.query) {
+    // exclude already invited
+    noneOf.push({
+      invitedBy: {
+        some: {
+          inviterId: id,
+        },
+      },
+    });
+  }
+
   const result = await prisma.user.findMany({
     where: {
       name: {
         contains: q,
       },
       NOT: {
-        id,
+        OR: noneOf,
       },
     },
   });
