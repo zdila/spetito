@@ -100,23 +100,24 @@ model Session {
 }
 
 model User {
-  id            String         @id @default(cuid())
-  name          String?
-  email         String?        @unique
-  emailVerified DateTime?      @map("email_verified")
-  image         String?
-  createdAt     DateTime       @default(now()) @map(name: "created_at")
-  updatedAt     DateTime       @updatedAt @map(name: "updated_at")
-  posts         Offer[]
-  accounts      Account[]
-  sessions      Session[]
-  groups        Group[]
-  groupMemebers GroupMemeber[]
-  followedBy    Follows[]      @relation("following")
-  following     Follows[]      @relation("follower")
-  invitedBy     Invitation[]   @relation("inviting")
-  inviting      Invitation[]   @relation("inviter")
-  offerUsers    OfferUsers[]
+  id                String             @id @default(cuid())
+  name              String?
+  email             String?            @unique
+  emailVerified     DateTime?          @map("email_verified")
+  image             String?
+  createdAt         DateTime           @default(now()) @map(name: "created_at")
+  updatedAt         DateTime           @updatedAt @map(name: "updated_at")
+  posts             Offer[]
+  accounts          Account[]
+  sessions          Session[]
+  groups            Group[]
+  groupMemebers     GroupMemeber[]
+  followedBy        Follows[]          @relation("following")
+  following         Follows[]          @relation("follower")
+  invitedBy         Invitation[]       @relation("inviting")
+  inviting          Invitation[]       @relation("inviter")
+  offerUsers        OfferUsers[]
+  pushRegistrations PushRegistration[]
 
   @@map(name: "users")
 }
@@ -149,5 +150,15 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
-  @@map("verificationtokens")
+  @@map("verification_tokens")
+}
+
+model PushRegistration {
+  user     User   @relation(fields: [userId], references: [id])
+  userId   String
+  endpoint String @id @db.VarChar(255)
+  auth     Bytes
+  p256dh   Bytes
+
+  @@map("push_registrations")
 }

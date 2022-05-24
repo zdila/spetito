@@ -22,12 +22,14 @@
     "next": "12.1.6",
     "next-auth": "^4.3.4",
     "react": "18.1.0",
-    "react-dom": "18.1.0"
+    "react-dom": "18.1.0",
+    "web-push": "^3.5.0"
   },
   "devDependencies": {
     "@types/node": "17.0.35",
     "@types/react": "18.0.9",
     "@types/react-dom": "18.0.5",
+    "@types/web-push": "^3.3.2",
     "eslint": "8.16.0",
     "eslint-config-next": "12.1.6",
     "prisma": "^3.14.0",

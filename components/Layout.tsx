@@ -1,4 +1,6 @@
 import {
+  Alert,
+  Button,
   Container,
   Grid,
   List,
@@ -10,12 +12,63 @@ import { signOut } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
+import { usePermission } from "../lib/usePermission";
 
 type Props = { title: string; children: ReactNode };
 
+function toBase64(arrayBuffer: ArrayBuffer | null) {
+  return (
+    arrayBuffer &&
+    btoa(String.fromCharCode.apply(null, new Uint8Array(arrayBuffer) as any))
+    // .replace(/\+/g, "-")
+    // .replace(/\//g, "_")
+    // .replace(/=+$/, "")
+  );
+}
+
 export function Layout({ children, title }: Props) {
   const { pathname } = useRouter();
+
+  const notifPerm = usePermission("notifications");
+
+  const pushPerm = usePermission("push");
+
+  console.log({ notifPerms: notifPerm, pushPerms: pushPerm });
+
+  useEffect(() => {
+    if (notifPerm === "granted" && pushPerm === "granted") {
+      registerServiceWorkerAndSubscribeToPush();
+    }
+  }, [notifPerm, pushPerm]);
+
+  function registerServiceWorkerAndSubscribeToPush() {
+    navigator.serviceWorker.register("/sw.js");
+
+    navigator.serviceWorker.ready.then((swr) => {
+      swr.pushManager
+        .subscribe({
+          userVisibleOnly: true,
+          applicationServerKey:
+            "BL5DXTGzsw5d09S97hNgO2UE4TbJVo8r4Sf_zSNQ6ipowOvOXaeKz1HdBjDyc_-NWdmxjLOU47pCn9fzO2PjTLQ",
+        })
+        .then((subscription) => {
+          fetch("/api/push", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              endpoint: subscription.endpoint,
+              auth: toBase64(subscription.getKey("auth")),
+              p256dh: toBase64(subscription.getKey("p256dh")),
+            }),
+          });
+        });
+    });
+  }
+
+  const handleRegisterClick = () => {
+    Notification.requestPermission();
+  };
 
   return (
     <Container>
@@ -30,6 +83,23 @@ export function Layout({ children, title }: Props) {
       <Typography variant="h4" sx={{ mt: 2, mb: 1 }}>
         {title}
       </Typography>
+
+      {notifPerm === "prompt" && (
+        <Alert
+          severity="warning"
+          action={
+            <Button onClick={handleRegisterClick} color="inherit" size="small">
+              Enable notifications
+            </Button>
+          }
+        >
+          Notifications are not enabled.
+        </Alert>
+      )}
+
+      {notifPerm === "denied" && (
+        <Alert severity="error">Notifications are denied</Alert>
+      )}
 
       <Grid container spacing={2}>
         <Grid item xs={12} sm={2}>
