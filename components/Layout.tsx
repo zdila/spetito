@@ -49,8 +49,7 @@ export function Layout({ children, title }: Props) {
       swr.pushManager
         .subscribe({
           userVisibleOnly: true,
-          applicationServerKey:
-            "BL5DXTGzsw5d09S97hNgO2UE4TbJVo8r4Sf_zSNQ6ipowOvOXaeKz1HdBjDyc_-NWdmxjLOU47pCn9fzO2PjTLQ",
+          applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBKEY,
         })
         .then((subscription) => {
           fetch("/api/push", {
@@ -68,6 +67,20 @@ export function Layout({ children, title }: Props) {
 
   const handleRegisterClick = () => {
     Notification.requestPermission();
+  };
+
+  const handleLogOutClick = async () => {
+    const swr = await navigator.serviceWorker.getRegistration();
+
+    const sub = await swr?.pushManager.getSubscription();
+
+    if (sub?.endpoint) {
+      await fetch("/api/push/" + encodeURIComponent(sub.endpoint), {
+        method: "DELETE",
+      });
+    }
+
+    signOut();
   };
 
   return (
@@ -135,7 +148,9 @@ export function Layout({ children, title }: Props) {
             </ListItem>
 
             <ListItem disablePadding>
-              <ListItemButton onClick={() => signOut()}>Log out</ListItemButton>
+              <ListItemButton onClick={handleLogOutClick}>
+                Log out
+              </ListItemButton>
             </ListItem>
           </List>
         </Grid>

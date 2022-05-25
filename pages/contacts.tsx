@@ -77,6 +77,20 @@ const Contacts: NextPage<Props> = ({ usersInvitedByMe, usersInvitingMe }) => {
     });
   }
 
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data.action === "refreshInvites") {
+        router.replace(router.asPath);
+      }
+    };
+
+    navigator.serviceWorker.addEventListener("message", handleMessage);
+
+    return () => {
+      navigator.serviceWorker.removeEventListener("message", handleMessage);
+    };
+  });
+
   return (
     <Layout title="Contacts">
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>

@@ -72,8 +72,6 @@ export default async function handler(
       return;
     }
 
-    console.log({ id, userId });
-
     await prisma.invitation.deleteMany({
       where: {
         OR: [
