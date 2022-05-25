@@ -1,10 +1,17 @@
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Autocomplete,
+  IconButton,
   Button,
   Paper,
   TextField,
   Typography,
+  List,
   useEventCallback,
+  ListItem,
+  ListItemText,
+  ListItemAvatar,
+  Avatar,
 } from "@mui/material";
 import { User } from "@prisma/client";
 import type { GetServerSideProps, NextPage } from "next";
@@ -93,15 +100,51 @@ const Contacts: NextPage<Props> = ({ usersInvitedByMe, usersInvitingMe }) => {
 
   return (
     <Layout title="Contacts">
+      {usersInvitingMe.length === 0 ? null : (
+        <>
+          <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
+            Friend requests
+          </Typography>
+
+          <Paper>
+            <List>
+              {usersInvitingMe.map((user) => (
+                <ListItem
+                  key={user.id}
+                  secondaryAction={
+                    <IconButton
+                      edge="end"
+                      aria-label="delete"
+                      onClick={() => deleteRequest(user.id)}
+                      title="Delete"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  }
+                >
+                  {user.image && (
+                    <ListItemAvatar>
+                      <Avatar src={user.image} />
+                    </ListItemAvatar>
+                  )}
+
+                  <ListItemText primary={user.name} />
+                </ListItem>
+              ))}
+            </List>
+          </Paper>
+        </>
+      )}
+
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
-        Search
+        Find a friend
       </Typography>
 
       <Paper sx={{ p: 2 }}>
         <Autocomplete
           getOptionLabel={(option) => option.name ?? "-"}
           renderInput={(params) => (
-            <TextField {...params} label="Find user" fullWidth />
+            <TextField {...params} label="Your friend's name" fullWidth />
           )}
           onInputChange={(event, newInputValue) => {
             setInputValue(newInputValue);
@@ -125,40 +168,46 @@ const Contacts: NextPage<Props> = ({ usersInvitedByMe, usersInvitingMe }) => {
           }}
         />
 
-        <Button onClick={handleRequestClick} disabled={!value}>
+        <Button onClick={handleRequestClick} disabled={!value} sx={{ mt: 2 }}>
           Send friend request
         </Button>
-
-        <ul>
-          {usersInvitedByMe.map((user) => (
-            <li key={user.id}>
-              {user.name}
-
-              <Button type="button" onClick={() => deleteRequest(user.id)}>
-                Delete
-              </Button>
-            </li>
-          ))}
-        </ul>
       </Paper>
 
-      <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
-        Invites
-      </Typography>
+      {usersInvitedByMe.length === 0 ? null : (
+        <>
+          <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
+            Sent friend requests
+          </Typography>
 
-      <Paper sx={{ p: 2 }}>
-        <ul>
-          {usersInvitingMe.map((user) => (
-            <li key={user.id}>
-              {user.name}
+          <Paper>
+            <List>
+              {usersInvitedByMe.map((user) => (
+                <ListItem
+                  key={user.id}
+                  secondaryAction={
+                    <IconButton
+                      edge="end"
+                      aria-label="delete"
+                      onClick={() => deleteRequest(user.id)}
+                      title="Delete"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  }
+                >
+                  {user.image && (
+                    <ListItemAvatar>
+                      <Avatar src={user.image} />
+                    </ListItemAvatar>
+                  )}
 
-              <Button type="button" onClick={() => deleteRequest(user.id)}>
-                Delete
-              </Button>
-            </li>
-          ))}
-        </ul>
-      </Paper>
+                  <ListItemText primary={user.name} />
+                </ListItem>
+              ))}
+            </List>
+          </Paper>
+        </>
+      )}
 
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
         Groups
