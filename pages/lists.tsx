@@ -80,7 +80,9 @@ const Lists: NextPage<Props> = ({ lists }) => {
 
       <Paper>
         {lists.length === 0 ? (
-          <Typography sx={{ p: 2 }}>You have no lists</Typography>
+          <Typography sx={{ p: 2 }} color="text.secondary">
+            You have no lists
+          </Typography>
         ) : (
           <List>
             {lists.map((list) => (

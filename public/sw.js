@@ -64,9 +64,9 @@ self.addEventListener("notificationclick", (event) => {
 
   event.waitUntil(
     clients.matchAll({ type: "window" }).then((clientList) => {
-      const { pathname } = new URL(client.url);
-
       for (const client of clientList) {
+        const { pathname } = new URL(client.url);
+
         if (
           (pathname === "/friends" ||
             (invite === "accept" && pathname === "/")) &&

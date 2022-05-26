@@ -194,6 +194,8 @@ const Friends: NextPage<Props> = ({
           renderOption={(props, option) => {
             return (
               <li key={option.id} {...props}>
+                {option.image && <Avatar src={option.image} sx={{ mr: 1 }} />}
+
                 <Typography variant="body2" color="text.secondary">
                   {option.name ?? "-"}
                 </Typography>
@@ -253,7 +255,9 @@ const Friends: NextPage<Props> = ({
 
       <Paper>
         {friends.length === 0 ? (
-          <Typography sx={{ p: 2 }}>You have no friends</Typography>
+          <Typography sx={{ p: 2 }} color="text.secondary">
+            You have no friends
+          </Typography>
         ) : (
           <List>
             {friends.map((user) => (
@@ -264,7 +268,7 @@ const Friends: NextPage<Props> = ({
                     edge="end"
                     aria-label="remove"
                     onClick={() => removeFriend(user.id)}
-                    title="Remove friend"
+                    title="Unfriend"
                   >
                     <ClearIcon />
                   </IconButton>
