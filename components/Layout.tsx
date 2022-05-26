@@ -34,8 +34,6 @@ export function Layout({ children, title }: Props) {
 
   const pushPerm = usePermission("push");
 
-  console.log({ notifPerms: notifPerm, pushPerms: pushPerm });
-
   useEffect(() => {
     if (notifPerm === "granted" && pushPerm === "granted") {
       registerServiceWorkerAndSubscribeToPush();

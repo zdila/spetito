@@ -1,22 +1,14 @@
-import { Offer } from "@prisma/client";
+import { Group } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { prisma } from "../../../lib/prisma";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Offer>
+  res: NextApiResponse<Group>
 ) {
-  if (req.method !== "DELETE") {
+  if (req.method !== "POST") {
     res.status(405).end();
-
-    return;
-  }
-
-  const { id } = req.query;
-
-  if (typeof id !== "string") {
-    res.status(400).end();
 
     return;
   }
@@ -31,12 +23,17 @@ export default async function handler(
     return;
   }
 
-  await prisma.offer.deleteMany({
-    where: {
-      id,
+  // TODO validate
+  const { name } = req.body as {
+    name: string;
+  };
+
+  const result = await prisma.group.create({
+    data: {
+      name,
       userId,
     },
   });
 
-  res.status(204).end();
+  res.json(result);
 }

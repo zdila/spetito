@@ -1,12 +1,11 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { Invitation, PrismaClient } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { prisma } from "../../../lib/prisma";
+import webpush from "../../../lib/webpush";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Invitation>
+  res: NextApiResponse
 ) {
   if (req.method === "POST") {
     const { id } = req.query;
@@ -19,9 +18,9 @@ export default async function handler(
 
     const session = await getSession({ req });
 
-    const userId = session?.user?.id;
+    const user = session?.user;
 
-    if (!userId) {
+    if (!user) {
       res.status(403).end();
 
       return;
@@ -31,7 +30,7 @@ export default async function handler(
       const [x] = await prisma.invitation.findMany({
         where: {
           inviterId: id,
-          invitingId: userId,
+          invitingId: user.id,
         },
       });
 
@@ -42,17 +41,43 @@ export default async function handler(
       await prisma.follows.create({
         data: {
           followerId: id,
-          followingId: userId,
+          followingId: user.id,
         },
       });
 
       await prisma.invitation.deleteMany({
         where: {
           inviterId: id,
-          invitingId: userId,
+          invitingId: user.id,
         },
       });
     });
+
+    const pushRegistrations = await prisma.pushRegistration.findMany({
+      where: {
+        userId: id,
+      },
+    });
+
+    pushRegistrations.map((pushRegistration) => {
+      const pushSubscription: webpush.PushSubscription = {
+        endpoint: pushRegistration.endpoint,
+        keys: {
+          auth: pushRegistration.auth.toString("base64url"),
+          p256dh: pushRegistration.p256dh.toString("base64url"),
+        },
+      };
+
+      webpush.sendNotification(
+        pushSubscription,
+        JSON.stringify({
+          type: "accept",
+          payload: { from: { name: user.name, id: user.id } },
+        })
+      );
+    });
+
+    res.status(204).end();
   } else if (req.method === "DELETE") {
     const { id } = req.query;
 

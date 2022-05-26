@@ -1,4 +1,3 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { Invitation } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
@@ -55,7 +54,7 @@ export default async function handler(
     webpush.sendNotification(
       pushSubscription,
       JSON.stringify({
-        action: "invite",
+        type: "invite",
         payload: { from: { name: user.name, id: user.id } },
       })
     );

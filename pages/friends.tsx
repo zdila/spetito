@@ -26,9 +26,14 @@ import CheckIcon from "@mui/icons-material/Check";
 type Props = {
   usersInvitedByMe: User[];
   usersInvitingMe: User[];
+  friends: User[];
 };
 
-const Friends: NextPage<Props> = ({ usersInvitedByMe, usersInvitingMe }) => {
+const Friends: NextPage<Props> = ({
+  usersInvitedByMe,
+  usersInvitingMe,
+  friends,
+}) => {
   const [options, setOptions] = useState<readonly User[]>([]);
 
   const [inputValue, setInputValue] = useState("");
@@ -46,7 +51,9 @@ const Friends: NextPage<Props> = ({ usersInvitedByMe, usersInvitingMe }) => {
 
     (async () => {
       const res = await fetch(
-        "/api/users?q=" + encodeURIComponent(inputValue.trim()) + "&notInvited",
+        "/api/users?q=" +
+          encodeURIComponent(inputValue.trim()) +
+          "&friendSearch",
         { signal: controller.signal }
       );
 
@@ -78,17 +85,36 @@ const Friends: NextPage<Props> = ({ usersInvitedByMe, usersInvitingMe }) => {
     });
   });
 
-  function deleteRequest(id: string) {
-    fetch("/api/invites/" + encodeURIComponent(id), {
+  async function deleteRequest(id: string) {
+    await fetch("/api/invites/" + encodeURIComponent(id), {
       method: "DELETE",
-    }).then(() => {
-      router.replace(router.asPath);
     });
+
+    router.replace(router.asPath);
+  }
+
+  async function removeFriend(id: string) {
+    await fetch("/api/follows/" + encodeURIComponent(id), {
+      method: "DELETE",
+    });
+
+    router.replace(router.asPath);
+  }
+
+  async function accept(id: string) {
+    await fetch("/api/invites/" + encodeURIComponent(id), {
+      method: "POST",
+    });
+
+    router.replace(router.asPath);
   }
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
-      if (event.data.action === "refreshInvites") {
+      if (
+        event.data.type === "refreshInvites" ||
+        event.data.type === "refreshFriends"
+      ) {
         router.replace(router.asPath);
       }
     };
@@ -117,7 +143,7 @@ const Friends: NextPage<Props> = ({ usersInvitedByMe, usersInvitingMe }) => {
                     <>
                       <IconButton
                         aria-label="accept"
-                        // onClick={() => deleteRequest(user.id)}
+                        onClick={() => accept(user.id)}
                         title="Accept friend request"
                       >
                         <CheckIcon />
@@ -225,7 +251,37 @@ const Friends: NextPage<Props> = ({ usersInvitedByMe, usersInvitingMe }) => {
         Your friends
       </Typography>
 
-      <Paper sx={{ p: 2 }}>TODO</Paper>
+      <Paper>
+        {friends.length === 0 ? (
+          <Typography sx={{ p: 2 }}>You have no friends</Typography>
+        ) : (
+          <List>
+            {friends.map((user) => (
+              <ListItem
+                key={user.id}
+                secondaryAction={
+                  <IconButton
+                    edge="end"
+                    aria-label="remove"
+                    onClick={() => removeFriend(user.id)}
+                    title="Remove friend"
+                  >
+                    <ClearIcon />
+                  </IconButton>
+                }
+              >
+                {user.image && (
+                  <ListItemAvatar>
+                    <Avatar src={user.image} />
+                  </ListItemAvatar>
+                )}
+
+                <ListItemText primary={user.name} />
+              </ListItem>
+            ))}
+          </List>
+        )}
+      </Paper>
     </Layout>
   );
 };
@@ -266,10 +322,32 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
     },
   });
 
+  const friends = await prisma.user.findMany({
+    where: {
+      OR: [
+        {
+          followedBy: {
+            some: {
+              followerId: id,
+            },
+          },
+        },
+        {
+          following: {
+            some: {
+              followingId: id,
+            },
+          },
+        },
+      ],
+    },
+  });
+
   return {
     props: {
       usersInvitedByMe,
       usersInvitingMe,
+      friends,
     },
   };
 };

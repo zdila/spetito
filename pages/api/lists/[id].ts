@@ -5,7 +5,7 @@ import { prisma } from "../../../lib/prisma";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Offer>
+  res: NextApiResponse
 ) {
   if (req.method !== "DELETE") {
     res.status(405).end();
@@ -31,7 +31,7 @@ export default async function handler(
     return;
   }
 
-  await prisma.offer.deleteMany({
+  await prisma.group.deleteMany({
     where: {
       id,
       userId,
