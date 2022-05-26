@@ -53,7 +53,7 @@ const Friends: NextPage<Props> = ({
       const res = await fetch(
         "/api/users?q=" +
           encodeURIComponent(inputValue.trim()) +
-          "&friendSearch",
+          "&filter=notFriendsAndNotPending",
         { signal: controller.signal }
       );
 
@@ -230,6 +230,7 @@ const Friends: NextPage<Props> = ({
                       aria-label="delete"
                       onClick={() => deleteRequest(user.id)}
                       title="Delete"
+                      color="error"
                     >
                       <DeleteIcon />
                     </IconButton>
@@ -253,12 +254,10 @@ const Friends: NextPage<Props> = ({
         Your friends
       </Typography>
 
-      <Paper>
-        {friends.length === 0 ? (
-          <Typography sx={{ p: 2 }} color="text.secondary">
-            You have no friends
-          </Typography>
-        ) : (
+      {friends.length === 0 ? (
+        <Typography color="text.secondary">You have no friends 😞</Typography>
+      ) : (
+        <Paper>
           <List>
             {friends.map((user) => (
               <ListItem
@@ -266,8 +265,8 @@ const Friends: NextPage<Props> = ({
                 secondaryAction={
                   <IconButton
                     edge="end"
-                    aria-label="remove"
                     onClick={() => removeFriend(user.id)}
+                    color="error"
                     title="Unfriend"
                   >
                     <ClearIcon />
@@ -284,8 +283,8 @@ const Friends: NextPage<Props> = ({
               </ListItem>
             ))}
           </List>
-        )}
-      </Paper>
+        </Paper>
+      )}
     </Layout>
   );
 };

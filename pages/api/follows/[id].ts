@@ -41,6 +41,30 @@ export default async function handler(
       },
     });
 
+    // nicer would be DB trigger
+    await prisma.groupMemeber.deleteMany({
+      where: {
+        OR: [
+          {
+            group: {
+              owner: {
+                id: userId,
+              },
+            },
+            member: { id },
+          },
+          {
+            group: {
+              owner: {
+                id,
+              },
+            },
+            member: { id: userId },
+          },
+        ],
+      },
+    });
+
     res.status(204).end();
   } else {
     res.status(405).end();

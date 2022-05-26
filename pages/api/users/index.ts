@@ -26,18 +26,26 @@ export default async function handler(
 
   const q = req.query.q;
 
-  if (typeof q !== "string" || !q) {
-    res.status(400).end();
-
-    return;
-  }
-
   const noneOf: Prisma.UserWhereInput[] = [
     // exclude self
     { id },
   ];
 
-  if ("friendSearch" in req.query) {
+  const where: Prisma.UserWhereInput = {
+    NOT: {
+      OR: noneOf,
+    },
+  };
+
+  if (typeof q === "string" && q) {
+    where.name = {
+      contains: q,
+    };
+  }
+
+  const params: Prisma.UserFindManyArgs = { where };
+
+  if (req.query.filter === "notFriendsAndNotPending") {
     noneOf.push(
       // exclude already invited
       {
@@ -63,18 +71,36 @@ export default async function handler(
         },
       }
     );
+  } else if (req.query.filter === "friends") {
+    where.OR = [
+      {
+        followedBy: {
+          some: {
+            followerId: id,
+          },
+        },
+      },
+      {
+        following: {
+          some: {
+            followingId: id,
+          },
+        },
+      },
+    ];
   }
 
-  const result = await prisma.user.findMany({
-    where: {
-      name: {
-        contains: q,
+  if (req.query.inList) {
+    params.include = {
+      groupMemebers: {
+        where: {
+          groupId: "123",
+        },
       },
-      NOT: {
-        OR: noneOf,
-      },
-    },
-  });
+    };
+  }
+
+  const result = await prisma.user.findMany(params);
 
   res.json(result);
 }

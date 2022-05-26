@@ -54,7 +54,7 @@ export function OfferItem({ offer, onDelete }: Props) {
       </Box>
 
       {onDelete && (
-        <Button type="button" onClick={handleDeleteClick}>
+        <Button type="button" color="error" onClick={handleDeleteClick}>
           Delete
         </Button>
       )}
