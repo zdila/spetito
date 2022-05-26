@@ -1,3 +1,4 @@
+import ClearIcon from "@mui/icons-material/Clear";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Autocomplete,
@@ -20,13 +21,14 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
 import { prisma } from "../lib/prisma";
+import CheckIcon from "@mui/icons-material/Check";
 
 type Props = {
   usersInvitedByMe: User[];
   usersInvitingMe: User[];
 };
 
-const Contacts: NextPage<Props> = ({ usersInvitedByMe, usersInvitingMe }) => {
+const Friends: NextPage<Props> = ({ usersInvitedByMe, usersInvitingMe }) => {
   const [options, setOptions] = useState<readonly User[]>([]);
 
   const [inputValue, setInputValue] = useState("");
@@ -99,7 +101,7 @@ const Contacts: NextPage<Props> = ({ usersInvitedByMe, usersInvitingMe }) => {
   });
 
   return (
-    <Layout title="Contacts">
+    <Layout title="Friends">
       {usersInvitingMe.length === 0 ? null : (
         <>
           <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
@@ -112,14 +114,24 @@ const Contacts: NextPage<Props> = ({ usersInvitedByMe, usersInvitingMe }) => {
                 <ListItem
                   key={user.id}
                   secondaryAction={
-                    <IconButton
-                      edge="end"
-                      aria-label="delete"
-                      onClick={() => deleteRequest(user.id)}
-                      title="Delete"
-                    >
-                      <DeleteIcon />
-                    </IconButton>
+                    <>
+                      <IconButton
+                        aria-label="accept"
+                        // onClick={() => deleteRequest(user.id)}
+                        title="Accept friend request"
+                      >
+                        <CheckIcon />
+                      </IconButton>
+
+                      <IconButton
+                        edge="end"
+                        aria-label="remove"
+                        onClick={() => deleteRequest(user.id)}
+                        title="Remove friend request"
+                      >
+                        <ClearIcon />
+                      </IconButton>
+                    </>
                   }
                 >
                   {user.image && (
@@ -210,10 +222,10 @@ const Contacts: NextPage<Props> = ({ usersInvitedByMe, usersInvitingMe }) => {
       )}
 
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
-        Groups
+        Your friends
       </Typography>
 
-      <Paper sx={{ p: 2 }}></Paper>
+      <Paper sx={{ p: 2 }}>TODO</Paper>
     </Layout>
   );
 };
@@ -228,8 +240,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   if (!id) {
     return {
       redirect: {
-        // destination: "/login",
-        destination: "/api/auth/signin?callbackUrl=/",
+        destination: "/api/auth/signin?callbackUrl=/friends",
         permanent: false,
       },
     };
@@ -263,4 +274,4 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   };
 };
 
-export default Contacts;
+export default Friends;

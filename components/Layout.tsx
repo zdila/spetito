@@ -126,12 +126,20 @@ export function Layout({ children, title }: Props) {
             </ListItem>
 
             <ListItem disablePadding>
-              <Link href="/contacts">
+              <Link href="/friends">
                 <ListItemButton
                   component="a"
-                  selected={pathname === "/contacts"}
+                  selected={pathname === "/friends"}
                 >
-                  Contacts
+                  Friends
+                </ListItemButton>
+              </Link>
+            </ListItem>
+
+            <ListItem disablePadding>
+              <Link href="/lists">
+                <ListItemButton component="a" selected={pathname === "/lists"}>
+                  Lists
                 </ListItemButton>
               </Link>
             </ListItem>

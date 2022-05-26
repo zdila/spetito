@@ -35,13 +35,13 @@ self.addEventListener("notificationclick", (event) => {
       const { pathname } = new URL(client.url);
 
       for (const client of clientList) {
-        if (pathname === "/contacts" && "focus" in client) {
+        if (pathname === "/friends" && "focus" in client) {
           return client.focus();
         }
       }
 
       if (clients.openWindow) {
-        return clients.openWindow("/contacts");
+        return clients.openWindow("/friends");
       }
     })
   );
