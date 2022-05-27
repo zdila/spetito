@@ -40,7 +40,7 @@ model List {
 
 model ListMemeber {
   list   List   @relation(fields: [listId], references: [id], onDelete: Cascade)
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade) // TODO rename to user
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
   listId String
 

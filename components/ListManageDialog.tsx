@@ -1,47 +1,42 @@
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import DeleteIcon from "@mui/icons-material/Delete";
 import {
-  Autocomplete,
-  IconButton,
   Button,
-  Paper,
   TextField,
   Typography,
   List as MuiList,
-  useEventCallback,
   ListItem,
   ListItemText,
   ListItemAvatar,
   Avatar,
-  Box,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  AccordionActions,
-  Divider,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   Checkbox,
 } from "@mui/material";
-import { List, User } from "@prisma/client";
-import type { GetServerSideProps, NextPage } from "next";
-import { getSession } from "next-auth/react";
-import { useRouter } from "next/router";
-import { SyntheticEvent, useEffect, useState } from "react";
+import { List, ListMemeber, User } from "@prisma/client";
+import { ChangeEvent, SyntheticEvent, useEffect, useState } from "react";
+
+export type ListWithMembers = List & {
+  members: (ListMemeber & { user: User })[];
+};
 
 type Props = {
-  onClose: () => void;
+  onClose: (saved: boolean) => void;
   open: boolean;
-  list: List;
+  list: ListWithMembers;
 };
 
 export function ListManageDialog({ open, onClose, list }: Props) {
+  const [name, setName] = useState<string>(list.name);
+
   const [friends, setFriends] = useState<User[]>();
+
+  const [checked, setChecked] = useState<string[]>([]);
 
   useEffect(() => {
     if (open) {
+      setName(list.name);
+
       setFriends(undefined);
 
       const abortController = new AbortController();
@@ -50,6 +45,8 @@ export function ListManageDialog({ open, onClose, list }: Props) {
         .then((response) => response.json())
         .then((data) => {
           setFriends(data);
+
+          setChecked(list.members.map((member) => member.userId));
         });
 
       return () => {
@@ -58,15 +55,26 @@ export function ListManageDialog({ open, onClose, list }: Props) {
     }
   }, [open, list]);
 
+  const handleSave = () => {
+    fetch(`/api/lists/${list.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, members: checked }),
+    }).then(() => {
+      onClose(true);
+    });
+  };
+
   return (
-    <Dialog fullWidth open={open} onClose={onClose}>
+    <Dialog fullWidth open={open} onClose={() => onClose(false)}>
       <DialogTitle>Manage the list {list.name}</DialogTitle>
 
       <DialogContent>
         <TextField
           sx={{ mt: 1, mb: 2 }}
           label="List name"
-          value={list.name}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           fullWidth
         />
 
@@ -83,9 +91,16 @@ export function ListManageDialog({ open, onClose, list }: Props) {
                   secondaryAction={
                     <Checkbox
                       edge="end"
-                      // onChange={handleToggle(value)}
-                      // checked={checked.indexOf(value) !== -1}
-                      // inputProps={{ "aria-labelledby": labelId }}
+                      onChange={(e) => {
+                        const { checked } = e.currentTarget;
+
+                        setChecked((oldChecked) =>
+                          checked
+                            ? [...oldChecked, user.id]
+                            : oldChecked.filter((id) => id !== user.id)
+                        );
+                      }}
+                      checked={checked.indexOf(user.id) !== -1}
                     />
                   }
                   disablePadding
@@ -105,9 +120,9 @@ export function ListManageDialog({ open, onClose, list }: Props) {
       </DialogContent>
 
       <DialogActions>
-        <Button>Save</Button>
+        <Button onClick={handleSave}>Save</Button>
 
-        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={() => onClose(false)}>Cancel</Button>
       </DialogActions>
     </Dialog>
   );

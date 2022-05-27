@@ -32,12 +32,13 @@ import { useRouter } from "next/router";
 import { SyntheticEvent, useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
 import { prisma } from "../lib/prisma";
-import { ListManageDialog } from "../components/ListManageDialog";
-
-type ListExt = List & { members: (ListMemeber & { user: User })[] };
+import {
+  ListManageDialog,
+  ListWithMembers,
+} from "../components/ListManageDialog";
 
 type Props = {
-  lists: ListExt[];
+  lists: ListWithMembers[];
 };
 
 const Lists: NextPage<Props> = ({ lists }) => {
@@ -69,17 +70,25 @@ const Lists: NextPage<Props> = ({ lists }) => {
     router.replace(router.asPath);
   }
 
-  const [expanded, setExpanded] = useState<ListExt>();
+  const [expanded, setExpanded] = useState<string>();
 
   const [managing, setManaging] = useState(false);
 
+  const expandedList = lists.find((list) => list.id === expanded);
+
   return (
     <Layout title="Lists">
-      {expanded && (
+      {expandedList && (
         <ListManageDialog
           open={managing}
-          onClose={() => setManaging(false)}
-          list={expanded}
+          onClose={(refresh) => {
+            setManaging(false);
+
+            if (refresh) {
+              router.replace(router.asPath);
+            }
+          }}
+          list={expandedList}
         />
       )}
 
@@ -110,9 +119,9 @@ const Lists: NextPage<Props> = ({ lists }) => {
         lists.map((list) => (
           <Accordion
             key={list.id}
-            expanded={expanded === list}
+            expanded={expanded === list.id}
             onChange={(event, isExpanded) =>
-              setExpanded(isExpanded ? list : undefined)
+              setExpanded(isExpanded ? list.id : undefined)
             }
           >
             <AccordionSummary expandIcon={<ExpandMoreIcon />} id={list.id}>
@@ -120,36 +129,14 @@ const Lists: NextPage<Props> = ({ lists }) => {
             </AccordionSummary>
 
             <AccordionDetails>
-              {!expanded ? null : expanded.members.length === 0 ? (
+              {list.members.length === 0 ? (
                 <Typography color="text.secondary">
                   There are no friends in this list.
                 </Typography>
               ) : (
                 <MuiList>
-                  {expanded.members.map((member) => (
-                    <ListItem
-                      key={member.userId}
-                      // secondaryAction={
-                      //   <>
-                      //     <IconButton
-                      //       aria-label="accept"
-                      //       onClick={() => accept(user.id)}
-                      //       title="Accept friend request"
-                      //     >
-                      //       <CheckIcon />
-                      //     </IconButton>
-
-                      //     <IconButton
-                      //       edge="end"
-                      //       aria-label="remove"
-                      //       onClick={() => deleteRequest(user.id)}
-                      //       title="Remove friend request"
-                      //     >
-                      //       <ClearIcon />
-                      //     </IconButton>
-                      //   </>
-                      // }
-                    >
+                  {list.members.map((member) => (
+                    <ListItem key={member.userId}>
                       {member.user.image && (
                         <ListItemAvatar>
                           <Avatar src={member.user.image} />
