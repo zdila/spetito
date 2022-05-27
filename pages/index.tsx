@@ -107,9 +107,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
               },
             },
             {
-              offerGroups: {
+              offerLists: {
                 some: {
-                  group: {
+                  list: {
                     members: {
                       some: {
                         member: {
@@ -125,7 +125,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
               offerUsers: {
                 none: {},
               },
-              offerGroups: {
+              offerLists: {
                 none: {},
               },
             },

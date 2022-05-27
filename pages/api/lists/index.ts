@@ -1,11 +1,11 @@
-import { Group } from "@prisma/client";
+import { List } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { prisma } from "../../../lib/prisma";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Group>
+  res: NextApiResponse<List>
 ) {
   if (req.method !== "POST") {
     res.status(405).end();
@@ -28,7 +28,7 @@ export default async function handler(
     name: string;
   };
 
-  const result = await prisma.group.create({
+  const result = await prisma.list.create({
     data: {
       name,
       userId,

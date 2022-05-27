@@ -42,24 +42,24 @@ export default async function handler(
     });
 
     // nicer would be DB trigger
-    await prisma.groupMemeber.deleteMany({
+    await prisma.listMemeber.deleteMany({
       where: {
         OR: [
           {
-            group: {
+            list: {
               owner: {
                 id: userId,
               },
             },
-            member: { id },
+            user: { id },
           },
           {
-            group: {
+            list: {
               owner: {
                 id,
               },
             },
-            member: { id: userId },
+            user: { id: userId },
           },
         ],
       },

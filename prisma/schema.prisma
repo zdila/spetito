@@ -12,50 +12,50 @@ datasource db {
 }
 
 model Offer {
-  id          String       @id @default(cuid())
-  createdAt   DateTime     @default(now()) @map(name: "created_at")
-  updatedAt   DateTime     @updatedAt @map(name: "updated_at")
-  validFrom   DateTime?    @map(name: "valid_from")
-  validTo     DateTime?    @map(name: "valid_to")
-  message     String
-  author      User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String?
-  public      Boolean      @default(true)
-  offerGroups OfferGroup[]
-  offerUsers  OfferUsers[]
+  id         String       @id @default(cuid())
+  createdAt  DateTime     @default(now()) @map(name: "created_at")
+  updatedAt  DateTime     @updatedAt @map(name: "updated_at")
+  validFrom  DateTime?    @map(name: "valid_from")
+  validTo    DateTime?    @map(name: "valid_to")
+  message    String
+  author     User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String?
+  public     Boolean      @default(true)
+  offerLists OfferList[]
+  offerUsers OfferUsers[]
 
   @@map(name: "offers")
 }
 
-model Group {
-  id          String         @id @default(cuid())
-  name        String
-  owner       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String
-  members     GroupMemeber[]
-  offerGroups OfferGroup[]
+model List {
+  id         String        @id @default(cuid())
+  name       String
+  owner      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  members    ListMemeber[]
+  offerLists OfferList[]
 
-  @@map(name: "groups")
+  @@map(name: "lists")
 }
 
-model GroupMemeber {
-  group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  member  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId  String
-  groupId String
+model ListMemeber {
+  list   List   @relation(fields: [listId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade) // TODO rename to user
+  userId String
+  listId String
 
-  @@id([userId, groupId])
-  @@map(name: "group_members")
+  @@id([userId, listId])
+  @@map(name: "list_members")
 }
 
-model OfferGroup {
+model OfferList {
   offer   Offer  @relation(fields: [offerId], references: [id])
-  group   Group  @relation(fields: [groupId], references: [id])
+  list    List   @relation(fields: [listId], references: [id])
   offerId String
-  groupId String
+  listId  String
 
-  @@id([offerId, groupId])
-  @@map(name: "offer_groups")
+  @@id([offerId, listId])
+  @@map(name: "offer_lists")
 }
 
 model OfferUsers {
@@ -110,8 +110,8 @@ model User {
   posts             Offer[]
   accounts          Account[]
   sessions          Session[]
-  groups            Group[]
-  groupMemebers     GroupMemeber[]
+  lists             List[]
+  listMemebers      ListMemeber[]
   followedBy        Follows[]          @relation("following")
   following         Follows[]          @relation("follower")
   invitedBy         Invitation[]       @relation("inviting")

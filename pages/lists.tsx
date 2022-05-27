@@ -7,7 +7,7 @@ import {
   Paper,
   TextField,
   Typography,
-  List,
+  List as MuiList,
   useEventCallback,
   ListItem,
   ListItemText,
@@ -25,16 +25,19 @@ import {
   DialogActions,
   Checkbox,
 } from "@mui/material";
-import { Group, User } from "@prisma/client";
+import { List, ListMemeber, User } from "@prisma/client";
 import type { GetServerSideProps, NextPage } from "next";
 import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { SyntheticEvent, useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
 import { prisma } from "../lib/prisma";
+import { ListManageDialog } from "../components/ListManageDialog";
+
+type ListExt = List & { members: (ListMemeber & { user: User })[] };
 
 type Props = {
-  lists: Group[];
+  lists: ListExt[];
 };
 
 const Lists: NextPage<Props> = ({ lists }) => {
@@ -66,89 +69,19 @@ const Lists: NextPage<Props> = ({ lists }) => {
     router.replace(router.asPath);
   }
 
-  const [expanded, setExpanded] = useState<string>();
+  const [expanded, setExpanded] = useState<ListExt>();
 
   const [managing, setManaging] = useState(false);
 
-  const [listNameToAddFriends, setListNameToAddFriends] = useState<string>();
-
-  const [listFriends, setListFriends] = useState<User[]>();
-
-  useEffect(() => {
-    if (managing && expanded) {
-      setListNameToAddFriends(lists.find((list) => list.id === expanded)?.name);
-    }
-  }, [managing, expanded, lists]);
-
-  useEffect(() => {
-    if (expanded) {
-      setListFriends(undefined);
-
-      fetch("/api/users?filter=friends&inList=" + encodeURIComponent(expanded))
-        .then((response) => response.json())
-        .then((data) => {
-          setListFriends(data);
-        });
-
-      // TODO abort
-    }
-  }, [expanded]);
-
   return (
     <Layout title="Lists">
-      <Dialog fullWidth open={managing} onClose={() => setManaging(false)}>
-        <DialogTitle>Manage the list {listNameToAddFriends}</DialogTitle>
-
-        <DialogContent>
-          <TextField
-            sx={{ mt: 1, mb: 2 }}
-            label="List name"
-            value={listNameToAddFriends}
-            fullWidth
-          />
-
-          {!listFriends?.length ? (
-            <Typography color="text.secondary">
-              You have no friends 😞
-            </Typography>
-          ) : (
-            <>
-              <Typography variant="caption">Friends in the list</Typography>
-
-              <List>
-                {listFriends?.map((user) => (
-                  <ListItem
-                    key={user.id}
-                    secondaryAction={
-                      <Checkbox
-                        edge="end"
-                        // onChange={handleToggle(value)}
-                        // checked={checked.indexOf(value) !== -1}
-                        // inputProps={{ "aria-labelledby": labelId }}
-                      />
-                    }
-                    disablePadding
-                  >
-                    {user.image && (
-                      <ListItemAvatar>
-                        <Avatar src={user.image} />
-                      </ListItemAvatar>
-                    )}
-
-                    <ListItemText primary={user.name} />
-                  </ListItem>
-                ))}
-              </List>
-            </>
-          )}
-        </DialogContent>
-
-        <DialogActions>
-          <Button>Save</Button>
-
-          <Button onClick={() => setManaging(false)}>Cancel</Button>
-        </DialogActions>
-      </Dialog>
+      {expanded && (
+        <ListManageDialog
+          open={managing}
+          onClose={() => setManaging(false)}
+          list={expanded}
+        />
+      )}
 
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
         Create a list
@@ -177,9 +110,9 @@ const Lists: NextPage<Props> = ({ lists }) => {
         lists.map((list) => (
           <Accordion
             key={list.id}
-            expanded={expanded === list.id}
+            expanded={expanded === list}
             onChange={(event, isExpanded) =>
-              setExpanded(isExpanded ? list.id : undefined)
+              setExpanded(isExpanded ? list : undefined)
             }
           >
             <AccordionSummary expandIcon={<ExpandMoreIcon />} id={list.id}>
@@ -187,17 +120,15 @@ const Lists: NextPage<Props> = ({ lists }) => {
             </AccordionSummary>
 
             <AccordionDetails>
-              {!listFriends ? (
-                "Loading..."
-              ) : listFriends.length === 0 ? (
+              {!expanded ? null : expanded.members.length === 0 ? (
                 <Typography color="text.secondary">
                   There are no friends in this list.
                 </Typography>
               ) : (
-                <List>
-                  {listFriends.map((user) => (
+                <MuiList>
+                  {expanded.members.map((member) => (
                     <ListItem
-                      key={user.id}
+                      key={member.userId}
                       // secondaryAction={
                       //   <>
                       //     <IconButton
@@ -219,16 +150,16 @@ const Lists: NextPage<Props> = ({ lists }) => {
                       //   </>
                       // }
                     >
-                      {user.image && (
+                      {member.user.image && (
                         <ListItemAvatar>
-                          <Avatar src={user.image} />
+                          <Avatar src={member.user.image} />
                         </ListItemAvatar>
                       )}
 
-                      <ListItemText primary={user.name} />
+                      <ListItemText primary={member.user.name} />
                     </ListItem>
                   ))}
-                </List>
+                </MuiList>
               )}
             </AccordionDetails>
 
@@ -262,7 +193,14 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
     };
   }
 
-  const lists = await prisma.group.findMany({
+  const lists = await prisma.list.findMany({
+    include: {
+      members: {
+        include: {
+          user: true,
+        },
+      },
+    },
     where: {
       userId: id,
     },

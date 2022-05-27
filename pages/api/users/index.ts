@@ -92,9 +92,9 @@ export default async function handler(
 
   if (req.query.inList) {
     params.include = {
-      groupMemebers: {
+      listMemebers: {
         where: {
-          groupId: "123",
+          listId: "123",
         },
       },
     };

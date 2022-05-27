@@ -31,7 +31,7 @@ export default async function handler(
     return;
   }
 
-  await prisma.group.deleteMany({
+  await prisma.list.deleteMany({
     where: {
       id,
       userId,
