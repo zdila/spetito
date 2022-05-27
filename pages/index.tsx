@@ -87,9 +87,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
           author: {
             followedBy: {
               some: {
-                follower: {
-                  id,
-                },
+                followerId: id,
               },
             },
           },
@@ -100,9 +98,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
             {
               offerUsers: {
                 some: {
-                  user: {
-                    id,
-                  },
+                  userId: id,
                 },
               },
             },
@@ -112,9 +108,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
                   list: {
                     members: {
                       some: {
-                        member: {
-                          id,
-                        },
+                        userId: id,
                       },
                     },
                   },
