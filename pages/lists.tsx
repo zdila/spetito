@@ -1,31 +1,19 @@
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import DeleteIcon from "@mui/icons-material/Delete";
 import {
-  Autocomplete,
-  IconButton,
   Button,
   Paper,
   TextField,
   Typography,
   List as MuiList,
-  useEventCallback,
   ListItem,
   ListItemText,
   ListItemAvatar,
   Avatar,
-  Box,
   Accordion,
   AccordionSummary,
   AccordionDetails,
   AccordionActions,
-  Divider,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Checkbox,
 } from "@mui/material";
-import { List, ListMemeber, User } from "@prisma/client";
 import type { GetServerSideProps, NextPage } from "next";
 import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -134,7 +122,7 @@ const Lists: NextPage<Props> = ({ lists }) => {
                   There are no friends in this list.
                 </Typography>
               ) : (
-                <MuiList>
+                <MuiList disablePadding>
                   {list.members.map((member) => (
                     <ListItem key={member.userId}>
                       {member.user.image && (

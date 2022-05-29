@@ -12,9 +12,12 @@ import {
   DialogContent,
   DialogActions,
   Checkbox,
+  ListItemButton,
+  CircularProgress,
 } from "@mui/material";
 import { List, ListMemeber, User } from "@prisma/client";
-import { ChangeEvent, SyntheticEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useFriends } from "../hooks/useFriends";
 
 export type ListWithMembers = List & {
   members: (ListMemeber & { user: User })[];
@@ -29,31 +32,23 @@ type Props = {
 export function ListManageDialog({ open, onClose, list }: Props) {
   const [name, setName] = useState<string>(list.name);
 
-  const [friends, setFriends] = useState<User[]>();
+  const friends = useFriends(open);
 
   const [checked, setChecked] = useState<string[]>([]);
 
   useEffect(() => {
     if (open) {
       setName(list.name);
-
-      setFriends(undefined);
-
-      const abortController = new AbortController();
-
-      fetch("/api/users?filter=friends", { signal: abortController.signal })
-        .then((response) => response.json())
-        .then((data) => {
-          setFriends(data);
-
-          setChecked(list.members.map((member) => member.userId));
-        });
-
-      return () => {
-        abortController.abort();
-      };
     }
   }, [open, list]);
+
+  const checkListItem = (id: string) => {
+    setChecked((oldChecked) =>
+      oldChecked.includes(id)
+        ? oldChecked.filter((oldId) => oldId !== id)
+        : [...oldChecked, id]
+    );
+  };
 
   const handleSave = () => {
     fetch(`/api/lists/${list.id}`, {
@@ -67,7 +62,7 @@ export function ListManageDialog({ open, onClose, list }: Props) {
 
   return (
     <Dialog fullWidth open={open} onClose={() => onClose(false)}>
-      <DialogTitle>Manage the list {list.name}</DialogTitle>
+      <DialogTitle>List {list.name}</DialogTitle>
 
       <DialogContent>
         <TextField
@@ -78,33 +73,27 @@ export function ListManageDialog({ open, onClose, list }: Props) {
           fullWidth
         />
 
-        {!friends?.length ? (
+        <Typography variant="caption">Friends in the list</Typography>
+
+        {!friends ? (
+          <CircularProgress sx={{ display: "block", my: 1, marginX: "auto" }} />
+        ) : friends.length === 0 ? (
           <Typography color="text.secondary">You have no friends 😞</Typography>
         ) : (
-          <>
-            <Typography variant="caption">Friends in the list</Typography>
-
-            <MuiList>
-              {friends?.map((user) => (
-                <ListItem
-                  key={user.id}
-                  secondaryAction={
-                    <Checkbox
-                      edge="end"
-                      onChange={(e) => {
-                        const { checked } = e.currentTarget;
-
-                        setChecked((oldChecked) =>
-                          checked
-                            ? [...oldChecked, user.id]
-                            : oldChecked.filter((id) => id !== user.id)
-                        );
-                      }}
-                      checked={checked.indexOf(user.id) !== -1}
-                    />
-                  }
-                  disablePadding
-                >
+          <MuiList>
+            {friends?.map((user) => (
+              <ListItem
+                key={user.id}
+                secondaryAction={
+                  <Checkbox
+                    edge="end"
+                    onChange={() => checkListItem(user.id)}
+                    checked={checked.indexOf(user.id) !== -1}
+                  />
+                }
+                disablePadding
+              >
+                <ListItemButton onClick={() => checkListItem(user.id)}>
                   {user.image && (
                     <ListItemAvatar>
                       <Avatar src={user.image} />
@@ -112,10 +101,10 @@ export function ListManageDialog({ open, onClose, list }: Props) {
                   )}
 
                   <ListItemText primary={user.name} />
-                </ListItem>
-              ))}
-            </MuiList>
-          </>
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </MuiList>
         )}
       </DialogContent>
 

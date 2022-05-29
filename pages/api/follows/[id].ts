@@ -1,4 +1,3 @@
-import { Invitation } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { prisma } from "../../../lib/prisma";
@@ -47,19 +46,15 @@ export default async function handler(
         OR: [
           {
             list: {
-              owner: {
-                id: userId,
-              },
+              userId,
             },
-            user: { id },
+            userId: id,
           },
           {
             list: {
-              owner: {
-                id,
-              },
+              userId: id,
             },
-            user: { id: userId },
+            userId,
           },
         ],
       },

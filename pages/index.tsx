@@ -128,9 +128,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
       }),
       yourOffers: await prisma.offer.findMany({
         where: {
-          author: {
-            id,
-          },
+          userId: id,
         },
       }),
     },

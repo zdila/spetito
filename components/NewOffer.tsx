@@ -1,14 +1,6 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Paper,
-  Select,
-  TextField,
-} from "@mui/material";
+import { Box, Button, Paper, TextField } from "@mui/material";
 import { SyntheticEvent, useState } from "react";
+import { AudienceDialog } from "./AudienceDialog";
 
 type Props = {
   onCreate?: () => void;
@@ -43,6 +35,18 @@ export function NewOffer({ onCreate }: Props) {
     });
   };
 
+  const [showAudienceDialog, setShowAudienceDialog] = useState(false);
+
+  const [audience, setAudience] = useState<string[]>([]);
+
+  const handleAudienceClose = (audience?: string[]) => {
+    setShowAudienceDialog(false);
+
+    if (audience) {
+      setAudience(audience);
+    }
+  };
+
   return (
     <Paper
       sx={{
@@ -54,6 +58,12 @@ export function NewOffer({ onCreate }: Props) {
       component="form"
       onSubmit={handleSubmit}
     >
+      <AudienceDialog
+        audience={audience}
+        open={showAudienceDialog}
+        onClose={handleAudienceClose}
+      />
+
       <TextField
         label="Offer"
         fullWidth
@@ -63,19 +73,9 @@ export function NewOffer({ onCreate }: Props) {
         onChange={(e) => setMessage(e.currentTarget.value)}
       />
 
-      <FormControl>
-        <InputLabel id="demo-simple-select-label">Audience</InputLabel>
-
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value="everyone"
-          label="Audience"
-          // onChange={handleChange}
-        >
-          <MenuItem value="everyone">Everyone</MenuItem>
-        </Select>
-      </FormControl>
+      <Button variant="outlined" onClick={() => setShowAudienceDialog(true)}>
+        Set audience
+      </Button>
 
       <TextField
         label="From"
@@ -100,7 +100,7 @@ export function NewOffer({ onCreate }: Props) {
           disabled={!message.trim()}
           type="submit"
         >
-          Add
+          Place this offer
         </Button>
       </Box>
     </Paper>

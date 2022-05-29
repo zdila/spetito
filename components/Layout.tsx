@@ -13,7 +13,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ReactNode, useEffect } from "react";
-import { usePermission } from "../lib/usePermission";
+import { usePermission } from "../hooks/usePermission";
 
 type Props = { title: string; children: ReactNode };
 

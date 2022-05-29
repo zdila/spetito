@@ -90,17 +90,5 @@ export default async function handler(
     ];
   }
 
-  if (req.query.inList) {
-    params.include = {
-      listMemebers: {
-        where: {
-          listId: "123",
-        },
-      },
-    };
-  }
-
-  const result = await prisma.user.findMany(params);
-
-  res.json(result);
+  res.json(await prisma.user.findMany(params));
 }
