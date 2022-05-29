@@ -105,7 +105,7 @@ export default async function handler(
         },
       });
 
-      await prisma.listMemeber.deleteMany({
+      await prisma.listMember.deleteMany({
         where: {
           userId: {
             notIn: members,
@@ -114,7 +114,7 @@ export default async function handler(
         },
       });
 
-      const currMembers = await prisma.listMemeber.findMany({
+      const currMembers = await prisma.listMember.findMany({
         select: { userId: true },
         where: {
           listId: id,
@@ -127,7 +127,7 @@ export default async function handler(
         membersSet.delete(member.userId);
       }
 
-      await prisma.listMemeber.createMany({
+      await prisma.listMember.createMany({
         data: [...membersSet].map((userId) => ({
           listId: id,
           userId,
