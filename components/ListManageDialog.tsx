@@ -16,6 +16,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { List, ListMember, User } from "@prisma/client";
+import { useTranslation } from "next-i18next";
 import { useEffect, useState } from "react";
 import { useFriends } from "../hooks/useFriends";
 
@@ -30,6 +31,8 @@ type Props = {
 };
 
 export function ListManageDialog({ open, onClose, list }: Props) {
+  const { t } = useTranslation("common");
+
   const [name, setName] = useState<string>(list.name);
 
   const friends = useFriends(open);
@@ -73,12 +76,14 @@ export function ListManageDialog({ open, onClose, list }: Props) {
           fullWidth
         />
 
-        <Typography variant="caption">Friends in the list</Typography>
+        <Typography variant="caption">{t("FriendsInTheList")}</Typography>
 
         {!friends ? (
           <CircularProgress sx={{ display: "block", my: 1, marginX: "auto" }} />
         ) : friends.length === 0 ? (
-          <Typography color="text.secondary">You have no friends 😞</Typography>
+          <Typography color="text.secondary">
+            {t("YouHaveNoFriends")}
+          </Typography>
         ) : (
           <MuiList>
             {friends?.map((user) => (
@@ -109,9 +114,9 @@ export function ListManageDialog({ open, onClose, list }: Props) {
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={handleSave}>Save</Button>
+        <Button onClick={handleSave}>{t("Save")}</Button>
 
-        <Button onClick={() => onClose(false)}>Cancel</Button>
+        <Button onClick={() => onClose(false)}>{t("Cancel")}</Button>
       </DialogActions>
     </Dialog>
   );

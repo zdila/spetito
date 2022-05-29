@@ -160,7 +160,7 @@ export function Layout({ children, title }: Props) {
                     <LocalActivityIcon />
                   </ListItemIcon>
 
-                  <ListItemText>{t("offers")}</ListItemText>
+                  <ListItemText>{t("Offers")}</ListItemText>
                 </ListItemButton>
               </Link>
             </ListItem>
@@ -175,7 +175,7 @@ export function Layout({ children, title }: Props) {
                     <PersonIcon />
                   </ListItemIcon>
 
-                  <ListItemText>{t("friends")}</ListItemText>
+                  <ListItemText>{t("Friends")}</ListItemText>
                 </ListItemButton>
               </Link>
             </ListItem>
@@ -187,7 +187,7 @@ export function Layout({ children, title }: Props) {
                     <ListIcon />
                   </ListItemIcon>
 
-                  <ListItemText>{t("lists")}</ListItemText>
+                  <ListItemText>{t("Lists")}</ListItemText>
                 </ListItemButton>
               </Link>
             </ListItem>
@@ -202,7 +202,7 @@ export function Layout({ children, title }: Props) {
                     <SettingsIcon />
                   </ListItemIcon>
 
-                  <ListItemText>{t("settings")}</ListItemText>
+                  <ListItemText>{t("Settings")}</ListItemText>
                 </ListItemButton>
               </Link>
             </ListItem>
@@ -213,7 +213,7 @@ export function Layout({ children, title }: Props) {
                   <LogoutIcon />
                 </ListItemIcon>
 
-                <ListItemText>{t("logOut")}</ListItemText>
+                <ListItemText>{t("LogOut")}</ListItemText>
               </ListItemButton>
             </ListItem>
           </List>

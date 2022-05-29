@@ -70,7 +70,7 @@ const Lists: NextPage<Props> = ({ lists }) => {
   const { t } = useTranslation("common");
 
   return (
-    <Layout title={t("lists")}>
+    <Layout title={t("Lists")}>
       {expandedList && (
         <ListManageDialog
           open={managing}
@@ -86,7 +86,7 @@ const Lists: NextPage<Props> = ({ lists }) => {
       )}
 
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
-        Create a list
+        {t("CreateList")}
       </Typography>
 
       <Paper sx={{ p: 2 }} component="form" onSubmit={handleCreateClick}>
@@ -98,16 +98,16 @@ const Lists: NextPage<Props> = ({ lists }) => {
         />
 
         <Button type="submit" disabled={!name} sx={{ mt: 2 }}>
-          Create
+          {t("Create")}
         </Button>
       </Paper>
 
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
-        Your lists
+        {t("YourLists")}
       </Typography>
 
       {lists.length === 0 ? (
-        <Typography color="text.secondary">You have no lists</Typography>
+        <Typography color="text.secondary">{t("YouHaveNoLists")}</Typography>
       ) : (
         lists.map((list) => (
           <Accordion
@@ -124,7 +124,7 @@ const Lists: NextPage<Props> = ({ lists }) => {
             <AccordionDetails>
               {list.members.length === 0 ? (
                 <Typography color="text.secondary">
-                  There are no friends in this list.
+                  {t("ListIsEmpty")}
                 </Typography>
               ) : (
                 <MuiList disablePadding>
@@ -144,10 +144,10 @@ const Lists: NextPage<Props> = ({ lists }) => {
             </AccordionDetails>
 
             <AccordionActions>
-              <Button onClick={() => setManaging(true)}>Manage</Button>
+              <Button onClick={() => setManaging(true)}>{t("Manage")}</Button>
 
               <Button color="error" onClick={() => deleteList(list.id)}>
-                Delete
+                {t("Delete")}
               </Button>
             </AccordionActions>
           </Accordion>

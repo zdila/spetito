@@ -12,6 +12,7 @@ import { List, User } from "@prisma/client";
 import { SyntheticEvent, useState } from "react";
 import { AudienceDialog } from "./AudienceDialog";
 import EditIcon from "@mui/icons-material/Edit";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   friends?: User[];
@@ -20,6 +21,8 @@ type Props = {
 };
 
 export function NewOffer({ onCreate, friends, lists }: Props) {
+  const { t } = useTranslation("common");
+
   const [message, setMessage] = useState("");
 
   const [validFrom, setValidFrom] = useState("");
@@ -90,7 +93,7 @@ export function NewOffer({ onCreate, friends, lists }: Props) {
       />
 
       <TextField
-        label="Offer"
+        label={t("Offer")}
         fullWidth
         multiline
         maxRows={6}
@@ -101,10 +104,10 @@ export function NewOffer({ onCreate, friends, lists }: Props) {
       <Box
         sx={{ width: "100%", display: "flex", gap: 1, alignItems: "center" }}
       >
-        <Typography>Audience:</Typography>
+        <Typography>{t("Audience")}:</Typography>
 
         {audience.length === 0 ? (
-          <Typography>all my friends</Typography>
+          <Typography>{t("allMyFriends")}</Typography>
         ) : (
           audience.map((item) => {
             const id = item.slice(2);
@@ -132,14 +135,14 @@ export function NewOffer({ onCreate, friends, lists }: Props) {
         <IconButton
           sx={{ my: -1 }}
           onClick={() => setShowAudienceDialog(true)}
-          title="Set audience"
+          title={t("SetAudience")}
         >
           <EditIcon />
         </IconButton>
       </Box>
 
       <TextField
-        label="From"
+        label={t("DateFrom")}
         type="datetime-local"
         InputLabelProps={{ shrink: true }}
         onChange={(e) => setValidFrom(e.currentTarget.value)}
@@ -147,7 +150,7 @@ export function NewOffer({ onCreate, friends, lists }: Props) {
       />
 
       <TextField
-        label="To"
+        label={t("DateTo")}
         type="datetime-local"
         InputLabelProps={{ shrink: true }}
         onChange={(e) => setValidTo(e.currentTarget.value)}
@@ -161,7 +164,7 @@ export function NewOffer({ onCreate, friends, lists }: Props) {
           disabled={!message.trim()}
           type="submit"
         >
-          Place this offer
+          {t("placeThisOffer")}
         </Button>
       </Box>
     </Paper>

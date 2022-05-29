@@ -141,11 +141,11 @@ const Friends: NextPage<Props> = ({
   const { t } = useTranslation("common");
 
   return (
-    <Layout title={t("friends")}>
+    <Layout title={t("Friends")}>
       {usersInvitingMe.length === 0 ? null : (
         <>
           <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
-            Friend requests
+            {t("FriendRequests")}
           </Typography>
 
           <Paper>
@@ -156,18 +156,16 @@ const Friends: NextPage<Props> = ({
                   secondaryAction={
                     <>
                       <IconButton
-                        aria-label="accept"
                         onClick={() => accept(user.id)}
-                        title="Accept friend request"
+                        title={t("AcceptFriendRequest")}
                       >
                         <CheckIcon />
                       </IconButton>
 
                       <IconButton
                         edge="end"
-                        aria-label="remove"
                         onClick={() => deleteRequest(user.id)}
-                        title="Remove friend request"
+                        title={t("RemoveFriendRequest")}
                       >
                         <ClearIcon />
                       </IconButton>
@@ -189,14 +187,14 @@ const Friends: NextPage<Props> = ({
       )}
 
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
-        Find a friend
+        {t("FindFriend")}
       </Typography>
 
       <Paper sx={{ p: 2 }}>
         <Autocomplete
           getOptionLabel={(option) => option.name ?? "-"}
           renderInput={(params) => (
-            <TextField {...params} label="Your friend's name" fullWidth />
+            <TextField {...params} label={t("YourFriendsName")} fullWidth />
           )}
           onInputChange={(event, newInputValue) => {
             setInputValue(newInputValue);
@@ -223,14 +221,14 @@ const Friends: NextPage<Props> = ({
         />
 
         <Button onClick={handleRequestClick} disabled={!value} sx={{ mt: 2 }}>
-          Send friend request
+          {t("SendFriendRequest")}
         </Button>
       </Paper>
 
       {usersInvitedByMe.length === 0 ? null : (
         <>
           <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
-            Sent friend requests
+            {t("SentFriendRequests")}
           </Typography>
 
           <Paper>
@@ -241,9 +239,8 @@ const Friends: NextPage<Props> = ({
                   secondaryAction={
                     <IconButton
                       edge="end"
-                      aria-label="delete"
                       onClick={() => deleteRequest(user.id)}
-                      title="Delete"
+                      title={t("Delete")}
                       color="error"
                     >
                       <DeleteIcon />
@@ -265,11 +262,11 @@ const Friends: NextPage<Props> = ({
       )}
 
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
-        Your friends
+        {t("YourFriends")}
       </Typography>
 
       {friends.length === 0 ? (
-        <Typography color="text.secondary">You have no friends 😞</Typography>
+        <Typography color="text.secondary">{t("YouHaveNoFriends")}</Typography>
       ) : (
         <Paper>
           <List>
@@ -281,7 +278,7 @@ const Friends: NextPage<Props> = ({
                     edge="end"
                     onClick={() => removeFriend(user.id)}
                     color="error"
-                    title="Unfriend"
+                    title={t("Unfriend")}
                   >
                     <ClearIcon />
                   </IconButton>

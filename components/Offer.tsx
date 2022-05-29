@@ -3,6 +3,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { Avatar, Chip, IconButton, Paper, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { List, Offer, OfferList, OfferUser, User } from "@prisma/client";
+import { useTranslation } from "next-i18next";
 import { useCallback } from "react";
 
 type OfferExt = Offer & {
@@ -18,6 +19,8 @@ type Props = {
 };
 
 export function OfferItem({ offer, onDelete }: Props) {
+  const { t } = useTranslation("common");
+
   const { id, validFrom, validTo, message } = offer;
 
   const handleDeleteClick = useCallback(() => {
@@ -55,9 +58,11 @@ export function OfferItem({ offer, onDelete }: Props) {
                   offer.createdAt.toLocaleTimeString("en-GB", {
                     timeZone: "Europe/Bratislava",
                   })}{" "}
-                {validFrom || validTo ? "｜ Valid" : null}
+                {validFrom || validTo ? "｜ " + t("Valid") : null}
                 {validFrom
-                  ? " from " +
+                  ? " " +
+                    t("from") +
+                    " " +
                     validFrom.toLocaleDateString("en-GB", {
                       timeZone: "Europe/Bratislava",
                     }) +
@@ -67,7 +72,9 @@ export function OfferItem({ offer, onDelete }: Props) {
                     })
                   : null}
                 {validTo
-                  ? " to " +
+                  ? " " +
+                    t("from") +
+                    " " +
                     validTo.toLocaleDateString("en-GB", {
                       timeZone: "Europe/Bratislava",
                     }) +
@@ -82,7 +89,7 @@ export function OfferItem({ offer, onDelete }: Props) {
                 <>
                   ｜
                   {offer.offerLists.length + offer.offerUsers.length === 0 ? (
-                    "all your friends"
+                    t("allMyFriends")
                   ) : (
                     <>
                       {offer.offerLists.map((item) => (
@@ -109,8 +116,7 @@ export function OfferItem({ offer, onDelete }: Props) {
 
         {onEdit && (
           <IconButton
-            aria-label="delete"
-            title="Delete"
+            title={t("Delete")}
             edge="end"
             sx={{ alignSelf: "flex-start", mt: -1 }}
           >
@@ -120,8 +126,7 @@ export function OfferItem({ offer, onDelete }: Props) {
 
         {onDelete && (
           <IconButton
-            aria-label="delete"
-            title="Delete"
+            title={t("Delete")}
             color="error"
             edge="end"
             sx={{ alignSelf: "flex-start", mt: -1 }}

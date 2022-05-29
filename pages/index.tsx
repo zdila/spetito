@@ -59,22 +59,20 @@ const Home: NextPage<Props> = ({ yourOffers, friendsOffers }) => {
   const { t } = useTranslation("common");
 
   return (
-    <Layout title={t("offers")}>
+    <Layout title={t("Offers")}>
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
-        Create offer
+        {t("CreateOffer")}
       </Typography>
 
       <NewOffer onCreate={refresh} friends={friends} lists={lists} />
 
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
-        Your offers
+        {t("YourOffers")}
       </Typography>
 
       {yourOffers.length === 0 ? (
         // TODO active vs future vs historic offers
-        <Typography color="text.secondary">
-          You offer nothing currenly.
-        </Typography>
+        <Typography color="text.secondary">{t("YouOfferNothing")}</Typography>
       ) : (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           {yourOffers.map((offer) => (
@@ -84,11 +82,11 @@ const Home: NextPage<Props> = ({ yourOffers, friendsOffers }) => {
       )}
 
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
-        Friend&apos;s offers
+        {t("friendsOffers")}
       </Typography>
 
       {friendsOffers.length === 0 ? (
-        <Typography>There are no offers for you currently 😞</Typography>
+        <Typography>{t("noOffersForYou")}</Typography>
       ) : (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           {friendsOffers.map((offer) => (

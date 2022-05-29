@@ -22,14 +22,14 @@ const Settings: NextPage<Props> = () => {
   };
 
   return (
-    <Layout title={t("settings")}>
+    <Layout title={t("Settings")}>
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
-        Profile
+        {t("Profile")}
       </Typography>
 
       <Paper sx={{ p: 2 }}>
         <Typography>
-          Language:{" "}
+          {t("Language")}:{" "}
           <Link href="/en/settings" locale="en" onClick={handleLangClick}>
             <a onClick={handleLangClick} data-lang="en">
               English
