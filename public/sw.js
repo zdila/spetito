@@ -47,6 +47,23 @@ self.addEventListener("push", (event) => {
       );
 
       break;
+    case "offer":
+      event.waitUntil(
+        Promise.all([
+          self.registration.showNotification("New offer on Offerbook", {
+            body: data.payload.from.name + " placed a new offer on Offerbook.",
+            // icon: ..., TODO user's avatar
+            data,
+          }),
+        ]),
+        clients.matchAll({ type: "window" }).then((clientList) => {
+          for (const client of clientList) {
+            client.postMessage({ type: "refreshOffers" });
+          }
+        })
+      );
+
+      break;
     default:
       // ignore
       break;
@@ -58,7 +75,7 @@ self.addEventListener("notificationclick", (event) => {
 
   const type = event.notification.data?.type;
 
-  if (type !== "invite" && invite !== "accept") {
+  if (!["invite", "accept", "offer"].includes(type)) {
     return;
   }
 
@@ -68,15 +85,16 @@ self.addEventListener("notificationclick", (event) => {
         const { pathname } = new URL(client.url);
 
         if (
-          (pathname === "/friends" ||
-            (invite === "accept" && pathname === "/")) &&
-          "focus" in client
+          "focus" in client &&
+          ((type === "offer" && pathname === "/") ||
+            ((type === "invite" || type === "accept") &&
+              pathname === "/friends"))
         ) {
           return client.focus();
         }
       }
 
-      return clients?.openWindow("/friends");
+      return clients?.openWindow(type === "offer" ? "/" : "/friends");
     })
   );
 });

@@ -28,17 +28,17 @@ model Offer {
 }
 
 model List {
-  id         String        @id @default(cuid())
+  id         String       @id @default(cuid())
   name       String
-  owner      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  owner      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String
-  members    ListMemeber[]
+  members    ListMember[]
   offerLists OfferList[]
 
   @@map(name: "lists")
 }
 
-model ListMemeber {
+model ListMember {
   list   List   @relation(fields: [listId], references: [id], onDelete: Cascade)
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
@@ -111,7 +111,7 @@ model User {
   accounts          Account[]
   sessions          Session[]
   lists             List[]
-  listMemebers      ListMemeber[]
+  listMemebers      ListMember[]
   followedBy        Follows[]          @relation("following")
   following         Follows[]          @relation("follower")
   invitedBy         Invitation[]       @relation("inviting")

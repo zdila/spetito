@@ -42,22 +42,26 @@ export default async function handler(
     },
   });
 
-  pushRegistrations.map((pushRegistration) => {
-    const pushSubscription: webpush.PushSubscription = {
-      endpoint: pushRegistration.endpoint,
-      keys: {
-        auth: pushRegistration.auth.toString("base64url"),
-        p256dh: pushRegistration.p256dh.toString("base64url"),
-      },
-    };
+  Promise.all(
+    pushRegistrations.map((pushRegistration) => {
+      const pushSubscription: webpush.PushSubscription = {
+        endpoint: pushRegistration.endpoint,
+        keys: {
+          auth: pushRegistration.auth.toString("base64url"),
+          p256dh: pushRegistration.p256dh.toString("base64url"),
+        },
+      };
 
-    webpush.sendNotification(
-      pushSubscription,
-      JSON.stringify({
-        type: "invite",
-        payload: { from: { name: user.name, id: user.id } },
-      })
-    );
+      return webpush.sendNotification(
+        pushSubscription,
+        JSON.stringify({
+          type: "invite",
+          payload: { from: { name: user.name, id: user.id } },
+        })
+      );
+    })
+  ).catch((err) => {
+    console.log("Error sending push", err);
   });
 
   res.json(result);

@@ -51,7 +51,7 @@ export function OfferItem({ offer, onDelete }: Props) {
                 {offer.createdAt.toLocaleDateString()}{" "}
                 {validFrom || validTo ? "｜ Valid" : null}
                 {validFrom
-                  ? "from " +
+                  ? " from " +
                     validFrom.toLocaleDateString() +
                     " " +
                     validFrom.toLocaleTimeString()

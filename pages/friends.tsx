@@ -18,7 +18,7 @@ import { User } from "@prisma/client";
 import type { GetServerSideProps, NextPage } from "next";
 import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
 import { prisma } from "../lib/prisma";
 import CheckIcon from "@mui/icons-material/Check";
@@ -67,6 +67,10 @@ const Friends: NextPage<Props> = ({
 
   const router = useRouter();
 
+  const refresh = useCallback(() => {
+    router.replace(router.asPath);
+  }, [router]);
+
   const handleRequestClick = useEventCallback(() => {
     if (!value) {
       return;
@@ -81,7 +85,7 @@ const Friends: NextPage<Props> = ({
 
       setInputValue("");
 
-      router.replace(router.asPath);
+      refresh();
     });
   });
 
@@ -90,7 +94,7 @@ const Friends: NextPage<Props> = ({
       method: "DELETE",
     });
 
-    router.replace(router.asPath);
+    refresh();
   }
 
   async function removeFriend(id: string) {
@@ -98,7 +102,7 @@ const Friends: NextPage<Props> = ({
       method: "DELETE",
     });
 
-    router.replace(router.asPath);
+    refresh();
   }
 
   async function accept(id: string) {
@@ -106,7 +110,7 @@ const Friends: NextPage<Props> = ({
       method: "POST",
     });
 
-    router.replace(router.asPath);
+    refresh();
   }
 
   useEffect(() => {
@@ -115,7 +119,7 @@ const Friends: NextPage<Props> = ({
         event.data.type === "refreshInvites" ||
         event.data.type === "refreshFriends"
       ) {
-        router.replace(router.asPath);
+        refresh();
       }
     };
 
@@ -124,7 +128,7 @@ const Friends: NextPage<Props> = ({
     return () => {
       navigator.serviceWorker.removeEventListener("message", handleMessage);
     };
-  });
+  }, [refresh]);
 
   return (
     <Layout title="Friends">

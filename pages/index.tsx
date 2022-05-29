@@ -3,7 +3,7 @@ import { List, Offer, OfferList, OfferUser, User } from "@prisma/client";
 import type { GetServerSideProps, NextPage } from "next";
 import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { Layout } from "../components/Layout";
 import { NewOffer } from "../components/NewOffer";
 import { OfferItem } from "../components/Offer";
@@ -30,6 +30,23 @@ const Home: NextPage<Props> = ({ yourOffers, friendsOffers }) => {
   const refresh = useCallback(() => {
     router.replace(router.asPath);
   }, [router]);
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (
+        event.data.type === "refreshOffers" ||
+        event.data.type === "refreshFriends"
+      ) {
+        refresh();
+      }
+    };
+
+    navigator.serviceWorker.addEventListener("message", handleMessage);
+
+    return () => {
+      navigator.serviceWorker.removeEventListener("message", handleMessage);
+    };
+  }, [refresh]);
 
   return (
     <Layout title="Offers">

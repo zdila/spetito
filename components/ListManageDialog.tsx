@@ -15,12 +15,12 @@ import {
   ListItemButton,
   CircularProgress,
 } from "@mui/material";
-import { List, ListMemeber, User } from "@prisma/client";
+import { List, ListMember, User } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { useFriends } from "../hooks/useFriends";
 
 export type ListWithMembers = List & {
-  members: (ListMemeber & { user: User })[];
+  members: (ListMember & { user: User })[];
 };
 
 type Props = {
