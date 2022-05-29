@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import { Offer } from "@prisma/client";
+import { Offer, User } from "@prisma/client";
 import type { GetServerSideProps, NextPage } from "next";
 import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -8,14 +8,22 @@ import { Layout } from "../components/Layout";
 import { NewOffer } from "../components/NewOffer";
 import { OfferItem } from "../components/Offer";
 import { prisma } from "../lib/prisma";
+import { useFriends } from "../hooks/useFriends";
+import { useLists } from "../hooks/useLists";
+
+type OfferWirhAuthor = Offer & { author: User | null };
 
 type Props = {
-  friendsOffers: Offer[];
-  yourOffers: Offer[];
+  friendsOffers: OfferWirhAuthor[];
+  yourOffers: OfferWirhAuthor[];
 };
 
 const Home: NextPage<Props> = ({ yourOffers, friendsOffers }) => {
   const router = useRouter();
+
+  const friends = useFriends();
+
+  const lists = useLists();
 
   const refresh = useCallback(() => {
     router.replace(router.asPath);
@@ -27,7 +35,7 @@ const Home: NextPage<Props> = ({ yourOffers, friendsOffers }) => {
         Create offer
       </Typography>
 
-      <NewOffer onCreate={refresh} />
+      <NewOffer onCreate={refresh} friends={friends} lists={lists} />
 
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
         Your offers
@@ -83,6 +91,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   return {
     props: {
       friendsOffers: await prisma.offer.findMany({
+        include: { author: true },
         where: {
           author: {
             followedBy: {
@@ -127,6 +136,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
         },
       }),
       yourOffers: await prisma.offer.findMany({
+        include: { author: true },
         where: {
           userId: id,
         },

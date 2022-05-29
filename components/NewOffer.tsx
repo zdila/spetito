@@ -1,12 +1,25 @@
-import { Box, Button, Paper, TextField } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  Chip,
+  IconButton,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { List, User } from "@prisma/client";
 import { SyntheticEvent, useState } from "react";
 import { AudienceDialog } from "./AudienceDialog";
+import EditIcon from "@mui/icons-material/Edit";
 
 type Props = {
+  friends?: User[];
+  lists?: List[];
   onCreate?: () => void;
 };
 
-export function NewOffer({ onCreate }: Props) {
+export function NewOffer({ onCreate, friends, lists }: Props) {
   const [message, setMessage] = useState("");
 
   const [validFrom, setValidFrom] = useState("");
@@ -62,20 +75,54 @@ export function NewOffer({ onCreate }: Props) {
         audience={audience}
         open={showAudienceDialog}
         onClose={handleAudienceClose}
+        friends={friends}
+        lists={lists}
       />
 
       <TextField
         label="Offer"
         fullWidth
         multiline
-        sx={{ flexGrow: 1 }}
+        maxRows={6}
         value={message}
         onChange={(e) => setMessage(e.currentTarget.value)}
       />
 
-      <Button variant="outlined" onClick={() => setShowAudienceDialog(true)}>
-        Set audience
-      </Button>
+      <Box
+        sx={{ width: "100%", display: "flex", gap: 1, alignItems: "center" }}
+      >
+        <Typography>Audience:</Typography>
+
+        {audience.length === 0 ? (
+          <Typography>all my friends</Typography>
+        ) : (
+          audience.map((item) => {
+            const friend = friends?.find((frined) => frined.id === item);
+
+            const list = friend
+              ? undefined
+              : lists?.find((list) => list.id === item);
+
+            return friend || list ? (
+              <Chip
+                key={item}
+                avatar={
+                  friend?.image ? <Avatar src={friend.image} /> : undefined
+                }
+                label={list?.name ?? friend?.name ?? "?"}
+              />
+            ) : null;
+          })
+        )}
+
+        <IconButton
+          sx={{ my: -1 }}
+          onClick={() => setShowAudienceDialog(true)}
+          title="Set audience"
+        >
+          <EditIcon />
+        </IconButton>
+      </Box>
 
       <TextField
         label="From"

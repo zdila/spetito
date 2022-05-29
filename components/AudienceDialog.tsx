@@ -13,12 +13,9 @@ import {
   Checkbox,
   ListItemButton,
   CircularProgress,
-  Box,
 } from "@mui/material";
 import { List, ListMemeber, User } from "@prisma/client";
 import { useEffect, useState } from "react";
-import { useFriends } from "../hooks/useFriends";
-import { useLists } from "../hooks/useLists";
 
 export type ListWithMembers = List & {
   members: (ListMemeber & { user: User })[];
@@ -28,13 +25,17 @@ type Props = {
   onClose: (audience?: string[]) => void;
   open: boolean;
   audience: string[];
+  friends?: User[];
+  lists?: List[];
 };
 
-export function AudienceDialog({ open, onClose, audience }: Props) {
-  const friends = useFriends(open);
-
-  const lists = useLists(open);
-
+export function AudienceDialog({
+  open,
+  onClose,
+  audience,
+  friends,
+  lists,
+}: Props) {
   const [checked, setChecked] = useState<string[]>(audience);
 
   useEffect(() => {
