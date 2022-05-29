@@ -106,7 +106,7 @@ export function Layout({ children, title }: Props) {
       </Head>
 
       {!supportsPush1 ? (
-        <Alert severity="error">
+        <Alert sx={{ mt: 2 }} severity="error">
           Push notifications are not supported in this browser.
         </Alert>
       ) : notifPerm === "prompt" ? (
@@ -123,7 +123,9 @@ export function Layout({ children, title }: Props) {
         </Alert>
       ) : (
         notifPerm === "denied" && (
-          <Alert severity="error">Notifications are denied</Alert>
+          <Alert sx={{ mt: 2 }} severity="error">
+            Notifications are denied
+          </Alert>
         )
       )}
 
