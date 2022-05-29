@@ -13,9 +13,12 @@ import {
   Checkbox,
   ListItemButton,
   CircularProgress,
+  Box,
 } from "@mui/material";
 import { List, ListMemeber, User } from "@prisma/client";
 import { useEffect, useState } from "react";
+import { useFriends } from "../hooks/useFriends";
+import { useLists } from "../hooks/useLists";
 
 export type ListWithMembers = List & {
   members: (ListMemeber & { user: User })[];
@@ -29,13 +32,11 @@ type Props = {
   lists?: List[];
 };
 
-export function AudienceDialog({
-  open,
-  onClose,
-  audience,
-  friends,
-  lists,
-}: Props) {
+export function AudienceDialog({ open, onClose, audience }: Props) {
+  const friends = useFriends(open);
+
+  const lists = useLists(open);
+
   const [checked, setChecked] = useState<string[]>(audience);
 
   useEffect(() => {
@@ -70,29 +71,33 @@ export function AudienceDialog({
             </Typography>
           ) : (
             <MuiList>
-              {friends?.map((user) => (
-                <ListItem
-                  key={user.id}
-                  secondaryAction={
-                    <Checkbox
-                      edge="end"
-                      onChange={() => checkListItem(user.id)}
-                      checked={checked.indexOf(user.id) !== -1}
-                    />
-                  }
-                  disablePadding
-                >
-                  <ListItemButton onClick={() => checkListItem(user.id)}>
-                    {user.image && (
-                      <ListItemAvatar>
-                        <Avatar src={user.image} />
-                      </ListItemAvatar>
-                    )}
+              {friends?.map((user) => {
+                const key = "u:" + user.id;
 
-                    <ListItemText primary={user.name} />
-                  </ListItemButton>
-                </ListItem>
-              ))}
+                return (
+                  <ListItem
+                    key={key}
+                    secondaryAction={
+                      <Checkbox
+                        edge="end"
+                        onChange={() => checkListItem(key)}
+                        checked={checked.indexOf(key) !== -1}
+                      />
+                    }
+                    disablePadding
+                  >
+                    <ListItemButton onClick={() => checkListItem(key)}>
+                      {user.image && (
+                        <ListItemAvatar>
+                          <Avatar src={user.image} />
+                        </ListItemAvatar>
+                      )}
+
+                      <ListItemText primary={user.name} />
+                    </ListItemButton>
+                  </ListItem>
+                );
+              })}
             </MuiList>
           )}
 
@@ -108,23 +113,27 @@ export function AudienceDialog({
             </Typography>
           ) : (
             <MuiList>
-              {lists?.map((list) => (
-                <ListItem
-                  key={list.id}
-                  secondaryAction={
-                    <Checkbox
-                      edge="end"
-                      onChange={() => checkListItem(list.id)}
-                      checked={checked.indexOf(list.id) !== -1}
-                    />
-                  }
-                  disablePadding
-                >
-                  <ListItemButton onClick={() => checkListItem(list.id)}>
-                    <ListItemText primary={list.name} />
-                  </ListItemButton>
-                </ListItem>
-              ))}
+              {lists?.map((list) => {
+                const key = "l:" + list.id;
+
+                return (
+                  <ListItem
+                    key={key}
+                    secondaryAction={
+                      <Checkbox
+                        edge="end"
+                        onChange={() => checkListItem(key)}
+                        checked={checked.indexOf(key) !== -1}
+                      />
+                    }
+                    disablePadding
+                  >
+                    <ListItemButton onClick={() => checkListItem(key)}>
+                      <ListItemText primary={list.name} />
+                    </ListItemButton>
+                  </ListItem>
+                );
+              })}
             </MuiList>
           )}
         </>

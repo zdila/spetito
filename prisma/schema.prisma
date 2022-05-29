@@ -12,17 +12,17 @@ datasource db {
 }
 
 model Offer {
-  id         String       @id @default(cuid())
-  createdAt  DateTime     @default(now()) @map(name: "created_at")
-  updatedAt  DateTime     @updatedAt @map(name: "updated_at")
-  validFrom  DateTime?    @map(name: "valid_from")
-  validTo    DateTime?    @map(name: "valid_to")
+  id         String      @id @default(cuid())
+  createdAt  DateTime    @default(now()) @map(name: "created_at")
+  updatedAt  DateTime    @updatedAt @map(name: "updated_at")
+  validFrom  DateTime?   @map(name: "valid_from")
+  validTo    DateTime?   @map(name: "valid_to")
   message    String
-  author     User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  author     User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String?
-  public     Boolean      @default(true)
+  public     Boolean     @default(true)
   offerLists OfferList[]
-  offerUsers OfferUsers[]
+  offerUsers OfferUser[]
 
   @@map(name: "offers")
 }
@@ -49,8 +49,8 @@ model ListMemeber {
 }
 
 model OfferList {
-  offer   Offer  @relation(fields: [offerId], references: [id])
-  list    List   @relation(fields: [listId], references: [id])
+  offer   Offer  @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  list    List   @relation(fields: [listId], references: [id], onDelete: Cascade)
   offerId String
   listId  String
 
@@ -58,9 +58,9 @@ model OfferList {
   @@map(name: "offer_lists")
 }
 
-model OfferUsers {
-  offer   Offer  @relation(fields: [offerId], references: [id])
-  user    User   @relation(fields: [userId], references: [id])
+model OfferUser {
+  offer   Offer  @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   offerId String
   userId  String
 
@@ -116,7 +116,7 @@ model User {
   following         Follows[]          @relation("follower")
   invitedBy         Invitation[]       @relation("inviting")
   inviting          Invitation[]       @relation("inviter")
-  offerUsers        OfferUsers[]
+  offerUsers        OfferUser[]
   pushRegistrations PushRegistration[]
 
   @@map(name: "users")
@@ -154,7 +154,7 @@ model VerificationToken {
 }
 
 model PushRegistration {
-  user     User   @relation(fields: [userId], references: [id])
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId   String
   endpoint String @id @db.VarChar(255)
   auth     Bytes

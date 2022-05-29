@@ -36,6 +36,14 @@ export function NewOffer({ onCreate, friends, lists }: Props) {
         message: message.trim(),
         validFrom: validFrom ? new Date(validFrom).toISOString() : null,
         validTo: validTo ? new Date(validTo).toISOString() : null,
+        audience: {
+          users: audience
+            .filter((item) => item.startsWith("u:"))
+            .map((item) => item.slice(2)),
+          lists: audience
+            .filter((item) => item.startsWith("l:"))
+            .map((item) => item.slice(2)),
+        },
       }),
     }).then(() => {
       setMessage("");
@@ -43,6 +51,8 @@ export function NewOffer({ onCreate, friends, lists }: Props) {
       setValidFrom("");
 
       setValidTo("");
+
+      setAudience([]);
 
       onCreate?.();
     });
@@ -97,11 +107,15 @@ export function NewOffer({ onCreate, friends, lists }: Props) {
           <Typography>all my friends</Typography>
         ) : (
           audience.map((item) => {
-            const friend = friends?.find((frined) => frined.id === item);
+            const id = item.slice(2);
 
-            const list = friend
-              ? undefined
-              : lists?.find((list) => list.id === item);
+            const friend = item.startsWith("u:")
+              ? friends?.find((frined) => frined.id === id)
+              : undefined;
+
+            const list = item.startsWith("l:")
+              ? lists?.find((list) => list.id === id)
+              : undefined;
 
             return friend || list ? (
               <Chip

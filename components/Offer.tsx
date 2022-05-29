@@ -1,14 +1,19 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Avatar, Button, IconButton, Paper, Typography } from "@mui/material";
+import { Avatar, Chip, IconButton, Paper, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import { Offer, User } from "@prisma/client";
-import { Fragment, useCallback } from "react";
+import { List, Offer, OfferList, OfferUser, User } from "@prisma/client";
+import { useCallback } from "react";
 
-type OfferWirhAuthor = Offer & { author: User | null };
+type OfferExt = Offer & {
+  author: User | null;
+
+  offerLists?: (OfferList & { list: List })[];
+  offerUsers?: (OfferUser & { user: User })[];
+};
 
 type Props = {
-  offer: OfferWirhAuthor;
+  offer: OfferExt;
   onDelete?: () => void;
 };
 
@@ -20,8 +25,6 @@ export function OfferItem({ offer, onDelete }: Props) {
       onDelete?.();
     });
   }, [id, onDelete]);
-
-  const audience: string[] = [];
 
   const onEdit = false; // TODO
 
@@ -43,39 +46,54 @@ export function OfferItem({ offer, onDelete }: Props) {
               {offer.author?.name ?? "nobody"}
             </Typography>
 
-            <Typography variant="body2">
-              {offer.createdAt.toLocaleDateString()}{" "}
-              {validFrom || validTo ? "｜ Valid" : null}
-              {validFrom
-                ? "from " +
-                  validFrom.toLocaleDateString() +
-                  " " +
-                  validFrom.toLocaleTimeString()
-                : null}
-              {validTo
-                ? " to " +
-                  validTo.toLocaleDateString() +
-                  " " +
-                  validTo.toLocaleTimeString()
-                : null}
-              {audience ? (
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Typography variant="body2">
+                {offer.createdAt.toLocaleDateString()}{" "}
+                {validFrom || validTo ? "｜ Valid" : null}
+                {validFrom
+                  ? "from " +
+                    validFrom.toLocaleDateString() +
+                    " " +
+                    validFrom.toLocaleTimeString()
+                  : null}
+                {validTo
+                  ? " to " +
+                    validTo.toLocaleDateString() +
+                    " " +
+                    validTo.toLocaleTimeString()
+                  : null}
+              </Typography>
+
+              {offer.offerLists && offer.offerUsers ? (
                 <>
                   ｜
-                  {audience.length === 0
-                    ? "all your friends"
-                    : audience.map((item, i) => (
-                        <Fragment key={item}>
-                          {i > 0 ? ", " : null}
-                          {item}
-                        </Fragment>
+                  {offer.offerLists.length + offer.offerUsers.length === 0 ? (
+                    "all your friends"
+                  ) : (
+                    <>
+                      {offer.offerLists.map((item) => (
+                        <Chip key={item.listId} label={item.list.name} />
                       ))}
+                      {offer.offerUsers.map((item) => (
+                        <Chip
+                          key={item.userId}
+                          avatar={
+                            item.user.image ? (
+                              <Avatar src={item.user.image} />
+                            ) : undefined
+                          }
+                          label={item.user.name}
+                        />
+                      ))}
+                    </>
+                  )}
                 </>
               ) : null}
-            </Typography>
+            </Box>
           </Box>
         </Box>
 
-        {onDelete && (
+        {onEdit && (
           <IconButton
             aria-label="delete"
             title="Delete"
@@ -86,7 +104,7 @@ export function OfferItem({ offer, onDelete }: Props) {
           </IconButton>
         )}
 
-        {onEdit && (
+        {onDelete && (
           <IconButton
             aria-label="delete"
             title="Delete"

@@ -24,10 +24,14 @@ export default async function handler(
   }
 
   // TODO validate
-  const { message, validFrom, validTo } = req.body as {
+  const { message, validFrom, validTo, audience } = req.body as {
     message: string;
     validFrom?: string;
     validTo?: string;
+    audience: {
+      users: string[];
+      lists: string[];
+    };
   };
 
   const result = await prisma.offer.create({
@@ -36,6 +40,20 @@ export default async function handler(
       validFrom,
       validTo,
       userId,
+      offerLists: {
+        createMany: {
+          data: audience.lists.map((listId) => ({
+            listId,
+          })),
+        },
+      },
+      offerUsers: {
+        createMany: {
+          data: audience.users.map((userId) => ({
+            userId,
+          })),
+        },
+      },
     },
   });
 

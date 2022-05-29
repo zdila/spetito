@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import { Offer, User } from "@prisma/client";
+import { List, Offer, OfferList, OfferUser, User } from "@prisma/client";
 import type { GetServerSideProps, NextPage } from "next";
 import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -11,11 +11,13 @@ import { prisma } from "../lib/prisma";
 import { useFriends } from "../hooks/useFriends";
 import { useLists } from "../hooks/useLists";
 
-type OfferWirhAuthor = Offer & { author: User | null };
-
 type Props = {
-  friendsOffers: OfferWirhAuthor[];
-  yourOffers: OfferWirhAuthor[];
+  friendsOffers: (Offer & { author: User | null })[];
+  yourOffers: (Offer & {
+    author: User | null;
+    offerLists: (OfferList & { list: List })[];
+    offerUsers: (OfferUser & { user: User })[];
+  })[];
 };
 
 const Home: NextPage<Props> = ({ yourOffers, friendsOffers }) => {
@@ -88,59 +90,71 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
     };
   }
 
-  return {
-    props: {
-      friendsOffers: await prisma.offer.findMany({
-        include: { author: true },
-        where: {
-          author: {
-            followedBy: {
-              some: {
-                followerId: id,
-              },
+  const friendsOffers = await prisma.offer.findMany({
+    include: { author: true },
+    where: {
+      author: {
+        followedBy: {
+          some: {
+            followerId: id,
+          },
+        },
+      },
+      OR: [
+        {
+          public: true,
+        },
+        {
+          offerUsers: {
+            some: {
+              userId: id,
             },
           },
-          OR: [
-            {
-              public: true,
-            },
-            {
-              offerUsers: {
-                some: {
-                  userId: id,
-                },
-              },
-            },
-            {
-              offerLists: {
-                some: {
-                  list: {
-                    members: {
-                      some: {
-                        userId: id,
-                      },
-                    },
+        },
+        {
+          offerLists: {
+            some: {
+              list: {
+                members: {
+                  some: {
+                    userId: id,
                   },
                 },
               },
             },
-            {
-              offerUsers: {
-                none: {},
-              },
-              offerLists: {
-                none: {},
-              },
-            },
-          ],
+          },
         },
-      }),
-      yourOffers: await prisma.offer.findMany({
-        include: { author: true },
-        where: {
-          userId: id,
+        {
+          offerUsers: {
+            none: {},
+          },
+          offerLists: {
+            none: {},
+          },
         },
-      }),
+      ],
+    },
+  });
+
+  const yourOffers = await prisma.offer.findMany({
+    include: {
+      author: true,
+      offerLists: {
+        include: { list: true },
+      },
+      offerUsers: {
+        include: { user: true },
+      },
+    },
+    where: {
+      userId: id,
+    },
+  });
+
+  return {
+    props: {
+      friendsOffers,
+      yourOffers,
     },
   };
 };
