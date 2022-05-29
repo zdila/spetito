@@ -20,7 +20,9 @@ import LocalActivityIcon from "@mui/icons-material/LocalActivity";
 import ListIcon from "@mui/icons-material/List";
 import PersonIcon from "@mui/icons-material/Person";
 import LogoutIcon from "@mui/icons-material/Logout";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { supportsPush } from "../lib/capabilities";
+import { useTranslation } from "next-i18next";
 
 type Props = { title: string; children: ReactNode };
 
@@ -40,6 +42,8 @@ export function Layout({ children, title }: Props) {
   const notifPerm = usePermission("notifications");
 
   const pushPerm = usePermission("push");
+
+  const { t } = useTranslation("common");
 
   useEffect(() => {
     if (supportsPush && notifPerm === "granted" && pushPerm === "granted") {
@@ -156,7 +160,7 @@ export function Layout({ children, title }: Props) {
                     <LocalActivityIcon />
                   </ListItemIcon>
 
-                  <ListItemText>Offers</ListItemText>
+                  <ListItemText>{t("offers")}</ListItemText>
                 </ListItemButton>
               </Link>
             </ListItem>
@@ -171,7 +175,7 @@ export function Layout({ children, title }: Props) {
                     <PersonIcon />
                   </ListItemIcon>
 
-                  <ListItemText>Friends</ListItemText>
+                  <ListItemText>{t("friends")}</ListItemText>
                 </ListItemButton>
               </Link>
             </ListItem>
@@ -183,21 +187,25 @@ export function Layout({ children, title }: Props) {
                     <ListIcon />
                   </ListItemIcon>
 
-                  <ListItemText>Lists</ListItemText>
+                  <ListItemText>{t("lists")}</ListItemText>
                 </ListItemButton>
               </Link>
             </ListItem>
 
-            {/* <ListItem disablePadding>
+            <ListItem disablePadding>
               <Link href="/settings">
                 <ListItemButton
                   component="a"
                   selected={pathname === "/settings"}
                 >
-                  Settings
+                  <ListItemIcon>
+                    <SettingsIcon />
+                  </ListItemIcon>
+
+                  <ListItemText>{t("settings")}</ListItemText>
                 </ListItemButton>
               </Link>
-            </ListItem> */}
+            </ListItem>
 
             <ListItem disablePadding>
               <ListItemButton onClick={handleLogOutClick}>
@@ -205,7 +213,7 @@ export function Layout({ children, title }: Props) {
                   <LogoutIcon />
                 </ListItemIcon>
 
-                <ListItemText>Log out</ListItemText>
+                <ListItemText>{t("logOut")}</ListItemText>
               </ListItemButton>
             </ListItem>
           </List>

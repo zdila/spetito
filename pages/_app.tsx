@@ -7,6 +7,7 @@ import lightTheme from "../styles/theme/lightTheme";
 import "../styles/globals.css";
 import { EmotionCache } from "@emotion/cache";
 import { SessionProvider } from "next-auth/react";
+import { appWithTranslation } from "next-i18next";
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -28,4 +29,4 @@ function MyApp({
   );
 }
 
-export default MyApp;
+export default appWithTranslation(MyApp);

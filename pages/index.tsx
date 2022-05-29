@@ -1,3 +1,4 @@
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { Box, Typography } from "@mui/material";
 import { List, Offer, OfferList, OfferUser, User } from "@prisma/client";
 import type { GetServerSideProps, NextPage } from "next";
@@ -11,6 +12,7 @@ import { prisma } from "../lib/prisma";
 import { useFriends } from "../hooks/useFriends";
 import { useLists } from "../hooks/useLists";
 import { supportsPush } from "../lib/capabilities";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   friendsOffers: (Offer & { author: User | null })[];
@@ -53,8 +55,10 @@ const Home: NextPage<Props> = ({ yourOffers, friendsOffers }) => {
     };
   }, [refresh]);
 
+  const { t } = useTranslation("common");
+
   return (
-    <Layout title="Offers">
+    <Layout title={t("offers")}>
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
         Create offer
       </Typography>
@@ -175,6 +179,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 
   return {
     props: {
+      ...(await serverSideTranslations(context.locale ?? "en", ["common"])),
       friendsOffers,
       yourOffers,
     },

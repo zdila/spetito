@@ -24,6 +24,8 @@ import {
   ListManageDialog,
   ListWithMembers,
 } from "../components/ListManageDialog";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   lists: ListWithMembers[];
@@ -64,8 +66,10 @@ const Lists: NextPage<Props> = ({ lists }) => {
 
   const expandedList = lists.find((list) => list.id === expanded);
 
+  const { t } = useTranslation("common");
+
   return (
-    <Layout title="Lists">
+    <Layout title={t("lists")}>
       {expandedList && (
         <ListManageDialog
           open={managing}
@@ -184,6 +188,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 
   return {
     props: {
+      ...(await serverSideTranslations(context.locale ?? "en", ["common"])),
       lists,
     },
   };

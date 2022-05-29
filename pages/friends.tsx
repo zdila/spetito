@@ -23,6 +23,8 @@ import { Layout } from "../components/Layout";
 import { prisma } from "../lib/prisma";
 import CheckIcon from "@mui/icons-material/Check";
 import { supportsPush } from "../lib/capabilities";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   usersInvitedByMe: User[];
@@ -135,8 +137,10 @@ const Friends: NextPage<Props> = ({
     };
   }, [refresh]);
 
+  const { t } = useTranslation("common");
+
   return (
-    <Layout title="Friends">
+    <Layout title={t("friends")}>
       {usersInvitingMe.length === 0 ? null : (
         <>
           <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
@@ -357,6 +361,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 
   return {
     props: {
+      ...(await serverSideTranslations(context.locale ?? "en", ["common"])),
       usersInvitedByMe,
       usersInvitingMe,
       friends,
