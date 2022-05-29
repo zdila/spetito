@@ -48,19 +48,33 @@ export function OfferItem({ offer, onDelete }: Props) {
 
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <Typography variant="body2">
-                {offer.createdAt.toLocaleDateString()}{" "}
+                {offer.createdAt.toLocaleDateString("en-GB", {
+                  timeZone: "Europe/Bratislava",
+                }) +
+                  " " +
+                  offer.createdAt.toLocaleTimeString("en-GB", {
+                    timeZone: "Europe/Bratislava",
+                  })}{" "}
                 {validFrom || validTo ? "｜ Valid" : null}
                 {validFrom
                   ? " from " +
-                    validFrom.toLocaleDateString() +
+                    validFrom.toLocaleDateString("en-GB", {
+                      timeZone: "Europe/Bratislava",
+                    }) +
                     " " +
-                    validFrom.toLocaleTimeString()
+                    validFrom.toLocaleTimeString("en-GB", {
+                      timeZone: "Europe/Bratislava",
+                    })
                   : null}
                 {validTo
                   ? " to " +
-                    validTo.toLocaleDateString() +
+                    validTo.toLocaleDateString("en-GB", {
+                      timeZone: "Europe/Bratislava",
+                    }) +
                     " " +
-                    validTo.toLocaleTimeString()
+                    validTo.toLocaleTimeString("en-GB", {
+                      timeZone: "Europe/Bratislava",
+                    })
                   : null}
               </Typography>
 
