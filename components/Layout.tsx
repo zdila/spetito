@@ -6,6 +6,8 @@ import {
   List,
   ListItem,
   ListItemButton,
+  ListItemIcon,
+  ListItemText,
   Typography,
 } from "@mui/material";
 import { signOut } from "next-auth/react";
@@ -14,6 +16,10 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { ReactNode, useEffect } from "react";
 import { usePermission } from "../hooks/usePermission";
+import LocalActivityIcon from "@mui/icons-material/LocalActivity";
+import ListIcon from "@mui/icons-material/List";
+import PersonIcon from "@mui/icons-material/Person";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 type Props = { title: string; children: ReactNode };
 
@@ -91,10 +97,6 @@ export function Layout({ children, title }: Props) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Typography variant="h4" sx={{ mt: 2, mb: 1 }}>
-        {title}
-      </Typography>
-
       {notifPerm === "prompt" && (
         <Alert
           severity="warning"
@@ -113,12 +115,33 @@ export function Layout({ children, title }: Props) {
       )}
 
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={2}>
+        <Grid item xs={12} sm={4} md={3} lg={2}>
+          <Typography
+            variant="h4"
+            display="inline-block"
+            component="span"
+            sx={{
+              mt: 2,
+              mb: 1,
+              backgroundColor: "#8000a0",
+              px: 1,
+              color: "white",
+              fontWeight: "bold",
+              borderRadius: 1,
+            }}
+          >
+            Offerbook
+          </Typography>
+
           <List>
             <ListItem disablePadding>
               <Link href="/">
                 <ListItemButton component="a" selected={pathname === "/"}>
-                  Offers
+                  <ListItemIcon>
+                    <LocalActivityIcon />
+                  </ListItemIcon>
+
+                  <ListItemText>Offers</ListItemText>
                 </ListItemButton>
               </Link>
             </ListItem>
@@ -129,7 +152,11 @@ export function Layout({ children, title }: Props) {
                   component="a"
                   selected={pathname === "/friends"}
                 >
-                  Friends
+                  <ListItemIcon>
+                    <PersonIcon />
+                  </ListItemIcon>
+
+                  <ListItemText>Friends</ListItemText>
                 </ListItemButton>
               </Link>
             </ListItem>
@@ -137,12 +164,16 @@ export function Layout({ children, title }: Props) {
             <ListItem disablePadding>
               <Link href="/lists">
                 <ListItemButton component="a" selected={pathname === "/lists"}>
-                  Lists
+                  <ListItemIcon>
+                    <ListIcon />
+                  </ListItemIcon>
+
+                  <ListItemText>Lists</ListItemText>
                 </ListItemButton>
               </Link>
             </ListItem>
 
-            <ListItem disablePadding>
+            {/* <ListItem disablePadding>
               <Link href="/settings">
                 <ListItemButton
                   component="a"
@@ -151,17 +182,25 @@ export function Layout({ children, title }: Props) {
                   Settings
                 </ListItemButton>
               </Link>
-            </ListItem>
+            </ListItem> */}
 
             <ListItem disablePadding>
               <ListItemButton onClick={handleLogOutClick}>
-                Log out
+                <ListItemIcon>
+                  <LogoutIcon />
+                </ListItemIcon>
+
+                <ListItemText>Log out</ListItemText>
               </ListItemButton>
             </ListItem>
           </List>
         </Grid>
 
-        <Grid item xs={12} sm={10}>
+        <Grid item xs={12} sm={8} md={9} lg={10}>
+          <Typography variant="h4" sx={{ mt: 2, mb: 1 }}>
+            {title}
+          </Typography>
+
           {children}
         </Grid>
       </Grid>
