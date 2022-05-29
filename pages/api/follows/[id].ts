@@ -41,7 +41,7 @@ export default async function handler(
     });
 
     // nicer would be DB trigger
-    await prisma.listMemeber.deleteMany({
+    await prisma.listMember.deleteMany({
       where: {
         OR: [
           {
