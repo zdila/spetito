@@ -99,6 +99,7 @@ export function Layout({ children, title }: Props) {
 
       {notifPerm === "prompt" && (
         <Alert
+          sx={{ mt: 2 }}
           severity="warning"
           action={
             <Button onClick={handleRegisterClick} color="inherit" size="small">
