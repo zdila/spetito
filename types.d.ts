@@ -7,3 +7,9 @@ declare module "next-auth" {
     };
   }
 }
+
+declare global {
+  interface ServiceWorkerGlobalScope {
+    __WB_MANIFEST: { revision: string; url: string }[];
+  }
+}

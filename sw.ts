@@ -1,13 +1,21 @@
+/// <reference lib="webworker" />
+
+declare const self: ServiceWorkerGlobalScope;
+
+import { get, set } from "idb-keyval";
+
+const resources = self.__WB_MANIFEST; // just to satisfy Workbox InjectManifest plugin
+
 self.addEventListener("install", (event) => {
   self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(clients.claim());
+  event.waitUntil(self.clients.claim());
 });
 
 self.addEventListener("push", (event) => {
-  if (self.Notification?.permission !== "granted") {
+  if (Notification?.permission !== "granted") {
     return;
   }
 
@@ -24,12 +32,12 @@ self.addEventListener("push", (event) => {
             // icon: ..., TODO user's avatar
             data,
           }),
-        ]),
-        clients.matchAll({ type: "window" }).then((clientList) => {
-          for (const client of clientList) {
-            client.postMessage({ type: "refreshInvites" });
-          }
-        })
+          self.clients.matchAll({ type: "window" }).then((clientList) => {
+            for (const client of clientList) {
+              client.postMessage({ type: "refreshInvites" });
+            }
+          }),
+        ])
       );
 
       break;
@@ -46,12 +54,12 @@ self.addEventListener("push", (event) => {
               data,
             }
           ),
-        ]),
-        clients.matchAll({ type: "window" }).then((clientList) => {
-          for (const client of clientList) {
-            client.postMessage({ type: "refreshFriends" });
-          }
-        })
+          self.clients.matchAll({ type: "window" }).then((clientList) => {
+            for (const client of clientList) {
+              client.postMessage({ type: "refreshFriends" });
+            }
+          }),
+        ])
       );
 
       break;
@@ -63,12 +71,12 @@ self.addEventListener("push", (event) => {
             // icon: ..., TODO user's avatar
             data,
           }),
-        ]),
-        clients.matchAll({ type: "window" }).then((clientList) => {
-          for (const client of clientList) {
-            client.postMessage({ type: "refreshOffers" });
-          }
-        })
+          self.clients.matchAll({ type: "window" }).then((clientList) => {
+            for (const client of clientList) {
+              client.postMessage({ type: "refreshOffers" });
+            }
+          }),
+        ])
       );
 
       break;
@@ -88,7 +96,7 @@ self.addEventListener("notificationclick", (event) => {
   }
 
   event.waitUntil(
-    clients.matchAll({ type: "window" }).then((clientList) => {
+    self.clients.matchAll({ type: "window" }).then((clientList) => {
       for (const client of clientList) {
         const { pathname } = new URL(client.url);
 
@@ -102,7 +110,7 @@ self.addEventListener("notificationclick", (event) => {
         }
       }
 
-      return clients?.openWindow(type === "offer" ? "/" : "/friends");
+      return self.clients.openWindow(type === "offer" ? "/" : "/friends");
     })
   );
 });
