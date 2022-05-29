@@ -10,6 +10,7 @@ import { OfferItem } from "../components/Offer";
 import { prisma } from "../lib/prisma";
 import { useFriends } from "../hooks/useFriends";
 import { useLists } from "../hooks/useLists";
+import { supportsPush } from "../lib/capabilities";
 
 type Props = {
   friendsOffers: (Offer & { author: User | null })[];
@@ -32,6 +33,10 @@ const Home: NextPage<Props> = ({ yourOffers, friendsOffers }) => {
   }, [router]);
 
   useEffect(() => {
+    if (!supportsPush) {
+      return;
+    }
+
     const handleMessage = (event: MessageEvent) => {
       if (
         event.data.type === "refreshOffers" ||

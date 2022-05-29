@@ -20,6 +20,7 @@ import LocalActivityIcon from "@mui/icons-material/LocalActivity";
 import ListIcon from "@mui/icons-material/List";
 import PersonIcon from "@mui/icons-material/Person";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { supportsPush } from "../lib/capabilities";
 
 type Props = { title: string; children: ReactNode };
 
@@ -41,7 +42,7 @@ export function Layout({ children, title }: Props) {
   const pushPerm = usePermission("push");
 
   useEffect(() => {
-    if (notifPerm === "granted" && pushPerm === "granted") {
+    if (supportsPush && notifPerm === "granted" && pushPerm === "granted") {
       registerServiceWorkerAndSubscribeToPush();
     }
   }, [notifPerm, pushPerm]);
@@ -97,7 +98,11 @@ export function Layout({ children, title }: Props) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {notifPerm === "prompt" && (
+      {!supportsPush ? (
+        <Alert severity="error">
+          Push notifications are not supported in this browser.
+        </Alert>
+      ) : notifPerm === "prompt" ? (
         <Alert
           sx={{ mt: 2 }}
           severity="warning"
@@ -109,10 +114,10 @@ export function Layout({ children, title }: Props) {
         >
           Notifications are not enabled.
         </Alert>
-      )}
-
-      {notifPerm === "denied" && (
-        <Alert severity="error">Notifications are denied</Alert>
+      ) : (
+        notifPerm === "denied" && (
+          <Alert severity="error">Notifications are denied</Alert>
+        )
       )}
 
       <Grid container spacing={2}>

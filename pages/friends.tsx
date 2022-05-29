@@ -22,6 +22,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
 import { prisma } from "../lib/prisma";
 import CheckIcon from "@mui/icons-material/Check";
+import { supportsPush } from "../lib/capabilities";
 
 type Props = {
   usersInvitedByMe: User[];
@@ -114,6 +115,10 @@ const Friends: NextPage<Props> = ({
   }
 
   useEffect(() => {
+    if (!supportsPush) {
+      return;
+    }
+
     const handleMessage = (event: MessageEvent) => {
       if (
         event.data.type === "refreshInvites" ||

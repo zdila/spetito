@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 
 export function usePermission(name: PermissionName) {
-  const [state, setState] = useState<PermissionState>();
+  const [state, setState] = useState<
+    PermissionState | undefined | "unsupported"
+  >(navigator.permissions ? undefined : "unsupported");
 
   useEffect(() => {
     navigator.permissions
-      .query({ name, userVisibleOnly: true } as any)
+      ?.query({ name, userVisibleOnly: true } as any)
       .then((permissionStatus) => {
         setState(permissionStatus.state);
 
