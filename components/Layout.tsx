@@ -14,7 +14,7 @@ import { signOut } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { usePermission } from "../hooks/usePermission";
 import LocalActivityIcon from "@mui/icons-material/LocalActivity";
 import ListIcon from "@mui/icons-material/List";
@@ -88,6 +88,13 @@ export function Layout({ children, title }: Props) {
     signOut();
   };
 
+  const [supportsPush1, setSupportsPush1] = useState(true);
+
+  // for SSR
+  useEffect(() => {
+    setSupportsPush1(supportsPush);
+  }, []);
+
   return (
     <Container>
       <Head>
@@ -98,7 +105,7 @@ export function Layout({ children, title }: Props) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {!supportsPush ? (
+      {!supportsPush1 ? (
         <Alert severity="error">
           Push notifications are not supported in this browser.
         </Alert>
