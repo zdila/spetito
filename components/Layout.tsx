@@ -154,7 +154,7 @@ export function Layout({ children, title }: Props) {
 
           <List>
             <ListItem disablePadding>
-              <Link href="/">
+              <Link href="/" passHref>
                 <ListItemButton component="a" selected={pathname === "/"}>
                   <ListItemIcon>
                     <LocalActivityIcon />
@@ -166,7 +166,7 @@ export function Layout({ children, title }: Props) {
             </ListItem>
 
             <ListItem disablePadding>
-              <Link href="/friends">
+              <Link href="/friends" passHref>
                 <ListItemButton
                   component="a"
                   selected={pathname === "/friends"}
@@ -181,7 +181,7 @@ export function Layout({ children, title }: Props) {
             </ListItem>
 
             <ListItem disablePadding>
-              <Link href="/lists">
+              <Link href="/lists" passHref>
                 <ListItemButton component="a" selected={pathname === "/lists"}>
                   <ListItemIcon>
                     <ListIcon />
@@ -193,7 +193,7 @@ export function Layout({ children, title }: Props) {
             </ListItem>
 
             <ListItem disablePadding>
-              <Link href="/settings">
+              <Link href="/settings" passHref>
                 <ListItemButton
                   component="a"
                   selected={pathname === "/settings"}

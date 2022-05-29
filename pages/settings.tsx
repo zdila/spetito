@@ -3,16 +3,23 @@ import type { GetServerSideProps, NextPage } from "next";
 import { getSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import Link from "next/link";
+import { SyntheticEvent } from "react";
 import { Layout } from "../components/Layout";
+import { redirectToLogIn } from "../lib/auth";
 
 type Props = {};
 
 const Settings: NextPage<Props> = () => {
-  // useEffect(() => {
-  //   document.cookie = "NEXT_LOCALE=sk; path=/";
-  // }, []);
-
   const { t } = useTranslation("common");
+
+  const handleLangClick = (e: SyntheticEvent<HTMLAnchorElement>) => {
+    const { lang } = e.currentTarget.dataset;
+
+    if (lang) {
+      document.cookie = `NEXT_LOCALE=${lang}; path=/`;
+    }
+  };
 
   return (
     <Layout title={t("settings")}>
@@ -20,13 +27,28 @@ const Settings: NextPage<Props> = () => {
         Profile
       </Typography>
 
-      <Paper sx={{ p: 2 }}></Paper>
+      <Paper sx={{ p: 2 }}>
+        <Typography>
+          Language:{" "}
+          <Link href="/en/settings" locale="en" onClick={handleLangClick}>
+            <a onClick={handleLangClick} data-lang="en">
+              English
+            </a>
+          </Link>
+          {", "}
+          <Link href="/sk/settings" locale="sk">
+            <a onClick={handleLangClick} data-lang="sk">
+              Slovensky
+            </a>
+          </Link>
+        </Typography>
+      </Paper>
 
-      <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
+      {/* <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
         Notifications
       </Typography>
 
-      <Paper sx={{ p: 2 }}></Paper>
+      <Paper sx={{ p: 2 }}></Paper> */}
     </Layout>
   );
 };
@@ -39,12 +61,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   const id = session?.user?.id;
 
   if (!id) {
-    return {
-      redirect: {
-        destination: "/api/auth/signin?callbackUrl=/settings",
-        permanent: false,
-      },
-    };
+    return redirectToLogIn(context, "/settings");
   }
 
   return {

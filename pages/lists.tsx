@@ -26,6 +26,7 @@ import {
 } from "../components/ListManageDialog";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
+import { redirectToLogIn } from "../lib/auth";
 
 type Props = {
   lists: ListWithMembers[];
@@ -164,12 +165,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   const id = session?.user?.id;
 
   if (!id) {
-    return {
-      redirect: {
-        destination: "/api/auth/signin?callbackUrl=/lists",
-        permanent: false,
-      },
-    };
+    return redirectToLogIn(context, "/lists");
   }
 
   const lists = await prisma.list.findMany({

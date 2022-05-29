@@ -25,6 +25,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import { supportsPush } from "../lib/capabilities";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
+import { redirectToLogIn } from "../lib/auth";
 
 type Props = {
   usersInvitedByMe: User[];
@@ -310,12 +311,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   const id = session?.user?.id;
 
   if (!id) {
-    return {
-      redirect: {
-        destination: "/api/auth/signin?callbackUrl=/friends",
-        permanent: false,
-      },
-    };
+    return redirectToLogIn(context, "/friends");
   }
 
   const usersInvitedByMe = await prisma.user.findMany({

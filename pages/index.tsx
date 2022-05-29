@@ -13,6 +13,7 @@ import { useFriends } from "../hooks/useFriends";
 import { useLists } from "../hooks/useLists";
 import { supportsPush } from "../lib/capabilities";
 import { useTranslation } from "next-i18next";
+import { redirectToLogIn } from "../lib/auth";
 
 type Props = {
   friendsOffers: (Offer & { author: User | null })[];
@@ -107,13 +108,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   const id = session?.user?.id;
 
   if (!id) {
-    return {
-      redirect: {
-        // destination: "/login",
-        destination: "/api/auth/signin?callbackUrl=/",
-        permanent: false,
-      },
-    };
+    return redirectToLogIn(context, "/");
   }
 
   const friendsOffers = await prisma.offer.findMany({
