@@ -65,7 +65,7 @@ export function ListManageDialog({ open, onClose, list }: Props) {
 
   return (
     <Dialog fullWidth open={open} onClose={() => onClose(false)}>
-      <DialogTitle>List {list.name}</DialogTitle>
+      <DialogTitle>{t("List_name_", { name: list.name })}</DialogTitle>
 
       <DialogContent>
         <TextField
