@@ -51,8 +51,6 @@ export function Layout({ children, title }: Props) {
 
     const swr = await navigator.serviceWorker.ready;
 
-    console.log(t("notifTranslations", { returnObjects: true }));
-
     set("notifTranslations", t("notifTranslations", { returnObjects: true }));
 
     const subscription = await swr.pushManager.subscribe({
