@@ -57,6 +57,7 @@ export function OfferItem({ offer, onDelete }: Props) {
                   " " +
                   offer.createdAt.toLocaleTimeString("en-GB", {
                     timeZone: "Europe/Bratislava",
+                    timeStyle: "short",
                   })}{" "}
                 {validFrom || validTo ? "｜ " + t("Valid") : null}
                 {validFrom
@@ -69,6 +70,7 @@ export function OfferItem({ offer, onDelete }: Props) {
                     " " +
                     validFrom.toLocaleTimeString("en-GB", {
                       timeZone: "Europe/Bratislava",
+                      timeStyle: "short",
                     })
                   : null}
                 {validTo
@@ -81,6 +83,7 @@ export function OfferItem({ offer, onDelete }: Props) {
                     " " +
                     validTo.toLocaleTimeString("en-GB", {
                       timeZone: "Europe/Bratislava",
+                      timeStyle: "short",
                     })
                   : null}
               </Typography>
