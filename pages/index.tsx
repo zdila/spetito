@@ -82,11 +82,11 @@ const Home: NextPage<Props> = ({ yourOffers, friendsOffers }) => {
       )}
 
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
-        {t("friendsOffers")}
+        {t("FriendsOffers")}
       </Typography>
 
       {friendsOffers.length === 0 ? (
-        <Typography>{t("noOffersForYou")}</Typography>
+        <Typography>{t("NoOffersForYou")}</Typography>
       ) : (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           {friendsOffers.map((offer) => (

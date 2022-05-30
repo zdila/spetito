@@ -61,7 +61,7 @@ export function OfferItem({ offer, onDelete }: Props) {
                 {validFrom || validTo ? "｜ " + t("Valid") : null}
                 {validFrom
                   ? " " +
-                    t("from") +
+                    t("dateFrom") +
                     " " +
                     validFrom.toLocaleDateString("en-GB", {
                       timeZone: "Europe/Bratislava",
@@ -73,7 +73,7 @@ export function OfferItem({ offer, onDelete }: Props) {
                   : null}
                 {validTo
                   ? " " +
-                    t("from") +
+                    t("dateTo") +
                     " " +
                     validTo.toLocaleDateString("en-GB", {
                       timeZone: "Europe/Bratislava",
