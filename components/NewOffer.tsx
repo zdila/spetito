@@ -124,7 +124,9 @@ export function NewOffer({ onCreate, friends, lists }: Props) {
               <Chip
                 key={item}
                 avatar={
-                  friend?.image ? <Avatar src={friend.image} /> : undefined
+                  friend?.image ? (
+                    <Avatar src={friend.image} alt="" />
+                  ) : undefined
                 }
                 label={list?.name ?? friend?.name ?? "?"}
               />

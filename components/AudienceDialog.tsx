@@ -89,7 +89,7 @@ export function AudienceDialog({ open, onClose, audience }: Props) {
                     <ListItemButton onClick={() => checkListItem(key)}>
                       {user.image && (
                         <ListItemAvatar>
-                          <Avatar src={user.image} />
+                          <Avatar src={user.image} alt="" />
                         </ListItemAvatar>
                       )}
 

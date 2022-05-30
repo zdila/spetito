@@ -101,7 +101,7 @@ export function ListManageDialog({ open, onClose, list }: Props) {
                 <ListItemButton onClick={() => checkListItem(user.id)}>
                   {user.image && (
                     <ListItemAvatar>
-                      <Avatar src={user.image} />
+                      <Avatar src={user.image} alt="" />
                     </ListItemAvatar>
                   )}
 

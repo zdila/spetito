@@ -34,7 +34,7 @@ export function OfferItem({ offer, onDelete }: Props) {
   return (
     <Paper sx={{ p: 2 }}>
       <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
-        {offer.author?.image && <Avatar src={offer.author?.image} />}
+        {offer.author?.image && <Avatar src={offer.author?.image} alt="" />}
 
         <Box
           sx={{
@@ -100,7 +100,7 @@ export function OfferItem({ offer, onDelete }: Props) {
                           key={item.userId}
                           avatar={
                             item.user.image ? (
-                              <Avatar src={item.user.image} />
+                              <Avatar src={item.user.image} alt="" />
                             ) : undefined
                           }
                           label={item.user.name}

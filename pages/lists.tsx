@@ -132,7 +132,7 @@ const Lists: NextPage<Props> = ({ lists }) => {
                     <ListItem key={member.userId}>
                       {member.user.image && (
                         <ListItemAvatar>
-                          <Avatar src={member.user.image} />
+                          <Avatar src={member.user.image} alt="" />
                         </ListItemAvatar>
                       )}
 

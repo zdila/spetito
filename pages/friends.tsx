@@ -174,7 +174,7 @@ const Friends: NextPage<Props> = ({
                 >
                   {user.image && (
                     <ListItemAvatar>
-                      <Avatar src={user.image} />
+                      <Avatar src={user.image} alt="" />
                     </ListItemAvatar>
                   )}
 
@@ -206,7 +206,9 @@ const Friends: NextPage<Props> = ({
           renderOption={(props, option) => {
             return (
               <li key={option.id} {...props}>
-                {option.image && <Avatar src={option.image} sx={{ mr: 1 }} />}
+                {option.image && (
+                  <Avatar src={option.image} sx={{ mr: 1 }} alt="" />
+                )}
 
                 <Typography variant="body2" color="text.secondary">
                   {option.name ?? "-"}
@@ -249,7 +251,7 @@ const Friends: NextPage<Props> = ({
                 >
                   {user.image && (
                     <ListItemAvatar>
-                      <Avatar src={user.image} />
+                      <Avatar src={user.image} alt="" />
                     </ListItemAvatar>
                   )}
 
@@ -286,7 +288,7 @@ const Friends: NextPage<Props> = ({
               >
                 {user.image && (
                   <ListItemAvatar>
-                    <Avatar src={user.image} />
+                    <Avatar src={user.image} alt="" />
                   </ListItemAvatar>
                 )}
 
