@@ -40,5 +40,19 @@
   "Create": "Vytvor",
   "YouHaveNoLists": "Nemáš žiadne zoznamy",
   "Manage": "Spravovať",
-  "ListIsEmpty": "Tento zoznam je prázdny."
+  "ListIsEmpty": "Tento zoznam je prázdny.",
+  "notifTranslations": {
+    "invite": {
+      "title": "Offerbook - žiadosť o priateľstvo",
+      "body": "<_> ti posiela žiadosť o priateľstvo."
+    },
+    "accept": {
+      "title": "Offerbook - prijatá žiadosť o priateľstvo",
+      "body": "<_> prijal(a) tvoju žiadosť o priateľstvo."
+    },
+    "offer": {
+      "title": "Offerbook - nová ponuka",
+      "body": "<_> dal(a) novú ponuku."
+    }
+  }
 }

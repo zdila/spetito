@@ -2,7 +2,7 @@
 
 declare const self: ServiceWorkerGlobalScope;
 
-import { get, set } from "idb-keyval";
+import { get } from "idb-keyval";
 
 const resources = self.__WB_MANIFEST; // just to satisfy Workbox InjectManifest plugin
 
@@ -24,59 +24,76 @@ self.addEventListener("push", (event) => {
   switch (data.type) {
     case "invite":
       event.waitUntil(
-        Promise.all([
-          self.registration.showNotification("Offerbook friend request", {
-            body:
-              data.payload.from.name +
-              " is sending you a friend request on Offerbook.",
-            // icon: ..., TODO user's avatar
-            data,
-          }),
-          self.clients.matchAll({ type: "window" }).then((clientList) => {
-            for (const client of clientList) {
-              client.postMessage({ type: "refreshInvites" });
-            }
-          }),
-        ])
+        get("notifTranslations").then((m) =>
+          Promise.all([
+            self.registration.showNotification(
+              m?.invite?.title ?? "Offerbook friend request",
+              {
+                body: (
+                  m?.invite?.body ??
+                  "<_> is sending you a friend request on Offerbook."
+                ).replace("<_>", data.payload.from.name),
+                // icon: ..., TODO user's avatar
+                data,
+              }
+            ),
+            self.clients.matchAll({ type: "window" }).then((clientList) => {
+              for (const client of clientList) {
+                client.postMessage({ type: "refreshInvites" });
+              }
+            }),
+          ])
+        )
       );
 
       break;
     case "accept":
       event.waitUntil(
-        Promise.all([
-          self.registration.showNotification(
-            "Offerbook friend request accepted",
-            {
-              body:
-                data.payload.from.name +
-                " has accepted your friend request on Offerbook.",
-              // icon: ..., TODO user's avatar
-              data,
-            }
-          ),
-          self.clients.matchAll({ type: "window" }).then((clientList) => {
-            for (const client of clientList) {
-              client.postMessage({ type: "refreshFriends" });
-            }
-          }),
-        ])
+        get("notifTranslations").then((m) =>
+          Promise.all([
+            self.registration.showNotification(
+              m?.invite?.title ?? "Offerbook friend request accepted",
+              {
+                body: (
+                  m?.accept?.body ??
+                  "<_> has accepted your friend request on Offerbook."
+                ).replace("<_>", data.payload.from.name),
+
+                // icon: ..., TODO user's avatar
+                data,
+              }
+            ),
+            self.clients.matchAll({ type: "window" }).then((clientList) => {
+              for (const client of clientList) {
+                client.postMessage({ type: "refreshFriends" });
+              }
+            }),
+          ])
+        )
       );
 
       break;
     case "offer":
       event.waitUntil(
-        Promise.all([
-          self.registration.showNotification("New offer on Offerbook", {
-            body: data.payload.from.name + " placed a new offer on Offerbook.",
-            // icon: ..., TODO user's avatar
-            data,
-          }),
-          self.clients.matchAll({ type: "window" }).then((clientList) => {
-            for (const client of clientList) {
-              client.postMessage({ type: "refreshOffers" });
-            }
-          }),
-        ])
+        get("notifTranslations").then((m) =>
+          Promise.all([
+            self.registration.showNotification(
+              m?.offer?.title ?? "New offer on Offerbook",
+              {
+                body: (
+                  m?.offer?.body ?? "<_> placed a new offer on Offerbook."
+                ).replace("<_>", data.payload.from.name),
+                // icon: ..., TODO user's avatar
+                data,
+              }
+            ),
+            self.clients.matchAll({ type: "window" }).then((clientList) => {
+              for (const client of clientList) {
+                client.postMessage({ type: "refreshOffers" });
+              }
+            }),
+          ])
+        )
       );
 
       break;

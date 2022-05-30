@@ -40,5 +40,19 @@
   "Create": "Create",
   "YouHaveNoLists": "You have no lists",
   "Manage": "Manage",
-  "ListIsEmpty": "This list is empty."
+  "ListIsEmpty": "This list is empty.",
+  "notifTranslations": {
+    "invite": {
+      "title": "Offerbook friend request",
+      "body": "<_> is sending you a friend request on Offerbook."
+    },
+    "accept": {
+      "title": "Offerbook friend request accepted",
+      "body": "<_> has accepted your friend request on Offerbook."
+    },
+    "offer": {
+      "title": "New offer on Offerbook",
+      "body": "<_> placed a new offer on Offerbook."
+    }
+  }
 }

@@ -14,7 +14,7 @@ import { signOut } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import { usePermission } from "../hooks/usePermission";
 import LocalActivityIcon from "@mui/icons-material/LocalActivity";
 import ListIcon from "@mui/icons-material/List";
@@ -23,6 +23,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { supportsPush } from "../lib/capabilities";
 import { useTranslation } from "next-i18next";
+import { get, set } from "idb-keyval";
 
 type Props = { title: string; children: ReactNode };
 
@@ -45,34 +46,36 @@ export function Layout({ children, title }: Props) {
 
   const { t } = useTranslation("common");
 
+  const registerServiceWorkerAndSubscribeToPush = useCallback(async () => {
+    navigator.serviceWorker.register("/sw.js"); // no need to await
+
+    const swr = await navigator.serviceWorker.ready;
+
+    console.log(t("notifTranslations", { returnObjects: true }));
+
+    set("notifTranslations", t("notifTranslations", { returnObjects: true }));
+
+    const subscription = await swr.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBKEY,
+    });
+
+    await fetch("/api/push", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        endpoint: subscription.endpoint,
+        auth: toBase64(subscription.getKey("auth")),
+        p256dh: toBase64(subscription.getKey("p256dh")),
+      }),
+    });
+  }, [t]);
+
   useEffect(() => {
     if (supportsPush && notifPerm === "granted" && pushPerm === "granted") {
       registerServiceWorkerAndSubscribeToPush();
     }
-  }, [notifPerm, pushPerm]);
-
-  function registerServiceWorkerAndSubscribeToPush() {
-    navigator.serviceWorker.register("/sw.js");
-
-    navigator.serviceWorker.ready.then((swr) => {
-      swr.pushManager
-        .subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBKEY,
-        })
-        .then((subscription) => {
-          fetch("/api/push", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              endpoint: subscription.endpoint,
-              auth: toBase64(subscription.getKey("auth")),
-              p256dh: toBase64(subscription.getKey("p256dh")),
-            }),
-          });
-        });
-    });
-  }
+  }, [notifPerm, pushPerm, registerServiceWorkerAndSubscribeToPush]);
 
   const handleRegisterClick = () => {
     Notification.requestPermission();
