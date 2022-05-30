@@ -70,7 +70,7 @@ export function ListManageDialog({ open, onClose, list }: Props) {
       <DialogContent>
         <TextField
           sx={{ mt: 1, mb: 2 }}
-          label="List name"
+          label={t("ListName")}
           value={name}
           onChange={(e) => setName(e.target.value)}
           fullWidth

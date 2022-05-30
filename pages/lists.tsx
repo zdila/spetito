@@ -91,7 +91,7 @@ const Lists: NextPage<Props> = ({ lists }) => {
 
       <Paper sx={{ p: 2 }} component="form" onSubmit={handleCreateClick}>
         <TextField
-          label="List name"
+          label={t("ListName")}
           value={name}
           onChange={(e) => setName(e.currentTarget.value)}
           fullWidth

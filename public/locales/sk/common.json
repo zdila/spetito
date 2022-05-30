@@ -41,6 +41,7 @@
   "YouHaveNoLists": "Nemáš žiadne zoznamy",
   "Manage": "Spravovať",
   "ListIsEmpty": "Tento zoznam je prázdny.",
+  "ListName": "Názov zoznamu",
   "notifTranslations": {
     "invite": {
       "title": "Offerbook - žiadosť o priateľstvo",

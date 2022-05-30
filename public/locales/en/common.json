@@ -41,6 +41,7 @@
   "YouHaveNoLists": "You have no lists",
   "Manage": "Manage",
   "ListIsEmpty": "This list is empty.",
+  "ListName": "List name",
   "notifTranslations": {
     "invite": {
       "title": "Offerbook friend request",
