@@ -132,9 +132,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
       },
       OR: [
         {
-          public: true,
-        },
-        {
           offerUsers: {
             some: {
               userId: id,

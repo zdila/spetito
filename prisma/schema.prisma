@@ -20,7 +20,6 @@ model Offer {
   message    String
   author     User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String?
-  public     Boolean     @default(true)
   offerLists OfferList[]
   offerUsers OfferUser[]
 
