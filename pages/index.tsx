@@ -113,11 +113,22 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
     include: { author: true },
     where: {
       author: {
-        followedBy: {
-          some: {
-            followerId: id,
+        OR: [
+          {
+            followedBy: {
+              some: {
+                followerId: id,
+              },
+            },
           },
-        },
+          {
+            following: {
+              some: {
+                followingId: id,
+              },
+            },
+          },
+        ],
       },
       OR: [
         {
