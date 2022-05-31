@@ -2,7 +2,7 @@ import { Invitation } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { prisma } from "../../../lib/prisma";
-import webpush from "../../../lib/webpush";
+import { sendPushNotifications } from "../../../utility/pushNotifications";
 
 export default async function handler(
   req: NextApiRequest,
@@ -42,26 +42,9 @@ export default async function handler(
     },
   });
 
-  Promise.all(
-    pushRegistrations.map((pushRegistration) => {
-      const pushSubscription: webpush.PushSubscription = {
-        endpoint: pushRegistration.endpoint,
-        keys: {
-          auth: pushRegistration.auth.toString("base64url"),
-          p256dh: pushRegistration.p256dh.toString("base64url"),
-        },
-      };
-
-      return webpush.sendNotification(
-        pushSubscription,
-        JSON.stringify({
-          type: "invite",
-          payload: { from: { name: user.name, id: user.id } },
-        })
-      );
-    })
-  ).catch((err) => {
-    console.log("Error sending push", err);
+  sendPushNotifications(pushRegistrations, {
+    type: "invite",
+    payload: { from: { name: user.name, id: user.id } },
   });
 
   res.json(result);

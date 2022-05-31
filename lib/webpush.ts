@@ -1,6 +1,6 @@
 import webpush from "web-push";
 
-export default webpush;
+export { webpush };
 
 webpush.setVapidDetails(
   process.env.VAPID_SUBJECT as string,
