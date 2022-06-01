@@ -1,6 +1,6 @@
-import { Avatar, Box, Paper, TextField, Typography } from "@mui/material";
+import { Avatar, Box, Paper, Typography } from "@mui/material";
 import type { GetServerSideProps, NextPage } from "next";
-import { User } from "next-auth";
+import { DefaultUser } from "next-auth";
 import { getSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -9,7 +9,7 @@ import { SyntheticEvent } from "react";
 import { Layout } from "../components/Layout";
 import { redirectToLogIn } from "../lib/auth";
 
-type Props = { user: User };
+type Props = { user: DefaultUser };
 
 const Settings: NextPage<Props> = ({ user }) => {
   const { t } = useTranslation("common");
