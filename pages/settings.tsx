@@ -36,7 +36,7 @@ const Settings: NextPage<Props> = ({ user }) => {
 
         <Typography>
           {t("Language")}:{" "}
-          <Link href="/en/settings" locale="en" onClick={handleLangClick}>
+          <Link href="/en/settings" locale="en">
             <a onClick={handleLangClick} data-lang="en">
               English
             </a>

@@ -31,19 +31,22 @@ export default async function handler(
     return;
   }
 
-  await prisma.offer.deleteMany({
+  const { count } = await prisma.offer.deleteMany({
     where: {
       id,
       userId,
     },
   });
 
-  await prisma.hiddenOffers.create({
-    data: {
-      offerId: id,
-      userId,
-    },
-  });
+  // if not deleted (assume not own offer) then hide
+  if (count === 0) {
+    await prisma.hiddenOffers.create({
+      data: {
+        offerId: id,
+        userId,
+      },
+    });
+  }
 
   res.status(204).end();
 }
