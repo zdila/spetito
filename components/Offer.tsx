@@ -1,5 +1,6 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import CloseIcon from "@mui/icons-material/Close";
 import { Avatar, Chip, IconButton, Paper, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { List, Offer, OfferList, OfferUser, User } from "@prisma/client";
@@ -14,22 +15,21 @@ type OfferExt = Offer & {
 };
 
 type Props = {
+  own?: boolean;
   offer: OfferExt;
-  onDelete?: () => void;
+  onDelete: () => void;
 };
 
-export function OfferItem({ offer, onDelete }: Props) {
+export function OfferItem({ offer, onDelete, own = false }: Props) {
   const { t } = useTranslation("common");
 
   const { id, validFrom, validTo, message } = offer;
 
   const handleDeleteClick = useCallback(() => {
     fetch("/api/offers/" + id, { method: "DELETE" }).then(() => {
-      onDelete?.();
+      onDelete();
     });
   }, [id, onDelete]);
-
-  const onEdit = false; // TODO
 
   return (
     <Paper sx={{ p: 2 }}>
@@ -117,27 +117,25 @@ export function OfferItem({ offer, onDelete }: Props) {
           </Box>
         </Box>
 
-        {onEdit && (
+        {/* TODO {own && (
           <IconButton
-            title={t("Delete")}
+            title={t("Edit")}
             edge="end"
             sx={{ alignSelf: "flex-start", mt: -1 }}
           >
             <EditIcon />
           </IconButton>
-        )}
+        )} */}
 
-        {onDelete && (
-          <IconButton
-            title={t("Delete")}
-            color="error"
-            edge="end"
-            sx={{ alignSelf: "flex-start", mt: -1 }}
-            onClick={handleDeleteClick}
-          >
-            <DeleteIcon />
-          </IconButton>
-        )}
+        <IconButton
+          title={own ? t("Delete") : t("Hide")}
+          color="error"
+          edge="end"
+          sx={{ alignSelf: "flex-start", mt: -1 }}
+          onClick={handleDeleteClick}
+        >
+          {own ? <DeleteIcon /> : <CloseIcon />}
+        </IconButton>
       </Box>
 
       <Box>

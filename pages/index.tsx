@@ -76,7 +76,7 @@ const Home: NextPage<Props> = ({ yourOffers, friendsOffers }) => {
       ) : (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           {yourOffers.map((offer) => (
-            <OfferItem key={offer.id} offer={offer} onDelete={refresh} />
+            <OfferItem key={offer.id} offer={offer} onDelete={refresh} own />
           ))}
         </Box>
       )}
@@ -90,7 +90,7 @@ const Home: NextPage<Props> = ({ yourOffers, friendsOffers }) => {
       ) : (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           {friendsOffers.map((offer) => (
-            <OfferItem key={offer.id} offer={offer} />
+            <OfferItem key={offer.id} offer={offer} onDelete={refresh} />
           ))}
         </Box>
       )}
@@ -112,6 +112,11 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   const friendsOffers = await prisma.offer.findMany({
     include: { author: true },
     where: {
+      hiddenOffers: {
+        none: {
+          userId: id,
+        },
+      },
       author: {
         OR: [
           {

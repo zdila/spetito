@@ -43,6 +43,7 @@
   "ListIsEmpty": "This list is empty.",
   "ListName": "List name",
   "List_name_": "List {{name}}",
+  "Hide": "Hide",
   "notifTranslations": {
     "invite": {
       "title": "Offerbook friend request",

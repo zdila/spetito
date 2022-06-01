@@ -12,18 +12,29 @@ datasource db {
 }
 
 model Offer {
-  id         String      @id @default(cuid())
-  createdAt  DateTime    @default(now()) @map(name: "created_at")
-  updatedAt  DateTime    @updatedAt @map(name: "updated_at")
-  validFrom  DateTime?   @map(name: "valid_from")
-  validTo    DateTime?   @map(name: "valid_to")
-  message    String
-  author     User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId     String?
-  offerLists OfferList[]
-  offerUsers OfferUser[]
+  id           String         @id @default(cuid())
+  createdAt    DateTime       @default(now()) @map(name: "created_at")
+  updatedAt    DateTime       @updatedAt @map(name: "updated_at")
+  validFrom    DateTime?      @map(name: "valid_from")
+  validTo      DateTime?      @map(name: "valid_to")
+  message      String
+  author       User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String?
+  offerLists   OfferList[]
+  offerUsers   OfferUser[]
+  hiddenOffers HiddenOffers[]
 
   @@map(name: "offers")
+}
+
+model HiddenOffers {
+  offer   Offer  @relation(fields: [offerId], references: [id])
+  offerId String
+  user    User   @relation(fields: [userId], references: [id])
+  userId  String
+
+  @@id([offerId, userId])
+  @@map(name: "hidden_offers")
 }
 
 model List {
@@ -117,6 +128,7 @@ model User {
   inviting          Invitation[]       @relation("inviter")
   offerUsers        OfferUser[]
   pushRegistrations PushRegistration[]
+  hiddenOffers      HiddenOffers[]
 
   @@map(name: "users")
 }

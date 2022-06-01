@@ -38,5 +38,12 @@ export default async function handler(
     },
   });
 
+  await prisma.hiddenOffers.create({
+    data: {
+      offerId: id,
+      userId,
+    },
+  });
+
   res.status(204).end();
 }
