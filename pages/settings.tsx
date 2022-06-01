@@ -1,5 +1,6 @@
-import { Paper, TextField, Typography } from "@mui/material";
+import { Avatar, Box, Paper, TextField, Typography } from "@mui/material";
 import type { GetServerSideProps, NextPage } from "next";
+import { User } from "next-auth";
 import { getSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
@@ -8,9 +9,9 @@ import { SyntheticEvent } from "react";
 import { Layout } from "../components/Layout";
 import { redirectToLogIn } from "../lib/auth";
 
-type Props = {};
+type Props = { user: User };
 
-const Settings: NextPage<Props> = () => {
+const Settings: NextPage<Props> = ({ user }) => {
   const { t } = useTranslation("common");
 
   const handleLangClick = (e: SyntheticEvent<HTMLAnchorElement>) => {
@@ -27,7 +28,12 @@ const Settings: NextPage<Props> = () => {
         {t("Profile")}
       </Typography>
 
-      <Paper sx={{ p: 2 }}>
+      <Paper sx={{ p: 2, display: "flex", gap: 1, flexDirection: "column" }}>
+        <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+          {user.image && <Avatar src={user.image} />}
+          <Typography>{user.name}</Typography>
+        </Box>
+
         <Typography>
           {t("Language")}:{" "}
           <Link href="/en/settings" locale="en" onClick={handleLangClick}>
@@ -58,15 +64,16 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 ) => {
   const session = await getSession(context);
 
-  const id = session?.user?.id;
+  const user = session?.user;
 
-  if (!id) {
+  if (!user) {
     return redirectToLogIn(context, "/settings");
   }
 
   return {
     props: {
       ...(await serverSideTranslations(context.locale ?? "en", ["common"])),
+      user,
     },
   };
 };
