@@ -112,57 +112,77 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   const friendsOffers = await prisma.offer.findMany({
     include: { author: true },
     where: {
-      hiddenOffers: {
-        none: {
-          userId: id,
-        },
-      },
-      author: {
-        OR: [
-          {
-            followedBy: {
-              some: {
-                followerId: id,
-              },
-            },
-          },
-          {
-            following: {
-              some: {
-                followingId: id,
-              },
-            },
-          },
-        ],
-      },
-      OR: [
+      AND: [
         {
-          offerUsers: {
-            some: {
+          OR: [
+            {
+              validTo: null,
+            },
+            {
+              validTo: {
+                gt: new Date(),
+              },
+            },
+          ],
+        },
+        {
+          hiddenOffers: {
+            none: {
               userId: id,
             },
           },
         },
         {
-          offerLists: {
-            some: {
-              list: {
-                members: {
+          author: {
+            OR: [
+              {
+                followedBy: {
                   some: {
-                    userId: id,
+                    followerId: id,
+                  },
+                },
+              },
+              {
+                following: {
+                  some: {
+                    followingId: id,
+                  },
+                },
+              },
+            ],
+          },
+        },
+        {
+          OR: [
+            {
+              offerUsers: {
+                some: {
+                  userId: id,
+                },
+              },
+            },
+            {
+              offerLists: {
+                some: {
+                  list: {
+                    members: {
+                      some: {
+                        userId: id,
+                      },
+                    },
                   },
                 },
               },
             },
-          },
-        },
-        {
-          offerUsers: {
-            none: {},
-          },
-          offerLists: {
-            none: {},
-          },
+            {
+              offerUsers: {
+                none: {},
+              },
+              offerLists: {
+                none: {},
+              },
+            },
+          ],
         },
       ],
     },
