@@ -6,6 +6,7 @@ import { Box } from "@mui/system";
 import { List, Offer, OfferList, OfferUser, User } from "@prisma/client";
 import { useTranslation } from "next-i18next";
 import { useCallback } from "react";
+import { useRouter } from "next/router";
 
 type OfferExt = Offer & {
   author: User | null;
@@ -22,6 +23,8 @@ type Props = {
 
 export function OfferItem({ offer, onDelete, own = false }: Props) {
   const { t } = useTranslation("common");
+
+  const { locale } = useRouter();
 
   const { id, validFrom, validTo, message } = offer;
 
@@ -51,12 +54,9 @@ export function OfferItem({ offer, onDelete, own = false }: Props) {
 
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <Typography variant="body2">
-                {offer.createdAt.toLocaleDateString("en-GB", {
-                  timeZone: "Europe/Bratislava",
-                }) +
+                {offer.createdAt.toLocaleDateString(locale) +
                   " " +
-                  offer.createdAt.toLocaleTimeString("en-GB", {
-                    timeZone: "Europe/Bratislava",
+                  offer.createdAt.toLocaleTimeString(locale, {
                     timeStyle: "short",
                   })}{" "}
                 {validFrom || validTo ? "｜ " + t("Valid") : null}
@@ -64,27 +64,17 @@ export function OfferItem({ offer, onDelete, own = false }: Props) {
                   ? " " +
                     t("dateFrom") +
                     " " +
-                    validFrom.toLocaleDateString("en-GB", {
-                      timeZone: "Europe/Bratislava",
-                    }) +
+                    validFrom.toLocaleDateString(locale) +
                     " " +
-                    validFrom.toLocaleTimeString("en-GB", {
-                      timeZone: "Europe/Bratislava",
-                      timeStyle: "short",
-                    })
+                    validFrom.toLocaleTimeString(locale, { timeStyle: "short" })
                   : null}
                 {validTo
                   ? " " +
                     t("dateTo") +
                     " " +
-                    validTo.toLocaleDateString("en-GB", {
-                      timeZone: "Europe/Bratislava",
-                    }) +
+                    validTo.toLocaleDateString(locale) +
                     " " +
-                    validTo.toLocaleTimeString("en-GB", {
-                      timeZone: "Europe/Bratislava",
-                      timeStyle: "short",
-                    })
+                    validTo.toLocaleTimeString(locale, { timeStyle: "short" })
                   : null}
               </Typography>
 
