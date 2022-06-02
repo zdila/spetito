@@ -42,6 +42,8 @@ export function ListManageDialog({ open, onClose, list }: Props) {
   useEffect(() => {
     if (open) {
       setName(list.name);
+
+      setChecked(list.members.map((user) => user.userId));
     }
   }, [open, list]);
 
