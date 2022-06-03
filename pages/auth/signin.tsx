@@ -12,6 +12,7 @@ import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { About } from "../../components/About";
 import { LanguageSwitcher } from "../../components/LanguageSwitcher";
 import { Logo } from "../../components/Logo";
@@ -20,6 +21,8 @@ type Props = { providers: Awaited<ReturnType<typeof getProviders>> };
 
 export default function SignIn({ providers }: Props) {
   const { t } = useTranslation();
+
+  const { query } = useRouter();
 
   return (
     <Container>
@@ -48,7 +51,14 @@ export default function SignIn({ providers }: Props) {
             Object.values(providers).map((provider) => (
               <Button
                 key={provider.name}
-                onClick={() => signIn(provider.id)}
+                onClick={() =>
+                  signIn(provider.id, {
+                    callbackUrl:
+                      (Array.isArray(query.callbackUrl)
+                        ? query.callbackUrl[0]
+                        : query.callbackUrl) || "/",
+                  })
+                }
                 variant="contained"
               >
                 {t("signInWith", { provider: provider.name })}
