@@ -19,10 +19,6 @@ function MyApp({
 }: AppProps & { emotionCache: EmotionCache }) {
   return (
     <CacheProvider value={emotionCache}>
-      <Head>
-        <meta name="viewport" content="initial-scale=1, width=device-width" />
-      </Head>
-
       <ThemeProvider theme={lightTheme}>
         <CssBaseline />
 

@@ -33,4 +33,7 @@ export default NextAuth({
       return Promise.resolve(session);
     },
   },
+  pages: {
+    signIn: "/auth/signin",
+  },
 });

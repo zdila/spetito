@@ -4,23 +4,14 @@ import { DefaultUser } from "next-auth";
 import { getSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import Link from "next/link";
-import { SyntheticEvent } from "react";
+import { LanguageSwitcher } from "../components/LanguageSwitcher";
 import { Layout } from "../components/Layout";
 import { redirectToLogIn } from "../lib/auth";
 
 type Props = { user: DefaultUser };
 
 const Settings: NextPage<Props> = ({ user }) => {
-  const { t } = useTranslation("common");
-
-  const handleLangClick = (e: SyntheticEvent<HTMLAnchorElement>) => {
-    const { lang } = e.currentTarget.dataset;
-
-    if (lang) {
-      document.cookie = `NEXT_LOCALE=${lang}; path=/`;
-    }
-  };
+  const { t } = useTranslation();
 
   return (
     <Layout title={t("Settings")}>
@@ -31,23 +22,11 @@ const Settings: NextPage<Props> = ({ user }) => {
       <Paper sx={{ p: 2, display: "flex", gap: 1, flexDirection: "column" }}>
         <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
           {user.image && <Avatar src={user.image} />}
+
           <Typography>{user.name}</Typography>
         </Box>
 
-        <Typography>
-          {t("Language")}:{" "}
-          <Link href="/en/settings" locale="en">
-            <a onClick={handleLangClick} data-lang="en">
-              English
-            </a>
-          </Link>
-          {", "}
-          <Link href="/sk/settings" locale="sk">
-            <a onClick={handleLangClick} data-lang="sk">
-              Slovensky
-            </a>
-          </Link>
-        </Typography>
+        <LanguageSwitcher />
       </Paper>
 
       {/* <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>

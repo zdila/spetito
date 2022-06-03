@@ -44,6 +44,7 @@
   "ListName": "Názov zoznamu",
   "List_name_": "Zoznam {{name}}",
   "Hide": "Skryť",
+  "signInWith": "Prihlásiť sa pomocou {{provider}}",
   "notifTranslations": {
     "invite": {
       "title": "Offerbook - žiadosť o priateľstvo",

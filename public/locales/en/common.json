@@ -44,6 +44,7 @@
   "ListName": "List name",
   "List_name_": "List {{name}}",
   "Hide": "Hide",
+  "signInWith": "Sign in with {{provider}}",
   "notifTranslations": {
     "invite": {
       "title": "Offerbook friend request",
