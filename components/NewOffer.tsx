@@ -13,21 +13,33 @@ import { SyntheticEvent, useState } from "react";
 import { AudienceDialog } from "./AudienceDialog";
 import EditIcon from "@mui/icons-material/Edit";
 import { useTranslation } from "next-i18next";
+import { DateTimePicker } from "@mui/x-date-pickers";
+import { useRouter } from "next/router";
+
+const maskMap: Record<string, string> = {
+  en: "__/__/____ __:__ _M",
+  sk: "__.__.____ __:__",
+};
 
 type Props = {
   friends?: User[];
   lists?: List[];
+  now: Date;
   onCreate?: () => void;
 };
 
-export function NewOffer({ onCreate, friends, lists }: Props) {
+export function NewOffer({ onCreate, friends, lists, now }: Props) {
   const { t } = useTranslation("common");
 
   const [message, setMessage] = useState("");
 
-  const [validFrom, setValidFrom] = useState("");
+  const [validFrom, setValidFrom] = useState<Date | null>(null);
 
-  const [validTo, setValidTo] = useState("");
+  const [validTo, setValidTo] = useState<Date | null>(null);
+
+  const { locale = "en" } = useRouter();
+
+  const mask = maskMap[locale];
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
@@ -37,8 +49,8 @@ export function NewOffer({ onCreate, friends, lists }: Props) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         message: message.trim(),
-        validFrom: validFrom ? new Date(validFrom).toISOString() : null,
-        validTo: validTo ? new Date(validTo).toISOString() : null,
+        validFrom: validFrom?.toISOString(),
+        validTo: validTo?.toISOString(),
         audience: {
           users: audience
             .filter((item) => item.startsWith("u:"))
@@ -51,9 +63,9 @@ export function NewOffer({ onCreate, friends, lists }: Props) {
     }).then(() => {
       setMessage("");
 
-      setValidFrom("");
+      setValidFrom(null);
 
-      setValidTo("");
+      setValidTo(null);
 
       setAudience([]);
 
@@ -143,20 +155,25 @@ export function NewOffer({ onCreate, friends, lists }: Props) {
         </IconButton>
       </Box>
 
-      <TextField
+      <DateTimePicker
         label={t("DateFrom")}
-        type="datetime-local"
-        InputLabelProps={{ shrink: true }}
-        onChange={(e) => setValidFrom(e.currentTarget.value)}
+        renderInput={(props) => <TextField {...props} />}
+        onChange={(value) => setValidFrom(value)}
         value={validFrom}
+        mask={mask}
+        ampm={locale === "en"}
+        minDateTime={now}
+        maxDateTime={validTo}
       />
 
-      <TextField
+      <DateTimePicker
         label={t("DateTo")}
-        type="datetime-local"
-        InputLabelProps={{ shrink: true }}
-        onChange={(e) => setValidTo(e.currentTarget.value)}
+        renderInput={(props) => <TextField {...props} />}
+        onChange={(value) => setValidTo(value)}
         value={validTo}
+        mask={mask}
+        ampm={locale === "en"}
+        minDateTime={validFrom || now}
       />
 
       <Box sx={{ flexGrow: 1 }}>

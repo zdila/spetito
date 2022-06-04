@@ -22,9 +22,10 @@ type Props = {
     offerLists: (OfferList & { list: List })[];
     offerUsers: (OfferUser & { user: User })[];
   })[];
+  now: Date;
 };
 
-const Home: NextPage<Props> = ({ yourOffers, friendsOffers }) => {
+const Home: NextPage<Props> = ({ yourOffers, friendsOffers, now }) => {
   const router = useRouter();
 
   const friends = useFriends();
@@ -64,7 +65,7 @@ const Home: NextPage<Props> = ({ yourOffers, friendsOffers }) => {
         {t("CreateOffer")}
       </Typography>
 
-      <NewOffer onCreate={refresh} friends={friends} lists={lists} />
+      <NewOffer onCreate={refresh} friends={friends} lists={lists} now={now} />
 
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
         {t("YourOffers")}
@@ -208,6 +209,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
       ...(await serverSideTranslations(context.locale ?? "en", ["common"])),
       friendsOffers,
       yourOffers,
+      now: new Date(),
     },
   };
 };
