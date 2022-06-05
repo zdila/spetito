@@ -23,8 +23,9 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { supportsPush } from "../lib/capabilities";
 import { useTranslation } from "next-i18next";
-import { get, set } from "idb-keyval";
+import { set } from "idb-keyval";
 import { Logo } from "./Logo";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
 
 type Props = { title: string; children: ReactNode };
 
@@ -37,6 +38,34 @@ function toBase64(arrayBuffer: ArrayBuffer | null) {
     // .replace(/=+$/, "")
   );
 }
+
+const menu = [
+  {
+    path: "/",
+    Icon: LocalActivityIcon,
+    nameKey: "Offers",
+  },
+  {
+    path: "/friends",
+    Icon: PersonIcon,
+    nameKey: "Friends",
+  },
+  {
+    path: "/lists",
+    Icon: ListIcon,
+    nameKey: "Lists",
+  },
+  {
+    path: "/settings",
+    Icon: SettingsIcon,
+    nameKey: "Settings",
+  },
+  {
+    path: "/support",
+    Icon: MenuBookIcon,
+    nameKey: "Support",
+  },
+];
 
 export function Layout({ children, title }: Props) {
   const { pathname } = useRouter();
@@ -109,7 +138,7 @@ export function Layout({ children, title }: Props) {
 
       {!supportsPush1 ? (
         <Alert sx={{ mt: 2 }} severity="error">
-          Push notifications are not supported in this browser.
+          {t("PushNotifUnsupported")}
         </Alert>
       ) : notifPerm === "prompt" ? (
         <Alert
@@ -117,16 +146,16 @@ export function Layout({ children, title }: Props) {
           severity="warning"
           action={
             <Button onClick={handleRegisterClick} color="inherit" size="small">
-              Enable notifications
+              {t("EnableNotifications")}
             </Button>
           }
         >
-          Notifications are not enabled.
+          {t("NotificationsNotEnabled")}
         </Alert>
       ) : (
         notifPerm === "denied" && (
           <Alert sx={{ mt: 2 }} severity="error">
-            Notifications are denied
+            {t("NotificationsDenied")}
           </Alert>
         )
       )}
@@ -136,59 +165,22 @@ export function Layout({ children, title }: Props) {
           <Logo />
 
           <List>
-            <ListItem disablePadding>
-              <Link href="/" passHref>
-                <ListItemButton component="a" selected={pathname === "/"}>
-                  <ListItemIcon>
-                    <LocalActivityIcon />
-                  </ListItemIcon>
+            {menu.map((item) => (
+              <ListItem key={item.path} disablePadding>
+                <Link href={item.path} passHref>
+                  <ListItemButton
+                    component="a"
+                    selected={pathname === item.path}
+                  >
+                    <ListItemIcon>
+                      <item.Icon />
+                    </ListItemIcon>
 
-                  <ListItemText>{t("Offers")}</ListItemText>
-                </ListItemButton>
-              </Link>
-            </ListItem>
-
-            <ListItem disablePadding>
-              <Link href="/friends" passHref>
-                <ListItemButton
-                  component="a"
-                  selected={pathname === "/friends"}
-                >
-                  <ListItemIcon>
-                    <PersonIcon />
-                  </ListItemIcon>
-
-                  <ListItemText>{t("Friends")}</ListItemText>
-                </ListItemButton>
-              </Link>
-            </ListItem>
-
-            <ListItem disablePadding>
-              <Link href="/lists" passHref>
-                <ListItemButton component="a" selected={pathname === "/lists"}>
-                  <ListItemIcon>
-                    <ListIcon />
-                  </ListItemIcon>
-
-                  <ListItemText>{t("Lists")}</ListItemText>
-                </ListItemButton>
-              </Link>
-            </ListItem>
-
-            <ListItem disablePadding>
-              <Link href="/settings" passHref>
-                <ListItemButton
-                  component="a"
-                  selected={pathname === "/settings"}
-                >
-                  <ListItemIcon>
-                    <SettingsIcon />
-                  </ListItemIcon>
-
-                  <ListItemText>{t("Settings")}</ListItemText>
-                </ListItemButton>
-              </Link>
-            </ListItem>
+                    <ListItemText>{t(item.nameKey)}</ListItemText>
+                  </ListItemButton>
+                </Link>
+              </ListItem>
+            ))}
 
             <ListItem disablePadding>
               <ListItemButton onClick={handleLogOutClick}>

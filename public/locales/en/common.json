@@ -58,5 +58,10 @@
       "title": "New offer on Offerbook",
       "body": "<_> placed a new offer on Offerbook."
     }
-  }
+  },
+  "Support": "Support",
+  "PushNotifUnsupported": "Push notifications are not supported in this browser.",
+  "EnableNotifications": "Enable notifications",
+  "NotificationsNotEnabled": "Notifications are not enabled.",
+  "NotificationsDenied": "Notifications are denied."
 }

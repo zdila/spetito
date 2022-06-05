@@ -58,5 +58,10 @@
       "title": "Offerbook - nová ponuka",
       "body": "<_> dal(a) novú ponuku."
     }
-  }
+  },
+  "Support": "Podpora",
+  "PushNotifUnsupported": "Tento prehliadač nepodporuje push notifikácie.",
+  "EnableNotifications": "Povoliť notifikácie",
+  "NotificationsNotEnabled": "Notifikácie nie sú povolené.",
+  "NotificationsDenied": "Notifikácie sú zakázané."
 }
