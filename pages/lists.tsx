@@ -36,11 +36,13 @@ const Lists: NextPage<Props> = ({ lists }) => {
   const router = useRouter();
 
   async function deleteList(id: string) {
-    await fetch("/api/lists/" + encodeURIComponent(id), {
-      method: "DELETE",
-    });
+    if (window.confirm(t("AreYouSure"))) {
+      await fetch("/api/lists/" + encodeURIComponent(id), {
+        method: "DELETE",
+      });
 
-    router.replace(router.asPath);
+      router.replace(router.asPath);
+    }
   }
 
   const [name, setName] = useState("");

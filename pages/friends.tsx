@@ -94,19 +94,23 @@ const Friends: NextPage<Props> = ({
   });
 
   async function deleteRequest(id: string) {
-    await fetch("/api/invites/" + encodeURIComponent(id), {
-      method: "DELETE",
-    });
+    if (window.confirm(t("AreYouSure"))) {
+      await fetch("/api/invites/" + encodeURIComponent(id), {
+        method: "DELETE",
+      });
 
-    refresh();
+      refresh();
+    }
   }
 
   async function removeFriend(id: string) {
-    await fetch("/api/follows/" + encodeURIComponent(id), {
-      method: "DELETE",
-    });
+    if (window.confirm(t("AreYouSure"))) {
+      await fetch("/api/follows/" + encodeURIComponent(id), {
+        method: "DELETE",
+      });
 
-    refresh();
+      refresh();
+    }
   }
 
   async function accept(id: string) {

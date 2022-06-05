@@ -29,10 +29,12 @@ export function OfferItem({ offer, onDelete, own = false }: Props) {
   const { id, validFrom, validTo, message } = offer;
 
   const handleDeleteClick = useCallback(() => {
-    fetch("/api/offers/" + id, { method: "DELETE" }).then(() => {
-      onDelete();
-    });
-  }, [id, onDelete]);
+    if (window.confirm(t("AreYouSure"))) {
+      fetch("/api/offers/" + id, { method: "DELETE" }).then(() => {
+        onDelete();
+      });
+    }
+  }, [id, onDelete, t]);
 
   return (
     <Paper sx={{ p: 2 }}>
