@@ -63,5 +63,7 @@
   "PushNotifUnsupported": "Tento prehliadač nepodporuje push notifikácie.",
   "EnableNotifications": "Povoliť notifikácie",
   "NotificationsNotEnabled": "Notifikácie nie sú povolené.",
-  "NotificationsDenied": "Notifikácie sú zakázané."
+  "NotificationsDenied": "Notifikácie sú zakázané.",
+  "DeleteAccount": "Zmazať účet",
+  "AreYouSure": "Ste si istý?"
 }

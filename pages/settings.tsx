@@ -1,7 +1,7 @@
-import { Avatar, Box, Paper, Typography } from "@mui/material";
+import { Avatar, Box, Button, Paper, Typography } from "@mui/material";
 import type { GetServerSideProps, NextPage } from "next";
 import { DefaultUser } from "next-auth";
-import { getSession } from "next-auth/react";
+import { getSession, signOut, useSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { LanguageSwitcher } from "../components/LanguageSwitcher";
@@ -13,13 +13,31 @@ type Props = { user: DefaultUser };
 const Settings: NextPage<Props> = ({ user }) => {
   const { t } = useTranslation();
 
+  const session = useSession();
+
+  function deleteAccount() {
+    const id = session.data?.user?.id;
+
+    if (id && window.confirm(t("AreYouSure"))) {
+      fetch("/api/users/" + id, { method: "DELETE" }).then(() => signOut());
+    }
+  }
+
   return (
     <Layout title={t("Settings")}>
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
         {t("Profile")}
       </Typography>
 
-      <Paper sx={{ p: 2, display: "flex", gap: 1, flexDirection: "column" }}>
+      <Paper
+        sx={{
+          p: 2,
+          display: "flex",
+          gap: 1,
+          flexDirection: "column",
+          alignItems: "flex-start",
+        }}
+      >
         <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
           {user.image && <Avatar src={user.image} />}
 
@@ -27,8 +45,11 @@ const Settings: NextPage<Props> = ({ user }) => {
         </Box>
 
         <LanguageSwitcher />
-      </Paper>
 
+        <Button onClick={() => deleteAccount()} color="error">
+          {t("DeleteAccount")}
+        </Button>
+      </Paper>
       {/* <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
         Notifications
       </Typography>

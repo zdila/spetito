@@ -63,5 +63,7 @@
   "PushNotifUnsupported": "Push notifications are not supported in this browser.",
   "EnableNotifications": "Enable notifications",
   "NotificationsNotEnabled": "Notifications are not enabled.",
-  "NotificationsDenied": "Notifications are denied."
+  "NotificationsDenied": "Notifications are denied.",
+  "DeleteAccount": "Delete account",
+  "AreYouSure": "Are you sure?"
 }
