@@ -17,7 +17,14 @@ import { signOut } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ReactNode, useCallback, useEffect, useState } from "react";
+import {
+  Component,
+  ReactComponentElement,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { usePermission } from "../hooks/usePermission";
 import LocalActivityIcon from "@mui/icons-material/LocalActivity";
 import ListIcon from "@mui/icons-material/List";
@@ -30,8 +37,12 @@ import { set } from "idb-keyval";
 import { Logo } from "./Logo";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import MenuIcon from "@mui/icons-material/Menu";
+import { OverridableComponent } from "@mui/material/OverridableComponent";
 
-type Props = { title: string; children: ReactNode };
+type Props = {
+  title: string;
+  children: ReactNode;
+};
 
 const drawerWidth = 240;
 
@@ -45,7 +56,12 @@ function toBase64(arrayBuffer: ArrayBuffer | null) {
   );
 }
 
-const menu = [
+const menuItems: {
+  path: string;
+  altPaths?: string[];
+  Icon: OverridableComponent<any>;
+  nameKey: string;
+}[] = [
   {
     path: "/",
     Icon: LocalActivityIcon,
@@ -70,6 +86,7 @@ const menu = [
     path: "/support",
     Icon: MenuBookIcon,
     nameKey: "Support",
+    altPaths: ["/privacy-policy", "/terms-and-conditions"],
   },
 ];
 
@@ -143,10 +160,15 @@ export function Layout({ children, title }: Props) {
       </Toolbar>
 
       <List sx={{ p: 0 }}>
-        {menu.map((item) => (
+        {menuItems.map((item) => (
           <ListItem key={item.path} disablePadding>
             <Link href={item.path} passHref>
-              <ListItemButton component="a" selected={pathname === item.path}>
+              <ListItemButton
+                component="a"
+                selected={
+                  pathname === item.path || item.altPaths?.includes(pathname)
+                }
+              >
                 <ListItemIcon>
                   <item.Icon />
                 </ListItemIcon>
@@ -179,7 +201,7 @@ export function Layout({ children, title }: Props) {
   return (
     <Box sx={{ marginX: "auto", maxWidth: "1200px" }}>
       <Head>
-        <title>{title} | Offerbook</title>
+        <title>{(title ? title + " | " : "") + "Offerbook"}</title>
       </Head>
 
       <Box sx={{ display: "flex" }}>

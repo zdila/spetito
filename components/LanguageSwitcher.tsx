@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Typography, Link as MuiLink } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -9,26 +9,27 @@ export function LanguageSwitcher() {
 
   const path = useRouter().asPath;
 
-  const handleLangClick = (e: SyntheticEvent<HTMLAnchorElement>) => {
+  const handleLangClick = (e: SyntheticEvent<HTMLElement>) => {
     const { lang } = e.currentTarget.dataset;
 
     if (lang) {
       document.cookie = `NEXT_LOCALE=${lang}; path=/`;
     }
   };
+
   return (
     <Typography>
       {t("Language")}:{" "}
-      <Link href={`/en${path}`} locale="en">
-        <a onClick={handleLangClick} data-lang="en">
+      <Link href={`/en${path}`} locale="en" passHref>
+        <MuiLink onClick={handleLangClick} data-lang="en">
           English
-        </a>
+        </MuiLink>
       </Link>
       {", "}
-      <Link href={`/sk${path}`} locale="sk">
-        <a onClick={handleLangClick} data-lang="sk">
+      <Link href={`/sk${path}`} locale="sk" passHref>
+        <MuiLink onClick={handleLangClick} data-lang="sk">
           Slovensky
-        </a>
+        </MuiLink>
       </Link>
     </Typography>
   );

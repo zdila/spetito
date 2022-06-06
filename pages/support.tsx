@@ -1,10 +1,12 @@
-import { Paper, Typography } from "@mui/material";
+import { Paper, Typography, Link as MuiLink, Box } from "@mui/material";
 import type { GetServerSideProps, NextPage } from "next";
 import { getSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import Link from "next/link";
 import { About } from "../components/About";
 import { Layout } from "../components/Layout";
+import { SupportLinks } from "../components/SupportLinks";
 import { redirectToLogIn } from "../lib/auth";
 
 type Props = {};
@@ -14,9 +16,11 @@ const SupportPage: NextPage<Props> = ({}) => {
 
   return (
     <Layout title={t("Support")}>
-      <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
+      <SupportLinks />
+
+      {/* <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
         {t("About")}
-      </Typography>
+      </Typography> */}
 
       <Paper sx={{ my: 2, py: 1, px: 2 }}>
         <About />
@@ -37,9 +41,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   }
 
   return {
-    props: {
-      ...(await serverSideTranslations(context.locale ?? "en", ["common"])),
-    },
+    props: await serverSideTranslations(context.locale ?? "en", ["common"]),
   };
 };
 

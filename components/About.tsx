@@ -12,7 +12,7 @@ export function About() {
         },
       }}
     >
-      <h3>Aká je misia Offerbooku?</h3>
+      <h2>Aká je misia Offerbooku?</h2>
 
       <p>
         Offerbook je jednoduchá sociálna sieť pre dávanie nezáväzných ponúk
@@ -54,7 +54,7 @@ export function About() {
         <i>Osamelé duše Nitry</i> a pod.
       </p>
 
-      <h3>Prečo nie Facebook?</h3>
+      <h2>Prečo nie Facebook?</h2>
 
       <p>
         Facebook síce obsahuje udalosti a tiež je v ňom možné písať ponuky do
@@ -73,7 +73,7 @@ export function About() {
         pretože nie každý ho &quot;má v láske&quot;.
       </p>
 
-      <h3>Prečo ponuky neobsahujú komentáre a &quot;páčiky&quot;?</h3>
+      <h2>Prečo ponuky neobsahujú komentáre a &quot;páčiky&quot;?</h2>
 
       <p>
         Offerbook slúži iba na zverejňovanie a prehliadanie ponúk priateľov. Ak

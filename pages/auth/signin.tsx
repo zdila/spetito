@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   Container,
-  Divider,
   Paper,
   Typography,
 } from "@mui/material";
@@ -12,13 +11,14 @@ import { getProviders, signIn } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { About } from "../../components/About";
-import { LanguageSwitcher } from "../../components/LanguageSwitcher";
+import { Footer } from "../../components/Footer";
 import { Logo } from "../../components/Logo";
 
-type Props = { providers: Awaited<ReturnType<typeof getProviders>> };
+type Props = {
+  providers: Awaited<ReturnType<typeof getProviders>>;
+};
 
 export default function SignIn({ providers }: Props) {
   const { t } = useTranslation();
@@ -26,11 +26,7 @@ export default function SignIn({ providers }: Props) {
   const { query } = useRouter();
 
   return (
-    <Container
-      sx={{
-        py: 2,
-      }}
-    >
+    <Container sx={{ py: 2 }}>
       <Head>
         <title>Offerbook</title>
       </Head>
@@ -95,33 +91,7 @@ export default function SignIn({ providers }: Props) {
         <About />
       </Paper>
 
-      <Box
-        component="footer"
-        sx={{
-          mt: 2,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Typography>
-          &copy; <a href="mailto:m.zdila@gmail.com">Martin Ždila</a> 2022
-        </Typography>
-
-        <Box>
-          <Link href="/privacy-policy">
-            <a>{t("PrivacyPolicy")}</a>
-          </Link>
-          ｜
-          <Link href="/terms-of-services">
-            <a>{t("TermsOfServices")}</a>
-          </Link>
-          ｜
-          <Box sx={{ display: "inline-block" }}>
-            <LanguageSwitcher />
-          </Box>
-        </Box>
-      </Box>
+      <Footer />
     </Container>
   );
 }
