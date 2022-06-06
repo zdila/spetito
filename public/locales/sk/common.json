@@ -79,5 +79,8 @@
     "CredentialsSignin": "Prihlásenie zlyhalo. Skontrolujte, či ste poskytli správne údaje.",
     "SessionRequired": "Pre prístup na túto stránku sa prosím najprv prihláste.",
     "Default": "Prihlásenie zlyhalo."
-  }
+  },
+  "About": "O Offerbooku",
+  "PrivacyPolicy": "Zásady ochrany osobných údajov",
+  "TermsOfServices": "Podmienky služieb"
 }

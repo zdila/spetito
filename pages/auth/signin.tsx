@@ -87,14 +87,14 @@ export default function SignIn({ providers }: Props) {
         </Box>
       </Paper>
 
-      {/* <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
+      <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
         {t("About")}
       </Typography>
 
       <Paper sx={{ p: 2 }}>
         <About />
       </Paper>
- */}
+
       <Box
         component="footer"
         sx={{
@@ -104,7 +104,9 @@ export default function SignIn({ providers }: Props) {
           alignItems: "center",
         }}
       >
-        <Typography>&copy; Martin Ždila 2022</Typography>
+        <Typography>
+          &copy; <a href="mailto:m.zdila@gmail.com">Martin Ždila</a> 2022
+        </Typography>
 
         <Box>
           <Link href="/privacy-policy">

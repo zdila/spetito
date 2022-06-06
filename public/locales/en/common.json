@@ -79,5 +79,8 @@
     "CredentialsSignin": "Sign in failed. Check the details you provided are correct.",
     "SessionRequired": "Please sign in to access this page.",
     "Default": "Unable to sign in."
-  }
+  },
+  "About": "About Offerbook",
+  "PrivacyPolicy": "Privacy policy",
+  "TermsOfServices": "Terms of services"
 }
