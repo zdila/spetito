@@ -16,6 +16,7 @@ import {
   Box,
 } from "@mui/material";
 import { List, ListMember, User } from "@prisma/client";
+import { useTranslation } from "next-i18next";
 import { useEffect, useState } from "react";
 import { useFriends } from "../hooks/useFriends";
 import { useLists } from "../hooks/useLists";
@@ -53,21 +54,23 @@ export function AudienceDialog({ open, onClose, audience }: Props) {
     );
   };
 
+  const { t } = useTranslation();
+
   return (
     <Dialog fullWidth open={open} onClose={() => onClose()}>
-      <DialogTitle>Offer audience</DialogTitle>
+      <DialogTitle>{t("OfferAudience")}</DialogTitle>
 
       <DialogContent>
         <>
-          <Typography variant="caption">Friends</Typography>
+          <Typography variant="caption">{t("Friends")}</Typography>
 
           {!friends ? (
             <CircularProgress
               sx={{ display: "block", my: 1, marginX: "auto" }}
             />
           ) : friends.length === 0 ? (
-            <Typography color="text.secondary">
-              You have no friends 😞
+            <Typography color="text.secondary" sx={{ my: 1 }}>
+              {t("YouHaveNoFriends")}
             </Typography>
           ) : (
             <MuiList>
@@ -101,7 +104,7 @@ export function AudienceDialog({ open, onClose, audience }: Props) {
             </MuiList>
           )}
 
-          <Typography variant="caption">Lists</Typography>
+          <Typography variant="caption">{t("Lists")}</Typography>
 
           {!lists ? (
             <CircularProgress
@@ -109,7 +112,7 @@ export function AudienceDialog({ open, onClose, audience }: Props) {
             />
           ) : lists.length === 0 ? (
             <Typography sx={{ my: 1 }} color="text.secondary">
-              You have no lists
+              {t("YouHaveNoLists")}
             </Typography>
           ) : (
             <MuiList>
@@ -140,9 +143,9 @@ export function AudienceDialog({ open, onClose, audience }: Props) {
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={() => onClose(checked)}>Save</Button>
+        <Button onClick={() => onClose(checked)}>{t("Save")}</Button>
 
-        <Button onClick={() => onClose()}>Cancel</Button>
+        <Button onClick={() => onClose()}>{t("Cancel")}</Button>
       </DialogActions>
     </Dialog>
   );
