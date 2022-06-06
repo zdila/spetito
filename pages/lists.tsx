@@ -13,6 +13,7 @@ import {
   AccordionSummary,
   AccordionDetails,
   AccordionActions,
+  Box,
 } from "@mui/material";
 import type { GetServerSideProps, NextPage } from "next";
 import { getSession } from "next-auth/react";
@@ -27,6 +28,7 @@ import {
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { redirectToLogIn } from "../lib/auth";
+import { User } from "@prisma/client";
 
 type Props = {
   lists: ListWithMembers[];
@@ -71,6 +73,12 @@ const Lists: NextPage<Props> = ({ lists }) => {
 
   const { t } = useTranslation("common");
 
+  const { locale } = useRouter();
+
+  function compareUsers(a: { user: User }, b: { user: User }) {
+    return (a.user.name ?? "").localeCompare(b.user.name ?? "", locale);
+  }
+
   return (
     <Layout title={t("Lists")}>
       {expandedList && (
@@ -111,49 +119,55 @@ const Lists: NextPage<Props> = ({ lists }) => {
       {lists.length === 0 ? (
         <Typography color="text.secondary">{t("YouHaveNoLists")}</Typography>
       ) : (
-        lists.map((list) => (
-          <Accordion
-            key={list.id}
-            expanded={expanded === list.id}
-            onChange={(event, isExpanded) =>
-              setExpanded(isExpanded ? list.id : undefined)
-            }
-          >
-            <AccordionSummary expandIcon={<ExpandMoreIcon />} id={list.id}>
-              <Typography>{list.name}</Typography>
-            </AccordionSummary>
+        <Box>
+          {[...lists]
+            .sort((a, b) => a.name.localeCompare(b.name, locale))
+            .map((list) => (
+              <Accordion
+                key={list.id}
+                expanded={expanded === list.id}
+                onChange={(event, isExpanded) =>
+                  setExpanded(isExpanded ? list.id : undefined)
+                }
+              >
+                <AccordionSummary expandIcon={<ExpandMoreIcon />} id={list.id}>
+                  <Typography>{list.name}</Typography>
+                </AccordionSummary>
 
-            <AccordionDetails>
-              {list.members.length === 0 ? (
-                <Typography color="text.secondary">
-                  {t("ListIsEmpty")}
-                </Typography>
-              ) : (
-                <MuiList disablePadding>
-                  {list.members.map((member) => (
-                    <ListItem key={member.userId}>
-                      {member.user.image && (
-                        <ListItemAvatar>
-                          <Avatar src={member.user.image} alt="" />
-                        </ListItemAvatar>
-                      )}
+                <AccordionDetails>
+                  {list.members.length === 0 ? (
+                    <Typography color="text.secondary">
+                      {t("ListIsEmpty")}
+                    </Typography>
+                  ) : (
+                    <MuiList disablePadding>
+                      {[...list.members].sort(compareUsers).map((member) => (
+                        <ListItem key={member.userId}>
+                          {member.user.image && (
+                            <ListItemAvatar>
+                              <Avatar src={member.user.image} alt="" />
+                            </ListItemAvatar>
+                          )}
 
-                      <ListItemText primary={member.user.name} />
-                    </ListItem>
-                  ))}
-                </MuiList>
-              )}
-            </AccordionDetails>
+                          <ListItemText primary={member.user.name} />
+                        </ListItem>
+                      ))}
+                    </MuiList>
+                  )}
+                </AccordionDetails>
 
-            <AccordionActions>
-              <Button onClick={() => setManaging(true)}>{t("Manage")}</Button>
+                <AccordionActions>
+                  <Button onClick={() => setManaging(true)}>
+                    {t("Manage")}
+                  </Button>
 
-              <Button color="error" onClick={() => deleteList(list.id)}>
-                {t("Delete")}
-              </Button>
-            </AccordionActions>
-          </Accordion>
-        ))
+                  <Button color="error" onClick={() => deleteList(list.id)}>
+                    {t("Delete")}
+                  </Button>
+                </AccordionActions>
+              </Accordion>
+            ))}
+        </Box>
       )}
     </Layout>
   );

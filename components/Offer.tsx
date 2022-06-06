@@ -56,55 +56,62 @@ export function OfferItem({ offer, onDelete, own = false }: Props) {
 
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <Typography variant="body2">
-                {offer.createdAt.toLocaleDateString(locale) +
+                {(
+                  offer.createdAt.toLocaleDateString(locale) +
                   " " +
                   offer.createdAt.toLocaleTimeString(locale, {
                     timeStyle: "short",
-                  })}{" "}
+                  })
+                ).replaceAll(" ", "\xa0")}{" "}
                 {validFrom || validTo ? "｜ " + t("Valid") : null}
                 {validFrom
                   ? " " +
                     t("dateFrom") +
                     " " +
-                    validFrom.toLocaleDateString(locale) +
-                    " " +
-                    validFrom.toLocaleTimeString(locale, { timeStyle: "short" })
+                    (
+                      validFrom.toLocaleDateString(locale) +
+                      " " +
+                      validFrom.toLocaleTimeString(locale, {
+                        timeStyle: "short",
+                      })
+                    ).replaceAll(" ", "\xa0")
                   : null}
                 {validTo
                   ? " " +
                     t("dateTo") +
                     " " +
-                    validTo.toLocaleDateString(locale) +
-                    " " +
-                    validTo.toLocaleTimeString(locale, { timeStyle: "short" })
+                    (
+                      validTo.toLocaleDateString(locale) +
+                      " " +
+                      validTo.toLocaleTimeString(locale, { timeStyle: "short" })
+                    ).replaceAll(" ", "\xa0")
                   : null}
+                {offer.offerLists && offer.offerUsers ? (
+                  <>
+                    ｜
+                    {offer.offerLists.length + offer.offerUsers.length === 0 ? (
+                      t("allMyFriends")
+                    ) : (
+                      <>
+                        {offer.offerLists.map((item) => (
+                          <Chip key={item.listId} label={item.list.name} />
+                        ))}
+                        {offer.offerUsers.map((item) => (
+                          <Chip
+                            key={item.userId}
+                            avatar={
+                              item.user.image ? (
+                                <Avatar src={item.user.image} alt="" />
+                              ) : undefined
+                            }
+                            label={item.user.name}
+                          />
+                        ))}
+                      </>
+                    )}
+                  </>
+                ) : null}
               </Typography>
-
-              {offer.offerLists && offer.offerUsers ? (
-                <>
-                  ｜
-                  {offer.offerLists.length + offer.offerUsers.length === 0 ? (
-                    t("allMyFriends")
-                  ) : (
-                    <>
-                      {offer.offerLists.map((item) => (
-                        <Chip key={item.listId} label={item.list.name} />
-                      ))}
-                      {offer.offerUsers.map((item) => (
-                        <Chip
-                          key={item.userId}
-                          avatar={
-                            item.user.image ? (
-                              <Avatar src={item.user.image} alt="" />
-                            ) : undefined
-                          }
-                          label={item.user.name}
-                        />
-                      ))}
-                    </>
-                  )}
-                </>
-              ) : null}
             </Box>
           </Box>
         </Box>

@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import { List, ListMember, User } from "@prisma/client";
 import { useTranslation } from "next-i18next";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useFriends } from "../hooks/useFriends";
 
@@ -65,6 +66,12 @@ export function ListManageDialog({ open, onClose, list }: Props) {
     });
   };
 
+  const { locale } = useRouter();
+
+  function compareUsers(a: User, b: User) {
+    return (a.name ?? "").localeCompare(b.name ?? "", locale);
+  }
+
   return (
     <Dialog fullWidth open={open} onClose={() => onClose(false)}>
       <DialogTitle>{t("List_name_", { name: list.name })}</DialogTitle>
@@ -88,7 +95,7 @@ export function ListManageDialog({ open, onClose, list }: Props) {
           </Typography>
         ) : (
           <MuiList>
-            {friends?.map((user) => (
+            {[...friends].sort(compareUsers).map((user) => (
               <ListItem
                 key={user.id}
                 secondaryAction={

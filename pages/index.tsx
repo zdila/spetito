@@ -59,6 +59,13 @@ const Home: NextPage<Props> = ({ yourOffers, friendsOffers, now }) => {
 
   const { t } = useTranslation("common");
 
+  function compareOffers(a: Offer, b: Offer) {
+    return (
+      (a.validFrom ?? a.createdAt).getTime() -
+      (b.validFrom ?? b.createdAt).getTime()
+    );
+  }
+
   return (
     <Layout title={t("Offers")}>
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
@@ -76,7 +83,7 @@ const Home: NextPage<Props> = ({ yourOffers, friendsOffers, now }) => {
         <Typography color="text.secondary">{t("YouOfferNothing")}</Typography>
       ) : (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          {yourOffers.map((offer) => (
+          {[...yourOffers].sort(compareOffers).map((offer) => (
             <OfferItem key={offer.id} offer={offer} onDelete={refresh} own />
           ))}
         </Box>
@@ -90,7 +97,7 @@ const Home: NextPage<Props> = ({ yourOffers, friendsOffers, now }) => {
         <Typography color="text.secondary">{t("NoOffersForYou")}</Typography>
       ) : (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          {friendsOffers.map((offer) => (
+          {[...friendsOffers].sort(compareOffers).map((offer) => (
             <OfferItem key={offer.id} offer={offer} onDelete={refresh} />
           ))}
         </Box>

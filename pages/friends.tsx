@@ -44,6 +44,12 @@ const Friends: NextPage<Props> = ({
 
   const [value, setValue] = useState<User | null>(null);
 
+  const router = useRouter();
+
+  function compareUsers(a: User, b: User) {
+    return (a.name ?? "").localeCompare(b.name ?? "", router.locale);
+  }
+
   useEffect(() => {
     if (inputValue.trim() === "") {
       setOptions([]);
@@ -68,8 +74,6 @@ const Friends: NextPage<Props> = ({
 
     return () => controller.abort();
   }, [inputValue]);
-
-  const router = useRouter();
 
   const refresh = useCallback(() => {
     router.replace(router.asPath);
@@ -154,7 +158,7 @@ const Friends: NextPage<Props> = ({
 
           <Paper>
             <List>
-              {usersInvitingMe.map((user) => (
+              {[...usersInvitingMe].sort(compareUsers).map((user) => (
                 <ListItem
                   key={user.id}
                   secondaryAction={
@@ -203,7 +207,7 @@ const Friends: NextPage<Props> = ({
           onInputChange={(event, newInputValue) => {
             setInputValue(newInputValue);
           }}
-          options={options}
+          options={[...options].sort(compareUsers)}
           autoComplete
           includeInputInList
           filterSelectedOptions
@@ -239,7 +243,7 @@ const Friends: NextPage<Props> = ({
 
           <Paper>
             <List>
-              {usersInvitedByMe.map((user) => (
+              {[...usersInvitedByMe].sort(compareUsers).map((user) => (
                 <ListItem
                   key={user.id}
                   secondaryAction={
@@ -276,7 +280,7 @@ const Friends: NextPage<Props> = ({
       ) : (
         <Paper>
           <List>
-            {friends.map((user) => (
+            {[...friends].sort(compareUsers).map((user) => (
               <ListItem
                 key={user.id}
                 secondaryAction={

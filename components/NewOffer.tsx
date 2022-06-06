@@ -158,10 +158,7 @@ export function NewOffer({ onCreate, friends, lists, now }: Props) {
       <DateTimePicker
         label={t("DateFrom")}
         renderInput={(props) => (
-          <TextField
-            {...props}
-            inputProps={{ ...props.inputProps, size: 12 }}
-          />
+          <TextField {...props} inputProps={{ ...props.inputProps }} />
         )}
         onChange={(value) => setValidFrom(value)}
         value={validFrom}
@@ -174,10 +171,7 @@ export function NewOffer({ onCreate, friends, lists, now }: Props) {
       <DateTimePicker
         label={t("DateTo")}
         renderInput={(props) => (
-          <TextField
-            {...props}
-            inputProps={{ ...props.inputProps, size: 12 }}
-          />
+          <TextField {...props} inputProps={{ ...props.inputProps }} />
         )}
         onChange={(value) => setValidTo(value)}
         value={validTo}
