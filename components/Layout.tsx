@@ -3,10 +3,7 @@ import {
   AppBar,
   Box,
   Button,
-  Container,
-  Divider,
   Drawer,
-  Grid,
   IconButton,
   List,
   ListItem,
@@ -180,130 +177,141 @@ export function Layout({ children, title }: Props) {
   };
 
   return (
-    <Box sx={{ display: "flex", marginX: "auto", maxWidth: "1000px" }}>
+    <Box sx={{ marginX: "auto", maxWidth: "1200px" }}>
       <Head>
         <title>{title} | Offerbook</title>
       </Head>
 
-      {!supportsPush1 ? (
-        <Alert sx={{ mt: 2 }} severity="error">
-          {t("PushNotifUnsupported")}
-        </Alert>
-      ) : notifPerm === "prompt" ? (
-        <Alert
-          sx={{ mt: 2 }}
-          severity="warning"
-          action={
-            <Button onClick={handleRegisterClick} color="inherit" size="small">
-              {t("EnableNotifications")}
-            </Button>
-          }
-        >
-          {t("NotificationsNotEnabled")}
-        </Alert>
-      ) : (
-        notifPerm === "denied" && (
-          <Alert sx={{ mt: 2 }} severity="error">
-            {t("NotificationsDenied")}
-          </Alert>
-        )
-      )}
-
-      <AppBar
-        position="fixed"
-        sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
-          display: { xs: "block", sm: "none" },
-        }}
-      >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" } }}
-          >
-            <MenuIcon />
-          </IconButton>
-
-          <Typography variant="h5" noWrap component="div" sx={{ flexGrow: 1 }}>
-            {title}
-          </Typography>
-
-          <Box
-            sx={{ opacity: mobileOpen ? 0 : 1, transition: "opacity 250ms" }}
-          >
-            <Logo />
-          </Box>
-        </Toolbar>
-      </AppBar>
-
-      <Box
-        component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-      >
-        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-        <Drawer
-          container={
-            typeof document === "undefined" ? undefined : document.body
-          }
-          variant="temporary"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
-          }}
+      <Box sx={{ display: "flex" }}>
+        <AppBar
+          position="fixed"
           sx={{
+            width: { sm: `calc(100% - ${drawerWidth}px)` },
+            ml: { sm: `${drawerWidth}px` },
             display: { xs: "block", sm: "none" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
-              width: drawerWidth,
-            },
           }}
         >
-          {drawer}
-        </Drawer>
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{ mr: 2, display: { sm: "none" } }}
+            >
+              <MenuIcon />
+            </IconButton>
 
-        <Drawer
-          variant="permanent"
-          sx={[
-            {
-              display: { xs: "none", sm: "block" },
+            <Typography
+              variant="h5"
+              noWrap
+              component="div"
+              sx={{ flexGrow: 1 }}
+            >
+              {title}
+            </Typography>
+
+            <Box
+              sx={{ opacity: mobileOpen ? 0 : 1, transition: "opacity 250ms" }}
+            >
+              <Logo />
+            </Box>
+          </Toolbar>
+        </AppBar>
+
+        <Box
+          component="nav"
+          sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        >
+          {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+          <Drawer
+            container={
+              typeof document === "undefined" ? undefined : document.body
+            }
+            variant="temporary"
+            open={mobileOpen}
+            onClose={handleDrawerToggle}
+            ModalProps={{
+              keepMounted: true, // Better open performance on mobile.
+            }}
+            sx={{
+              display: { xs: "block", sm: "none" },
               "& .MuiDrawer-paper": {
                 boxSizing: "border-box",
                 width: drawerWidth,
-                backgroundColor: "inherit",
-                border: 0,
               },
-            },
-            (theme) => ({
-              "@media (min-width: 1000px)": {
+            }}
+          >
+            {drawer}
+          </Drawer>
+
+          <Drawer
+            variant="permanent"
+            sx={[
+              {
+                display: { xs: "none", sm: "block" },
                 "& .MuiDrawer-paper": {
-                  left: "calc(100vw / 2 - 500px)", // hacking position because of opsition: fixed
+                  boxSizing: "border-box",
+                  width: drawerWidth,
+                  backgroundColor: "inherit",
+                  border: 0,
                 },
               },
-            }),
-          ]}
-          open
+              (theme) => ({
+                "@media (min-width: 1200px)": {
+                  "& .MuiDrawer-paper": {
+                    left: "calc(100vw / 2 - 600px)", // hacking position because of opsition: fixed
+                  },
+                },
+              }),
+            ]}
+            open
+          >
+            {drawer}
+          </Drawer>
+        </Box>
+
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            px: 3,
+            pb: 3,
+            width: { sm: `calc(100% - ${drawerWidth}px)` },
+          }}
         >
-          {drawer}
-        </Drawer>
-      </Box>
+          <Toolbar sx={{ display: { xs: "block", sm: "none" } }} />
 
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          px: 3,
-          pb: 3,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-        }}
-      >
-        <Toolbar sx={{ display: { xs: "block", sm: "none" } }} />
+          {!supportsPush1 ? (
+            <Alert sx={{ mt: 2 }} severity="error">
+              {t("PushNotifUnsupported")}
+            </Alert>
+          ) : notifPerm === "prompt" ? (
+            <Alert
+              sx={{ mt: 2 }}
+              severity="warning"
+              action={
+                <Button
+                  onClick={handleRegisterClick}
+                  color="inherit"
+                  size="small"
+                >
+                  {t("EnableNotifications")}
+                </Button>
+              }
+            >
+              {t("NotificationsNotEnabled")}
+            </Alert>
+          ) : (
+            notifPerm === "denied" && (
+              <Alert sx={{ mt: 2 }} severity="error">
+                {t("NotificationsDenied")}
+              </Alert>
+            )
+          )}
 
-        {children}
+          {children}
+        </Box>
       </Box>
     </Box>
   );

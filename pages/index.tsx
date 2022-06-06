@@ -87,7 +87,7 @@ const Home: NextPage<Props> = ({ yourOffers, friendsOffers, now }) => {
       </Typography>
 
       {friendsOffers.length === 0 ? (
-        <Typography>{t("NoOffersForYou")}</Typography>
+        <Typography color="text.secondary">{t("NoOffersForYou")}</Typography>
       ) : (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           {friendsOffers.map((offer) => (

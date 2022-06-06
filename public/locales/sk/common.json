@@ -44,7 +44,8 @@
   "ListName": "Názov zoznamu",
   "List_name_": "Zoznam {{name}}",
   "Hide": "Skryť",
-  "signInWith": "Prihlásiť sa pomocou {{provider}}",
+  "SignInWith": "Prihlásiť sa pomocou",
+  "SignIn": "Prihlásenie",
   "notifTranslations": {
     "invite": {
       "title": "Offerbook - žiadosť o priateľstvo",
@@ -65,5 +66,18 @@
   "NotificationsNotEnabled": "Notifikácie nie sú povolené.",
   "NotificationsDenied": "Notifikácie sú zakázané.",
   "DeleteAccount": "Zmazať účet",
-  "AreYouSure": "Ste si istý?"
+  "AreYouSure": "Ste si istý?",
+  "signInError": {
+    "Signin": "Pokúste sa prihlásiť iným účtom.",
+    "OAuthSignin": "Pokúste sa prihlásiť iným účtom.",
+    "OAuthCallback": "Pokúste sa prihlásiť iným účtom.",
+    "OAuthCreateAccount": "Pokúste sa prihlásiť iným účtom.",
+    "EmailCreateAccount": "Pokúste sa prihlásiť iným účtom.",
+    "Callback": "Pokúste sa prihlásiť iným účtom.",
+    "OAuthAccountNotLinked": "Na potvrdenie vašej identity sa prosím prihláste s účtom, ktorý ste použili na prvé prihlásenie.",
+    "EmailSignin": "Nepodarilo sa odoslať e-mail.",
+    "CredentialsSignin": "Prihlásenie zlyhalo. Skontrolujte, či ste poskytli správne údaje.",
+    "SessionRequired": "Pre prístup na túto stránku sa prosím najprv prihláste.",
+    "Default": "Prihlásenie zlyhalo."
+  }
 }

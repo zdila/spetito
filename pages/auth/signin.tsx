@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   Container,
@@ -25,28 +26,48 @@ export default function SignIn({ providers }: Props) {
   const { query } = useRouter();
 
   return (
-    <Container>
+    <Container
+      sx={{
+        py: 2,
+      }}
+    >
       <Head>
         <title>Offerbook</title>
       </Head>
 
-      <Logo />
+      <Box sx={{ alignSelf: "flex-start" }}>
+        <Logo />
+      </Box>
 
-      <Paper sx={{ p: 2, my: 1 }}>
-        <About />
+      <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
+        {t("SignIn")}
+      </Typography>
 
-        <Divider />
+      <Paper sx={{ p: 2 }}>
+        {query.error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {t("signInError." + query.error)}
+          </Alert>
+        )}
 
         <Box
-          sx={{
-            marginX: "auto",
-            width: "fit-content",
-            display: "flex",
-            flexDirection: "column",
-            gap: 1,
-            p: 2,
-          }}
+          sx={[
+            {
+              display: "flex",
+              gap: 1,
+              alignItems: "center",
+              justifyContent: "center",
+            },
+            (theme) => ({
+              [theme.breakpoints.down("sm")]: {
+                flexDirection: "column",
+                alignItems: "stretch",
+              },
+            }),
+          ]}
         >
+          <Typography>{t("SignInWith")}</Typography>
+
           {providers &&
             Object.values(providers).map((provider) => (
               <Button
@@ -60,15 +81,24 @@ export default function SignIn({ providers }: Props) {
                   })
                 }
               >
-                {t("signInWith", { provider: provider.name })}
+                {provider.name}
               </Button>
             ))}
         </Box>
       </Paper>
 
+      {/* <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
+        {t("About")}
+      </Typography>
+
+      <Paper sx={{ p: 2 }}>
+        <About />
+      </Paper>
+ */}
       <Box
         component="footer"
         sx={{
+          mt: 2,
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
