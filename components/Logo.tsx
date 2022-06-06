@@ -1,4 +1,5 @@
 import { Typography } from "@mui/material";
+import { purple } from "@mui/material/colors";
 
 export function Logo() {
   return (
@@ -7,9 +8,7 @@ export function Logo() {
       display="inline-block"
       component="span"
       sx={{
-        mt: 2,
-        mb: 1,
-        backgroundColor: "#8000a0",
+        backgroundColor: purple[800],
         px: 1,
         color: "white",
         fontWeight: "bold",

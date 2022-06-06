@@ -59,7 +59,6 @@ export default function SignIn({ providers }: Props) {
                         : query.callbackUrl) || "/",
                   })
                 }
-                variant="contained"
               >
                 {t("signInWith", { provider: provider.name })}
               </Button>

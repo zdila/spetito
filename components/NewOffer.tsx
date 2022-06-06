@@ -157,7 +157,12 @@ export function NewOffer({ onCreate, friends, lists, now }: Props) {
 
       <DateTimePicker
         label={t("DateFrom")}
-        renderInput={(props) => <TextField {...props} />}
+        renderInput={(props) => (
+          <TextField
+            {...props}
+            inputProps={{ ...props.inputProps, size: 12 }}
+          />
+        )}
         onChange={(value) => setValidFrom(value)}
         value={validFrom}
         mask={mask}
@@ -168,7 +173,12 @@ export function NewOffer({ onCreate, friends, lists, now }: Props) {
 
       <DateTimePicker
         label={t("DateTo")}
-        renderInput={(props) => <TextField {...props} />}
+        renderInput={(props) => (
+          <TextField
+            {...props}
+            inputProps={{ ...props.inputProps, size: 12 }}
+          />
+        )}
         onChange={(value) => setValidTo(value)}
         value={validTo}
         mask={mask}
@@ -179,7 +189,6 @@ export function NewOffer({ onCreate, friends, lists, now }: Props) {
       <Box sx={{ flexGrow: 1 }}>
         <Button
           sx={{ marginLeft: "auto", display: "block", height: "100%" }}
-          variant="contained"
           disabled={!message.trim()}
           type="submit"
         >

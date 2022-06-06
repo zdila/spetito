@@ -1,13 +1,19 @@
 import {
   Alert,
+  AppBar,
+  Box,
   Button,
   Container,
+  Divider,
+  Drawer,
   Grid,
+  IconButton,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Toolbar,
   Typography,
 } from "@mui/material";
 import { signOut } from "next-auth/react";
@@ -26,8 +32,11 @@ import { useTranslation } from "next-i18next";
 import { set } from "idb-keyval";
 import { Logo } from "./Logo";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
+import MenuIcon from "@mui/icons-material/Menu";
 
 type Props = { title: string; children: ReactNode };
+
+const drawerWidth = 240;
 
 function toBase64(arrayBuffer: ArrayBuffer | null) {
   return (
@@ -130,8 +139,48 @@ export function Layout({ children, title }: Props) {
     setSupportsPush1(supportsPush);
   }, []);
 
+  const drawer = (
+    <>
+      <Toolbar>
+        <Logo />
+      </Toolbar>
+
+      <List sx={{ p: 0 }}>
+        {menu.map((item) => (
+          <ListItem key={item.path} disablePadding>
+            <Link href={item.path} passHref>
+              <ListItemButton component="a" selected={pathname === item.path}>
+                <ListItemIcon>
+                  <item.Icon />
+                </ListItemIcon>
+
+                <ListItemText>{t(item.nameKey)}</ListItemText>
+              </ListItemButton>
+            </Link>
+          </ListItem>
+        ))}
+
+        <ListItem disablePadding>
+          <ListItemButton onClick={handleLogOutClick}>
+            <ListItemIcon>
+              <LogoutIcon />
+            </ListItemIcon>
+
+            <ListItemText>{t("LogOut")}</ListItemText>
+          </ListItemButton>
+        </ListItem>
+      </List>
+    </>
+  );
+
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
   return (
-    <Container>
+    <Box sx={{ display: "flex", marginX: "auto", maxWidth: "1000px" }}>
       <Head>
         <title>{title} | Offerbook</title>
       </Head>
@@ -160,48 +209,102 @@ export function Layout({ children, title }: Props) {
         )
       )}
 
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={4} md={3} lg={2}>
-          <Logo />
+      <AppBar
+        position="fixed"
+        sx={{
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          ml: { sm: `${drawerWidth}px` },
+          display: { xs: "block", sm: "none" },
+        }}
+      >
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 2, display: { sm: "none" } }}
+          >
+            <MenuIcon />
+          </IconButton>
 
-          <List>
-            {menu.map((item) => (
-              <ListItem key={item.path} disablePadding>
-                <Link href={item.path} passHref>
-                  <ListItemButton
-                    component="a"
-                    selected={pathname === item.path}
-                  >
-                    <ListItemIcon>
-                      <item.Icon />
-                    </ListItemIcon>
-
-                    <ListItemText>{t(item.nameKey)}</ListItemText>
-                  </ListItemButton>
-                </Link>
-              </ListItem>
-            ))}
-
-            <ListItem disablePadding>
-              <ListItemButton onClick={handleLogOutClick}>
-                <ListItemIcon>
-                  <LogoutIcon />
-                </ListItemIcon>
-
-                <ListItemText>{t("LogOut")}</ListItemText>
-              </ListItemButton>
-            </ListItem>
-          </List>
-        </Grid>
-
-        <Grid item xs={12} sm={8} md={9} lg={10}>
-          <Typography variant="h4" sx={{ mt: 2, mb: 1 }}>
+          <Typography variant="h5" noWrap component="div" sx={{ flexGrow: 1 }}>
             {title}
           </Typography>
 
-          {children}
-        </Grid>
-      </Grid>
-    </Container>
+          <Box
+            sx={{ opacity: mobileOpen ? 0 : 1, transition: "opacity 250ms" }}
+          >
+            <Logo />
+          </Box>
+        </Toolbar>
+      </AppBar>
+
+      <Box
+        component="nav"
+        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+      >
+        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+        <Drawer
+          container={
+            typeof document === "undefined" ? undefined : document.body
+          }
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true, // Better open performance on mobile.
+          }}
+          sx={{
+            display: { xs: "block", sm: "none" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+            },
+          }}
+        >
+          {drawer}
+        </Drawer>
+
+        <Drawer
+          variant="permanent"
+          sx={[
+            {
+              display: { xs: "none", sm: "block" },
+              "& .MuiDrawer-paper": {
+                boxSizing: "border-box",
+                width: drawerWidth,
+                backgroundColor: "inherit",
+                border: 0,
+              },
+            },
+            (theme) => ({
+              "@media (min-width: 1000px)": {
+                "& .MuiDrawer-paper": {
+                  left: "calc(100vw / 2 - 500px)", // hacking position because of opsition: fixed
+                },
+              },
+            }),
+          ]}
+          open
+        >
+          {drawer}
+        </Drawer>
+      </Box>
+
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          px: 3,
+          pb: 3,
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+        }}
+      >
+        <Toolbar sx={{ display: { xs: "block", sm: "none" } }} />
+
+        {children}
+      </Box>
+    </Box>
   );
 }
