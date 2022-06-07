@@ -77,12 +77,11 @@ export function About() {
 
       <p>
         Spetito slúži iba na zverejňovanie a prehliadanie ponúk priateľov. Ak
-        niekoho nejaká ponuka osloví, následne kontaktuje svojho priateľa
-        zaužívanou cestou, napríklad telefonicky, alebo komunikačnou aplikáciou,
-        akú majú spolu zaužívanu. Na Spetite je do budúcna plánovaný aj čet.
-        Myšlienka je, že komunikácia má byť iba medzi ponúkajucim a
-        zainteresovaným; nie medzi skupinou zainteresovaných, ktorí sa ani
-        nemusia poznať.
+        niekoho nejaká ponuka osloví, následne kontaktuje svojho priateľa inou
+        cestou, napríklad telefonicky, alebo komunikačnou aplikáciou, akú majú
+        spolu zaužívanu. Na Spetite je do budúcna plánovaný aj čet. Myšlienka
+        je, že komunikácia má byť iba medzi ponúkajucim a zainteresovaným; nie
+        medzi skupinou zainteresovaných, ktorí sa ani nemusia poznať.
       </p>
     </Box>
   );
