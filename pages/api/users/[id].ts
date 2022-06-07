@@ -39,17 +39,15 @@ export default async function handler(
           id,
         },
       });
-
-      res.status(204).end();
     } else if (req.method === "DELETE") {
       await prisma.user.delete({
         where: {
           id,
         },
       });
-
-      res.status(204).end();
     }
+
+    res.status(204).end();
   } else {
     res.status(405).end();
   }

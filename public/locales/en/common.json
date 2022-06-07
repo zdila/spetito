@@ -16,7 +16,7 @@
   "DateTo": "To",
   "dateFrom": "from",
   "dateTo": "to",
-  "placeThisOffer": "Place this offer",
+  "PlaceThisOffer": "Place this offer",
   "SetAudience": "Set audience",
   "FriendsInTheList": "Friends in the list",
   "YouHaveNoFriends": "You have no friends 😞",
@@ -85,5 +85,6 @@
   "TermsOfServices": "Terms of services",
   "OfferAudience": "Offer audience",
   "OK": "OK",
-  "FewFriendsAlert": "Spetito is a very young social network and therefore it is possible that you will find here only a few of your friends. In that case, it's best to contact them to join Spetito. ❤"
+  "FewFriendsAlert": "Spetito is a very young social network and therefore it is possible that you will find here only a few of your friends. In that case, it's best to contact them to join Spetito. ❤",
+  "Modify": "Modify"
 }

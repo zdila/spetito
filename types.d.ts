@@ -1,3 +1,4 @@
+import { List, Offer, OfferList, OfferUser, User } from "@prisma/client";
 import type { DefaultUser } from "next-auth";
 
 declare module "next-auth" {
@@ -19,3 +20,10 @@ declare global {
     _spetito_hideFewFriendsAlert?: true;
   }
 }
+
+export type OfferExt = Offer & {
+  author: User | null;
+
+  offerLists?: (OfferList & { list: List })[];
+  offerUsers?: (OfferUser & { user: User })[];
+};

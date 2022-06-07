@@ -125,7 +125,9 @@ export function ListManageDialog({ open, onClose, list }: Props) {
       <DialogActions>
         <Button onClick={handleSave}>{t("Save")}</Button>
 
-        <Button onClick={() => onClose(false)}>{t("Cancel")}</Button>
+        <Button onClick={() => onClose(false)} variant="text">
+          {t("Cancel")}
+        </Button>
       </DialogActions>
     </Dialog>
   );

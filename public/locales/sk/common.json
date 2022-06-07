@@ -16,7 +16,7 @@
   "DateTo": "Do",
   "dateFrom": "od",
   "dateTo": "do",
-  "placeThisOffer": "Pridať",
+  "PlaceThisOffer": "Pridať",
   "SetAudience": "Určiť publikum",
   "FriendsInTheList": "Priatelia v zozname",
   "YouHaveNoFriends": "Nemáte žiadných priateľov 😞",
@@ -85,5 +85,6 @@
   "TermsOfServices": "Podmienky služieb",
   "OfferAudience": "Publikum ponuky",
   "OK": "OK",
-  "FewFriendsAlert": "Spetito je veľmi mladá sociálna sieť a preto je možné, že v nej nájdete iba málo vaších priateľov. V tom prípade je najlepšie ich osloviť, aby sa do Spetita pridali. ❤"
+  "FewFriendsAlert": "Spetito je veľmi mladá sociálna sieť a preto je možné, že v nej nájdete iba málo vaších priateľov. V tom prípade je najlepšie ich osloviť, aby sa do Spetita pridali. ❤",
+  "Modify": "Upraviť"
 }

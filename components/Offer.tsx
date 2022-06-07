@@ -5,26 +5,33 @@ import { Avatar, Chip, IconButton, Paper, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { List, Offer, OfferList, OfferUser, User } from "@prisma/client";
 import { useTranslation } from "next-i18next";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useRouter } from "next/router";
-
-type OfferExt = Offer & {
-  author: User | null;
-
-  offerLists?: (OfferList & { list: List })[];
-  offerUsers?: (OfferUser & { user: User })[];
-};
+import { OfferForm } from "./OfferInput";
+import { OfferExt } from "../types";
 
 type Props = {
   own?: boolean;
   offer: OfferExt;
   onDelete: () => void;
+  friends?: User[];
+  lists?: List[];
+  now?: Date;
 };
 
-export function OfferItem({ offer, onDelete, own = false }: Props) {
+export function OfferItem({
+  offer,
+  onDelete,
+  own = false,
+  friends,
+  lists,
+  now,
+}: Props) {
   const { t } = useTranslation("common");
 
-  const { locale } = useRouter();
+  const router = useRouter();
+
+  const { locale } = router;
 
   const { id, validFrom, validTo, message } = offer;
 
@@ -36,7 +43,22 @@ export function OfferItem({ offer, onDelete, own = false }: Props) {
     }
   }, [id, onDelete, t]);
 
-  return (
+  const [editing, setEditing] = useState(false);
+
+  return editing ? (
+    <OfferForm
+      friends={friends}
+      lists={lists}
+      now={now ?? new Date()}
+      offer={offer}
+      onCancel={() => setEditing(false)}
+      onSaved={() => {
+        setEditing(false);
+
+        router.replace(router.asPath);
+      }}
+    />
+  ) : (
     <Paper sx={{ p: 2 }}>
       <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
         {offer.author?.image && <Avatar src={offer.author?.image} alt="" />}
@@ -89,42 +111,43 @@ export function OfferItem({ offer, onDelete, own = false }: Props) {
                 {offer.offerLists && offer.offerUsers ? (
                   <>
                     ｜
-                    {offer.offerLists.length + offer.offerUsers.length === 0 ? (
-                      t("allMyFriends")
-                    ) : (
-                      <>
-                        {offer.offerLists.map((item) => (
-                          <Chip key={item.listId} label={item.list.name} />
-                        ))}
-                        {offer.offerUsers.map((item) => (
-                          <Chip
-                            key={item.userId}
-                            avatar={
-                              item.user.image ? (
-                                <Avatar src={item.user.image} alt="" />
-                              ) : undefined
-                            }
-                            label={item.user.name}
-                          />
-                        ))}
-                      </>
-                    )}
+                    {offer.offerLists.length + offer.offerUsers.length === 0 &&
+                      t("allMyFriends")}
                   </>
                 ) : null}
               </Typography>
+
+              <>
+                {offer.offerLists?.map((item) => (
+                  <Chip key={item.listId} label={item.list.name} />
+                ))}
+
+                {offer.offerUsers?.map((item) => (
+                  <Chip
+                    key={item.userId}
+                    avatar={
+                      item.user.image ? (
+                        <Avatar src={item.user.image} alt="" />
+                      ) : undefined
+                    }
+                    label={item.user.name}
+                  />
+                ))}
+              </>
             </Box>
           </Box>
         </Box>
 
-        {/* TODO {own && (
+        {own && (
           <IconButton
-            title={t("Edit")}
+            title={t("Modify")}
             edge="end"
             sx={{ alignSelf: "flex-start", mt: -1 }}
+            onClick={() => setEditing(true)}
           >
             <EditIcon />
           </IconButton>
-        )} */}
+        )}
 
         <IconButton
           title={own ? t("Delete") : t("Hide")}

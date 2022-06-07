@@ -15,6 +15,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useTranslation } from "next-i18next";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import { useRouter } from "next/router";
+import { OfferExt } from "../types";
 
 const maskMap: Record<string, string> = {
   en: "__/__/____ __:__ _M",
@@ -25,15 +26,26 @@ type Props = {
   friends?: User[];
   lists?: List[];
   now: Date;
-  onCreate?: () => void;
+  onSaved?: () => void;
+  onCancel?: () => void;
+  offer?: OfferExt; // if editing
 };
 
-export function NewOffer({ onCreate, friends, lists, now }: Props) {
+export function OfferForm({
+  onSaved,
+  onCancel,
+  friends,
+  lists,
+  now,
+  offer,
+}: Props) {
   const { t } = useTranslation("common");
 
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(offer?.message ?? "");
 
-  const [validFrom, setValidFrom] = useState<Date | null>(null);
+  const [validFrom, setValidFrom] = useState<Date | null>(
+    offer?.validFrom ?? null
+  );
 
   const [validTo, setValidTo] = useState<Date | null>(null);
 
@@ -44,8 +56,8 @@ export function NewOffer({ onCreate, friends, lists, now }: Props) {
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
 
-    fetch("/api/offers", {
-      method: "POST",
+    fetch(offer ? "/api/offers/" + offer.id : "/api/offers", {
+      method: offer ? "PUT" : "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         message: message.trim(),
@@ -69,13 +81,16 @@ export function NewOffer({ onCreate, friends, lists, now }: Props) {
 
       setAudience([]);
 
-      onCreate?.();
+      onSaved?.();
     });
   };
 
   const [showAudienceDialog, setShowAudienceDialog] = useState(false);
 
-  const [audience, setAudience] = useState<string[]>([]);
+  const [audience, setAudience] = useState<string[]>(() => [
+    ...(offer?.offerLists?.map((item) => "l:" + item.listId) ?? []),
+    ...(offer?.offerUsers?.map((item) => "u:" + item.userId) ?? []),
+  ]);
 
   const handleAudienceClose = (audience?: string[]) => {
     setShowAudienceDialog(false);
@@ -213,14 +228,23 @@ export function NewOffer({ onCreate, friends, lists, now }: Props) {
           />
         </Box>
 
-        <Box sx={{ flexGrow: 1 }}>
-          <Button
-            sx={{ marginLeft: "auto", display: "block", height: "100%" }}
-            disabled={!message.trim()}
-            type="submit"
-          >
-            {t("placeThisOffer")}
+        <Box
+          sx={{
+            display: "flex",
+            gap: 1,
+            flexGrow: 1,
+            justifyContent: "flex-end",
+          }}
+        >
+          <Button disabled={!message.trim()} type="submit">
+            {t(offer ? "Save" : "PlaceThisOffer")}
           </Button>
+
+          {offer && (
+            <Button variant="text" onClick={() => onCancel?.()}>
+              {t("Cancel")}
+            </Button>
+          )}
         </Box>
       </Box>
     </Paper>

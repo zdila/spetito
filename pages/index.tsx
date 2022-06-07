@@ -6,7 +6,7 @@ import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useCallback, useEffect } from "react";
 import { Layout } from "../components/Layout";
-import { NewOffer } from "../components/NewOffer";
+import { OfferForm } from "../components/OfferInput";
 import { OfferItem } from "../components/Offer";
 import { prisma } from "../lib/prisma";
 import { useFriends } from "../hooks/useFriends";
@@ -72,7 +72,7 @@ const Home: NextPage<Props> = ({ yourOffers, friendsOffers, now }) => {
         {t("CreateOffer")}
       </Typography>
 
-      <NewOffer onCreate={refresh} friends={friends} lists={lists} now={now} />
+      <OfferForm onSaved={refresh} friends={friends} lists={lists} now={now} />
 
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
         {t("YourOffers")}
@@ -84,7 +84,15 @@ const Home: NextPage<Props> = ({ yourOffers, friendsOffers, now }) => {
       ) : (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           {[...yourOffers].sort(compareOffers).map((offer) => (
-            <OfferItem key={offer.id} offer={offer} onDelete={refresh} own />
+            <OfferItem
+              key={offer.id}
+              offer={offer}
+              onDelete={refresh}
+              friends={friends}
+              lists={lists}
+              now={now}
+              own
+            />
           ))}
         </Box>
       )}

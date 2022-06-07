@@ -145,7 +145,9 @@ export function AudienceDialog({ open, onClose, audience }: Props) {
       <DialogActions>
         <Button onClick={() => onClose(checked)}>{t("Save")}</Button>
 
-        <Button onClick={() => onClose()}>{t("Cancel")}</Button>
+        <Button onClick={() => onClose()} variant="text">
+          {t("Cancel")}
+        </Button>
       </DialogActions>
     </Dialog>
   );
