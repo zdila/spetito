@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import { GetServerSideProps } from "next";
-import { getProviders, signIn } from "next-auth/react";
+import { getProviders, getSession, signIn } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
@@ -99,13 +99,27 @@ export default function SignIn({ providers }: Props) {
 export const getServerSideProps: GetServerSideProps<Props> = async (
   context
 ) => {
-  const providers = await getProviders();
+  const [providers, session] = await Promise.all([
+    getProviders(),
+    getSession(context),
+  ]);
 
-  return {
-    props: {
-      ...(await serverSideTranslations(context.locale ?? "en", ["common"])),
+  return session?.user
+    ? {
+        redirect: {
+          destination: getStringOrNothing(context.query.callbackUrl) ?? "/",
+          permanent: false,
+        },
+      }
+    : {
+        props: {
+          ...(await serverSideTranslations(context.locale ?? "en", ["common"])),
 
-      providers,
-    },
-  };
+          providers,
+        },
+      };
 };
+
+function getStringOrNothing(a: string | string[] | undefined) {
+  return typeof a === "string" ? a : undefined;
+}
