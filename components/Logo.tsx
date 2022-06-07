@@ -23,7 +23,7 @@ export function Logo() {
           borderRadius: 1,
         }}
       >
-        Offerbook
+        Spetito
       </Typography>
     </Link>
   );

@@ -48,16 +48,16 @@
   "SignIn": "Sign in",
   "notifTranslations": {
     "invite": {
-      "title": "Offerbook friend request",
-      "body": "<_> is sending you a friend request on Offerbook."
+      "title": "Spetito friend request",
+      "body": "<_> is sending you a friend request on Spetito."
     },
     "accept": {
-      "title": "Offerbook friend request accepted",
-      "body": "<_> has accepted your friend request on Offerbook."
+      "title": "Spetito friend request accepted",
+      "body": "<_> has accepted your friend request on Spetito."
     },
     "offer": {
-      "title": "New offer on Offerbook",
-      "body": "<_> placed a new offer on Offerbook."
+      "title": "New offer on Spetito",
+      "body": "<_> placed a new offer on Spetito."
     }
   },
   "Support": "Support",
@@ -80,7 +80,7 @@
     "SessionRequired": "Please sign in to access this page.",
     "Default": "Unable to sign in."
   },
-  "About": "About Offerbook",
+  "About": "About Spetito",
   "PrivacyPolicy": "Privacy policy",
   "TermsOfServices": "Terms of services",
   "OfferAudience": "Offer audience"

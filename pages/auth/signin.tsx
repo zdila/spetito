@@ -28,7 +28,7 @@ export default function SignIn({ providers }: Props) {
   return (
     <Container sx={{ py: 2 }}>
       <Head>
-        <title>Offerbook</title>
+        <title>Spetito</title>
       </Head>
 
       <Box sx={{ alignSelf: "flex-start" }}>

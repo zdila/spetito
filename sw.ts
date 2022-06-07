@@ -27,11 +27,11 @@ self.addEventListener("push", (event) => {
         get("notifTranslations").then((m) =>
           Promise.all([
             self.registration.showNotification(
-              m?.invite?.title ?? "Offerbook friend request",
+              m?.invite?.title ?? "Spetito friend request",
               {
                 body: (
                   m?.invite?.body ??
-                  "<_> is sending you a friend request on Offerbook."
+                  "<_> is sending you a friend request on Spetito."
                 ).replace("<_>", data.payload.from.name),
                 // icon: ..., TODO user's avatar
                 data,
@@ -52,11 +52,11 @@ self.addEventListener("push", (event) => {
         get("notifTranslations").then((m) =>
           Promise.all([
             self.registration.showNotification(
-              m?.invite?.title ?? "Offerbook friend request accepted",
+              m?.invite?.title ?? "Spetito friend request accepted",
               {
                 body: (
                   m?.accept?.body ??
-                  "<_> has accepted your friend request on Offerbook."
+                  "<_> has accepted your friend request on Spetito."
                 ).replace("<_>", data.payload.from.name),
 
                 // icon: ..., TODO user's avatar
@@ -78,10 +78,10 @@ self.addEventListener("push", (event) => {
         get("notifTranslations").then((m) =>
           Promise.all([
             self.registration.showNotification(
-              m?.offer?.title ?? "New offer on Offerbook",
+              m?.offer?.title ?? "New offer on Spetito",
               {
                 body: (
-                  m?.offer?.body ?? "<_> placed a new offer on Offerbook."
+                  m?.offer?.body ?? "<_> placed a new offer on Spetito."
                 ).replace("<_>", data.payload.from.name),
                 // icon: ..., TODO user's avatar
                 data,

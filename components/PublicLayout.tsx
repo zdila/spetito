@@ -13,7 +13,7 @@ export function PublicLayout({ title, children }: Props) {
   return (
     <Container sx={{ py: 2 }}>
       <Head>
-        <title>{(title ? title + " | " : "") + "Offerbook"}</title>
+        <title>{(title ? title + " | " : "") + "Spetito"}</title>
       </Head>
 
       <Box sx={{ alignSelf: "flex-start", mb: 2 }}>

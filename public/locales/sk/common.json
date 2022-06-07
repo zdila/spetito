@@ -48,15 +48,15 @@
   "SignIn": "Prihlásenie",
   "notifTranslations": {
     "invite": {
-      "title": "Offerbook - žiadosť o priateľstvo",
+      "title": "Spetito - žiadosť o priateľstvo",
       "body": "<_> vám posiela žiadosť o priateľstvo."
     },
     "accept": {
-      "title": "Offerbook - prijatá žiadosť o priateľstvo",
+      "title": "Spetito - prijatá žiadosť o priateľstvo",
       "body": "<_> prijal(a) tvoju žiadosť o priateľstvo."
     },
     "offer": {
-      "title": "Offerbook - nová ponuka",
+      "title": "Spetito - nová ponuka",
       "body": "<_> dal(a) novú ponuku."
     }
   },
@@ -80,7 +80,7 @@
     "SessionRequired": "Pre prístup na túto stránku sa prosím najprv prihláste.",
     "Default": "Prihlásenie zlyhalo."
   },
-  "About": "O Offerbooku",
+  "About": "O Spetite",
   "PrivacyPolicy": "Zásady ochrany osobných údajov",
   "TermsOfServices": "Podmienky služieb",
   "OfferAudience": "Publikum ponuky"

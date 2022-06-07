@@ -201,7 +201,7 @@ export function Layout({ children, title }: Props) {
   return (
     <Box sx={{ marginX: "auto", maxWidth: "1200px" }}>
       <Head>
-        <title>{(title ? title + " | " : "") + "Offerbook"}</title>
+        <title>{(title ? title + " | " : "") + "Spetito"}</title>
       </Head>
 
       <Box sx={{ display: "flex" }}>

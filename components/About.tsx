@@ -12,12 +12,13 @@ export function About() {
         },
       }}
     >
-      <h2>Aká je misia Offerbooku?</h2>
+      <h2>Aká je misia Spetita?</h2>
 
       <p>
-        Offerbook je jednoduchá sociálna sieť pre dávanie nezáväzných ponúk
-        vaším priateľom, a z opačnej strany, na ucelený prehľad všetkých ponúk
-        od vaších priateľov. Ponuky môžu vyzerať napríklad takto:
+        Spetito (<b>Sp</b>end <b>ti</b>me <b>to</b>gether) je jednoduchá
+        sociálna sieť pre dávanie nezáväzných ponúk vaším priateľom, a z opačnej
+        strany, na ucelený prehľad všetkých ponúk od vaších priateľov. Ponuky
+        môžu vyzerať napríklad takto:
       </p>
 
       <ul>
@@ -60,11 +61,10 @@ export function About() {
         Facebook síce obsahuje udalosti a tiež je v ňom možné písať ponuky do
         správ, ale obsahuje ešte plno iných vecí, ktoré znemožňujú jednoduché
         vyhľadanie všetkých relevantných ponúk. Samotné udalosti na Facebooku sú
-        chápané ako pozvánky, pričom na Offerbooku sú to (nezáväzné) ponuky,
-        formou podobnou inzerátom, no iba v rámci kruhu priateľov. Málokto asi
-        bude vytvárať na Facebooku udalosť, že si ide večer trochu zabehať a rád
-        by mal pri tom nejakú spoločnosť. Offerbook je ideálny (aj) na takéto
-        ponuky.
+        chápané ako pozvánky, pričom na Spetite sú to (nezáväzné) ponuky, formou
+        podobnou inzerátom, no iba v rámci kruhu priateľov. Málokto asi bude
+        vytvárať na Facebooku udalosť, že si ide večer trochu zabehať a rád by
+        mal pri tom nejakú spoločnosť. Spetito je ideálny (aj) na takéto ponuky.
       </p>
 
       <p>
@@ -76,10 +76,10 @@ export function About() {
       <h2>Prečo ponuky neobsahujú komentáre a &quot;páčiky&quot;?</h2>
 
       <p>
-        Offerbook slúži iba na zverejňovanie a prehliadanie ponúk priateľov. Ak
+        Spetito slúži iba na zverejňovanie a prehliadanie ponúk priateľov. Ak
         niekoho nejaká ponuka osloví, následne kontaktuje svojho priateľa
         zaužívanou cestou, napríklad telefonicky, alebo komunikačnou aplikáciou,
-        akú majú spolu zaužívanu. Na Offerbooku je do budúcna plánovaný aj čet.
+        akú majú spolu zaužívanu. Na Spetite je do budúcna plánovaný aj čet.
         Myšlienka je, že komunikácia má byť iba medzi ponúkajucim a
         zainteresovaným; nie medzi skupinou zainteresovaných, ktorí sa ani
         nemusia poznať.

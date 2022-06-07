@@ -60,7 +60,7 @@ const PrivacyPolicyPage: NextPage<Props> = ({}) => {
             <p>
               <strong>Company</strong> (referred to as either &quot;the
               Company&quot;, &quot;We&quot;, &quot;Us&quot; or &quot;Our&quot;
-              in this Agreement) refers to Offerbook.
+              in this Agreement) refers to Spetito.
             </p>
           </li>
           <li>
@@ -113,13 +113,13 @@ const PrivacyPolicyPage: NextPage<Props> = ({}) => {
           </li>
           <li>
             <p>
-              <strong>Website</strong> refers to Offerbook, accessible from{" "}
+              <strong>Website</strong> refers to Spetito, accessible from{" "}
               <a
-                href="https://offerbook.hopto.org/"
+                href="https://www.spetito.com/"
                 rel="external nofollow noopener noreferrer"
                 target="_blank"
               >
-                https://offerbook.hopto.org/
+                https://www.spetito.com/
               </a>
             </p>
           </li>
