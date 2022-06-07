@@ -15,7 +15,7 @@ export function About() {
       <h2>Aká je misia Spetita?</h2>
 
       <p>
-        Spetito (<b>Sp</b>end <b>ti</b>me <b>to</b>gether) je jednoduchá
+        Spetito (<b>Spe</b>nd <b>ti</b>me <b>to</b>gether) je jednoduchá
         sociálna sieť pre dávanie nezáväzných ponúk vaším priateľom, a z opačnej
         strany, na ucelený prehľad všetkých ponúk od vaších priateľov. Ponuky
         môžu vyzerať napríklad takto:
