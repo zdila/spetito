@@ -56,14 +56,14 @@ export function OfferItem({ offer, onDelete, own = false }: Props) {
 
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <Typography variant="body2">
-                {(
+                {/* {(
                   offer.createdAt.toLocaleDateString(locale) +
                   " " +
                   offer.createdAt.toLocaleTimeString(locale, {
                     timeStyle: "short",
                   })
-                ).replaceAll(" ", "\xa0")}{" "}
-                {validFrom || validTo ? "｜ " + t("Valid") : null}
+                ).replaceAll(" ", "\xa0")}{" "} */}
+                {validFrom || validTo ? t("Valid") : null}
                 {validFrom
                   ? " " +
                     t("dateFrom") +
