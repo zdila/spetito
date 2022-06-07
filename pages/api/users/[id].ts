@@ -7,35 +7,50 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Offer>
 ) {
-  if (req.method !== "DELETE") {
+  if (req.method === "PATCH" || req.method === "DELETE") {
+    let { id } = req.query;
+
+    if (typeof id !== "string") {
+      res.status(400).end();
+
+      return;
+    }
+
+    const session = await getSession({ req });
+
+    const userId = session?.user?.id;
+
+    if (id === "_self_") {
+      id = userId;
+    }
+
+    if (!userId || userId !== id) {
+      res.status(403).end();
+
+      return;
+    }
+
+    if (req.method === "PATCH") {
+      await prisma.user.update({
+        data: {
+          hideFewFriendsAlert: true,
+        },
+        where: {
+          id,
+        },
+      });
+
+      res.status(204).end();
+    } else if (req.method === "DELETE") {
+      await prisma.user.delete({
+        where: {
+          id,
+        },
+      });
+
+      res.status(204).end();
+    }
+  } else {
     res.status(405).end();
-
-    return;
   }
-
-  const { id } = req.query;
-
-  if (typeof id !== "string") {
-    res.status(400).end();
-
-    return;
-  }
-
-  const session = await getSession({ req });
-
-  const userId = session?.user?.id;
-
-  if (!userId || userId !== id) {
-    res.status(403).end();
-
-    return;
-  }
-
-  await prisma.user.delete({
-    where: {
-      id,
-    },
-  });
-
-  res.status(204).end();
 }

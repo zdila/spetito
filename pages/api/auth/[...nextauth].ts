@@ -33,6 +33,9 @@ export default NextAuth({
     session: async ({ session, user }) => {
       if (session.user) {
         session.user.id = user.id;
+        session.user.extra = {
+          hideFewFriendsAlert: Boolean(user["hideFewFriendsAlert"]),
+        };
       }
 
       return Promise.resolve(session);

@@ -110,25 +110,26 @@ model Session {
 }
 
 model User {
-  id                String             @id @default(cuid())
-  name              String?
-  email             String?            @unique
-  emailVerified     DateTime?          @map("email_verified")
-  image             String?
-  createdAt         DateTime           @default(now()) @map(name: "created_at")
-  updatedAt         DateTime           @updatedAt @map(name: "updated_at")
-  posts             Offer[]
-  accounts          Account[]
-  sessions          Session[]
-  lists             List[]
-  listMemebers      ListMember[]
-  followedBy        Follows[]          @relation("following")
-  following         Follows[]          @relation("follower")
-  invitedBy         Invitation[]       @relation("inviting")
-  inviting          Invitation[]       @relation("inviter")
-  offerUsers        OfferUser[]
-  pushRegistrations PushRegistration[]
-  hiddenOffers      HiddenOffers[]
+  id                  String             @id @default(cuid())
+  name                String?
+  email               String?            @unique
+  emailVerified       DateTime?          @map("email_verified")
+  image               String?
+  createdAt           DateTime           @default(now()) @map(name: "created_at")
+  updatedAt           DateTime           @updatedAt @map(name: "updated_at")
+  posts               Offer[]
+  accounts            Account[]
+  sessions            Session[]
+  lists               List[]
+  listMemebers        ListMember[]
+  followedBy          Follows[]          @relation("following")
+  following           Follows[]          @relation("follower")
+  invitedBy           Invitation[]       @relation("inviting")
+  inviting            Invitation[]       @relation("inviter")
+  offerUsers          OfferUser[]
+  pushRegistrations   PushRegistration[]
+  hiddenOffers        HiddenOffers[]
+  hideFewFriendsAlert Boolean            @default(false)
 
   @@map(name: "users")
 }

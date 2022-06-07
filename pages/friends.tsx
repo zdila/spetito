@@ -13,12 +13,13 @@ import {
   ListItemText,
   ListItemAvatar,
   Avatar,
+  Alert,
 } from "@mui/material";
 import { User } from "@prisma/client";
 import type { GetServerSideProps, NextPage } from "next";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useReducer, useState } from "react";
 import { Layout } from "../components/Layout";
 import { prisma } from "../lib/prisma";
 import CheckIcon from "@mui/icons-material/Check";
@@ -148,6 +149,23 @@ const Friends: NextPage<Props> = ({
 
   const { t } = useTranslation("common");
 
+  const session = useSession();
+
+  const [, rerender] = useReducer((state) => state + 1, 0);
+
+  function handleFewFriendsAlertOkClick() {
+    fetch("/api/users/_self_", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ hideFewFriendsAlert: true }),
+    }).then(() => {
+      // little hacky; see also https://github.com/nextauthjs/next-auth/discussions/2267
+      window._spetito_hideFewFriendsAlert = true;
+
+      rerender();
+    });
+  }
+
   return (
     <Layout title={t("Friends")}>
       {usersInvitingMe.length === 0 ? null : (
@@ -199,6 +217,28 @@ const Friends: NextPage<Props> = ({
       </Typography>
 
       <Paper sx={{ p: 2 }}>
+        {session.status === "authenticated" &&
+          !session.data?.user?.extra.hideFewFriendsAlert &&
+          (typeof window === "undefined" ||
+            !window._spetito_hideFewFriendsAlert) && (
+            <Alert
+              severity="info"
+              sx={{ mb: 2 }}
+              action={
+                <Button
+                  color="inherit"
+                  size="small"
+                  variant="text"
+                  onClick={handleFewFriendsAlertOkClick}
+                >
+                  {t("OK")}
+                </Button>
+              }
+            >
+              {t("FewFriendsAlert")}
+            </Alert>
+          )}
+
         <Autocomplete
           getOptionLabel={(option) => option.name ?? "-"}
           renderInput={(params) => (

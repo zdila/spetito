@@ -83,5 +83,7 @@
   "About": "About Spetito",
   "PrivacyPolicy": "Privacy policy",
   "TermsOfServices": "Terms of services",
-  "OfferAudience": "Offer audience"
+  "OfferAudience": "Offer audience",
+  "OK": "OK",
+  "FewFriendsAlert": "Spetito is a very young social network and therefore it is possible that you will find here only a few of your friends. In that case, it's best to contact them to join Spetito. ❤"
 }

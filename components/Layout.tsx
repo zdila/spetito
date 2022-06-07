@@ -317,6 +317,7 @@ export function Layout({ children, title }: Props) {
                   onClick={handleRegisterClick}
                   color="inherit"
                   size="small"
+                  variant="text"
                 >
                   {t("EnableNotifications")}
                 </Button>

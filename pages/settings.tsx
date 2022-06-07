@@ -13,13 +13,9 @@ type Props = { user: DefaultUser };
 const Settings: NextPage<Props> = ({ user }) => {
   const { t } = useTranslation();
 
-  const session = useSession();
-
   function deleteAccount() {
-    const id = session.data?.user?.id;
-
-    if (id && window.confirm(t("AreYouSure"))) {
-      fetch("/api/users/" + id, { method: "DELETE" }).then(() => signOut());
+    if (window.confirm(t("AreYouSure"))) {
+      fetch("/api/users/_self_", { method: "DELETE" }).then(() => signOut());
     }
   }
 

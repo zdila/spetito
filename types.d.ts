@@ -3,7 +3,9 @@ import type { DefaultUser } from "next-auth";
 declare module "next-auth" {
   interface Session {
     user?: DefaultUser & {
-      id: string;
+      extra: {
+        hideFewFriendsAlert: boolean;
+      };
     };
   }
 }
@@ -11,5 +13,9 @@ declare module "next-auth" {
 declare global {
   interface ServiceWorkerGlobalScope {
     __WB_MANIFEST: { revision: string; url: string }[];
+  }
+
+  interface Window {
+    _spetito_hideFewFriendsAlert?: true;
   }
 }
