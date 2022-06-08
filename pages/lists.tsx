@@ -14,6 +14,7 @@ import {
   AccordionDetails,
   AccordionActions,
   Box,
+  Alert,
 } from "@mui/material";
 import type { GetServerSideProps, NextPage } from "next";
 import { getSession } from "next-auth/react";
@@ -26,7 +27,7 @@ import {
   ListWithMembers,
 } from "../components/ListManageDialog";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { useTranslation } from "next-i18next";
+import { Trans, useTranslation } from "next-i18next";
 import { redirectToLogIn } from "../lib/auth";
 import { User } from "@prisma/client";
 
@@ -93,6 +94,14 @@ const Lists: NextPage<Props> = ({ lists }) => {
           }}
           list={expandedList}
         />
+      )}
+
+      {lists.length === 0 && (
+        <Alert severity="info" sx={{ mt: 2 }}>
+          <Trans t={t} i18nKey="ListInfoAlert">
+            text <i>sample1</i>, <i>sample2</i>
+          </Trans>
+        </Alert>
       )}
 
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
