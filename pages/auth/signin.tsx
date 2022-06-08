@@ -68,14 +68,26 @@ export default function SignIn({ providers }: Props) {
             Object.values(providers).map((provider) => (
               <Button
                 key={provider.name}
-                onClick={() =>
-                  signIn(provider.id, {
+                onClick={() => {
+                  let email: string | undefined;
+
+                  if (provider.id === "email") {
+                    email = window.prompt(t("WhatIsYourEmail")) ?? undefined;
+
+                    // super-simple validation
+                    if (!email || !email.includes("@")) {
+                      return;
+                    }
+                  }
+
+                  return signIn(provider.id, {
+                    email,
                     callbackUrl:
                       (Array.isArray(query.callbackUrl)
                         ? query.callbackUrl[0]
                         : query.callbackUrl) || "/",
-                  })
-                }
+                  });
+                }}
               >
                 {provider.name}
               </Button>
