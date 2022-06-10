@@ -80,12 +80,13 @@ export default function SignIn({ providers }: Props) {
                     }
                   }
 
+                  const callbackUrl = Array.isArray(query.callbackUrl)
+                    ? query.callbackUrl[0]
+                    : query.callbackUrl;
+
                   return signIn(provider.id, {
                     email,
-                    callbackUrl:
-                      (Array.isArray(query.callbackUrl)
-                        ? query.callbackUrl[0]
-                        : query.callbackUrl) || "/",
+                    callbackUrl,
                   });
                 }}
               >
