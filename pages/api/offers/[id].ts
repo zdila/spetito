@@ -102,7 +102,7 @@ export default async function handler(
             lat: place?.center.lat,
             lng: place?.center.lng,
             zoom: place?.zoom,
-            radius: place?.radius,
+            radius: place?.radius ? Math.floor(place?.radius) : undefined,
             offerLists: {
               createMany: {
                 data: audience.lists
