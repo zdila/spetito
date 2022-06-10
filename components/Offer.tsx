@@ -7,8 +7,12 @@ import { List, Offer, OfferList, OfferUser, User } from "@prisma/client";
 import { useTranslation } from "next-i18next";
 import { useCallback, useState } from "react";
 import { useRouter } from "next/router";
-import { OfferForm } from "./OfferInput";
+import { OfferForm } from "./OfferForm";
 import { OfferExt } from "../types";
+import PlaceIcon from "@mui/icons-material/Place";
+import { useDelayedOff } from "../hooks/useDelayedOff";
+import { MapDialog } from "./MapDialog";
+import { LngLat } from "maplibre-gl";
 
 type Props = {
   own?: boolean;
@@ -45,6 +49,10 @@ export function OfferItem({
 
   const [editing, setEditing] = useState(false);
 
+  const [mapShown, setMapShown] = useState(false);
+
+  const mountMapDialog = useDelayedOff(mapShown);
+
   return editing ? (
     <OfferForm
       friends={friends}
@@ -60,6 +68,23 @@ export function OfferItem({
     />
   ) : (
     <Paper sx={{ p: 2 }}>
+      {mountMapDialog && (
+        <MapDialog
+          readOnly
+          open={mapShown}
+          onClose={() => setMapShown(false)}
+          value={
+            offer.lng == null
+              ? undefined
+              : {
+                  center: new LngLat(offer.lng!, offer.lat!),
+                  zoom: offer.zoom!,
+                  radius: offer.radius!,
+                }
+          }
+        />
+      )}
+
       <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
         {offer.author?.image && <Avatar src={offer.author?.image} alt="" />}
 
@@ -85,7 +110,7 @@ export function OfferItem({
                     timeStyle: "short",
                   })
                 ).replaceAll(" ", "\xa0")}{" "} */}
-                {validFrom || validTo ? t("Valid") : null}
+                {validFrom || validTo ? "🗓" : null}
                 {validFrom
                   ? " " +
                     t("dateFrom") +
@@ -110,12 +135,19 @@ export function OfferItem({
                   : null}
                 {offer.offerLists && offer.offerUsers ? (
                   <>
-                    ｜
+                    {validFrom || validTo ? "｜" : ""}
+                    👤{" "}
                     {offer.offerLists.length + offer.offerUsers.length === 0 &&
                       t("allMyFriends")}
                   </>
                 ) : null}
               </Typography>
+
+              {offer.lat != null && (
+                <IconButton size="small" onClick={() => setMapShown(true)}>
+                  <PlaceIcon />
+                </IconButton>
+              )}
 
               <>
                 {offer.offerLists?.map((item) => (

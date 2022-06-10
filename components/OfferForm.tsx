@@ -9,13 +9,17 @@ import {
   Typography,
 } from "@mui/material";
 import { List, User } from "@prisma/client";
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useRef, useState } from "react";
 import { AudienceDialog } from "./AudienceDialog";
 import EditIcon from "@mui/icons-material/Edit";
 import { useTranslation } from "next-i18next";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import { useRouter } from "next/router";
 import { OfferExt } from "../types";
+import { MapDialog } from "./MapDialog";
+import { useDelayedOff } from "../hooks/useDelayedOff";
+import PlaceIcon from "@mui/icons-material/Place";
+import { LngLat } from "maplibre-gl";
 
 const maskMap: Record<string, string> = {
   en: "__/__/____ __:__ _M",
@@ -71,6 +75,7 @@ export function OfferForm({
             .filter((item) => item.startsWith("l:"))
             .map((item) => item.slice(2)),
         },
+        place: place ?? null,
       }),
     }).then(() => {
       setMessage("");
@@ -87,6 +92,8 @@ export function OfferForm({
 
   const [showAudienceDialog, setShowAudienceDialog] = useState(false);
 
+  const mountAudienceDialog = useDelayedOff(showAudienceDialog);
+
   const [audience, setAudience] = useState<string[]>(() => [
     ...(offer?.offerLists?.map((item) => "l:" + item.listId) ?? []),
     ...(offer?.offerUsers?.map((item) => "u:" + item.userId) ?? []),
@@ -100,24 +107,83 @@ export function OfferForm({
     }
   };
 
+  const [showMapDialog, setShowMapDialog] = useState(false);
+
+  const mountMapDialog = useDelayedOff(showMapDialog);
+
+  const [place, setPlace] = useState<
+    | undefined
+    | {
+        center: LngLat;
+        radius: number;
+        zoom: number;
+      }
+  >(
+    offer
+      ? {
+          center: new LngLat(offer.lng!, offer.lat!),
+          zoom: offer.zoom!,
+          radius: offer.radius!,
+        }
+      : undefined
+  );
+
+  const rootRef = useRef<HTMLFormElement | null>(null);
+
+  const [focused, setFocused] = useState(false);
+
+  const [dateTimePickerOpen, setDateTimePickerOpen] = useState(false);
+
   return (
     <Paper
+      ref={rootRef}
       sx={{
         p: 2,
         display: "flex",
         gap: 2,
         flexWrap: "wrap",
+        height:
+          message.trim() ||
+          focused ||
+          showAudienceDialog ||
+          showMapDialog ||
+          dateTimePickerOpen ||
+          place ||
+          audience.length > 0 ||
+          validFrom ||
+          validTo
+            ? rootRef.current?.scrollHeight
+            : "6rem",
+        ":focus-within": {
+          height: rootRef.current?.scrollHeight,
+        },
+        overflow: "hidden",
+        transition: "height 0.2s",
       }}
       component="form"
       onSubmit={handleSubmit}
     >
-      <AudienceDialog
-        audience={audience}
-        open={showAudienceDialog}
-        onClose={handleAudienceClose}
-        friends={friends}
-        lists={lists}
-      />
+      {mountAudienceDialog && (
+        <AudienceDialog
+          audience={audience}
+          open={showAudienceDialog}
+          onClose={handleAudienceClose}
+          friends={friends}
+          lists={lists}
+        />
+      )}
+
+      {mountMapDialog && (
+        <MapDialog
+          open={showMapDialog}
+          value={place}
+          onClose={(place) => {
+            setPlace(place);
+
+            setShowMapDialog(false);
+          }}
+        />
+      )}
 
       <TextField
         label={t("Offer")}
@@ -126,26 +192,61 @@ export function OfferForm({
         maxRows={6}
         value={message}
         onChange={(e) => setMessage(e.currentTarget.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
       />
 
       <Box
-        sx={[
-          {
-            width: "100%",
+        sx={{
+          width: "100%",
+          display: "flex",
+          rowGap: 2,
+          columnGap: 1,
+          flexDirection: "column",
+          alignItems: "flex-start",
+        }}
+      >
+        <Box
+          sx={{
             display: "flex",
-            rowGap: 2,
             columnGap: 1,
+            rowGap: 2,
             alignItems: "center",
             flexWrap: "wrap",
-          },
-          (theme) => ({
-            [theme.breakpoints.down("md")]: {
-              flexDirection: "column",
-              alignItems: "flex-start",
-            },
-          }),
-        ]}
-      >
+          }}
+        >
+          <Typography>{t("Time")}</Typography>
+
+          <DateTimePicker
+            label={t("DateFrom")}
+            renderInput={(props) => (
+              <TextField {...props} inputProps={{ ...props.inputProps }} />
+            )}
+            onChange={(value) => setValidFrom(value)}
+            value={validFrom}
+            mask={mask}
+            ampm={locale === "en"}
+            minDateTime={now}
+            maxDateTime={validTo}
+            onOpen={() => setDateTimePickerOpen(true)}
+            onClose={() => setDateTimePickerOpen(false)}
+          />
+
+          <DateTimePicker
+            label={t("DateTo")}
+            renderInput={(props) => (
+              <TextField {...props} inputProps={{ ...props.inputProps }} />
+            )}
+            onChange={(value) => setValidTo(value)}
+            value={validTo}
+            mask={mask}
+            ampm={locale === "en"}
+            minDateTime={validFrom || now}
+            onOpen={() => setDateTimePickerOpen(true)}
+            onClose={() => setDateTimePickerOpen(false)}
+          />
+        </Box>
+
         <Box
           sx={{
             display: "flex",
@@ -196,36 +297,17 @@ export function OfferForm({
         <Box
           sx={{
             display: "flex",
-            columnGap: 1,
-            rowGap: 2,
+            gap: 1,
             alignItems: "center",
-            flexWrap: "wrap",
           }}
         >
-          <DateTimePicker
-            label={t("DateFrom")}
-            renderInput={(props) => (
-              <TextField {...props} inputProps={{ ...props.inputProps }} />
-            )}
-            onChange={(value) => setValidFrom(value)}
-            value={validFrom}
-            mask={mask}
-            ampm={locale === "en"}
-            minDateTime={now}
-            maxDateTime={validTo}
-          />
+          <Typography>{t("Place")}:</Typography>
 
-          <DateTimePicker
-            label={t("DateTo")}
-            renderInput={(props) => (
-              <TextField {...props} inputProps={{ ...props.inputProps }} />
-            )}
-            onChange={(value) => setValidTo(value)}
-            value={validTo}
-            mask={mask}
-            ampm={locale === "en"}
-            minDateTime={validFrom || now}
-          />
+          <Typography>{place ? t("placeSet") : t("placeNotSet")}</Typography>
+
+          <IconButton onClick={() => setShowMapDialog(true)}>
+            <PlaceIcon />
+          </IconButton>
         </Box>
 
         <Box
@@ -233,18 +315,39 @@ export function OfferForm({
             display: "flex",
             gap: 1,
             flexGrow: 1,
-            justifyContent: "flex-end",
+            alignSelf: "flex-end",
           }}
         >
           <Button disabled={!message.trim()} type="submit">
             {t(offer ? "Save" : "PlaceThisOffer")}
           </Button>
 
-          {offer && (
-            <Button variant="text" onClick={() => onCancel?.()}>
-              {t("Cancel")}
-            </Button>
-          )}
+          <Button
+            variant="text"
+            onClick={(e) => {
+              setMessage("");
+              setPlace(undefined);
+              setValidFrom(null);
+              setValidTo(null);
+              setAudience([]);
+
+              onCancel?.();
+
+              e.currentTarget.blur();
+            }}
+            disabled={
+              !(
+                offer ||
+                message.trim() ||
+                place ||
+                validFrom ||
+                validTo ||
+                audience.length > 0
+              )
+            }
+          >
+            {t("Cancel")}
+          </Button>
         </Box>
       </Box>
     </Paper>

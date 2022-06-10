@@ -75,7 +75,7 @@ export default function SignIn({ providers }: Props) {
                     email = window.prompt(t("WhatIsYourEmail")) ?? undefined;
 
                     // super-simple validation
-                    if (!email || !email.includes("@")) {
+                    if (!email?.includes("@")) {
                       return;
                     }
                   }

@@ -88,5 +88,12 @@
   "FewFriendsAlert": "Spetito je veľmi mladá sociálna sieť a preto je možné, že v nej nájdete iba málo vaších priateľov. V tom prípade je najlepšie ich osloviť, aby sa do Spetita pridali. ❤",
   "Modify": "Upraviť",
   "ListInfoAlert": "V zozname si viete spravovať vašich priateľov podľa nejakého spoločného záujmu. Potom ho môžete uviesť ako publikum vašej ponuky a takto budú túto ponuku vidieť iba priatelia z daného zoznamu. Príklad zoznamu: <1>Kamaráti na turistiku</1> alebo <3>Rodina</3>",
-  "WhatIsYourEmail": "Aka je vaša emailová adresa?"
+  "WhatIsYourEmail": "Aka je vaša emailová adresa?",
+  "Place": "Miesto",
+  "placeSet": "miesto nastavené",
+  "placeNotSet": "miesto nenastavené",
+  "SetPositionTitle": "Nastavenie miesta",
+  "Radius": "Polomer",
+  "Clear": "Zmazať",
+  "Time": "Čas"
 }

@@ -26,13 +26,21 @@ export default async function handler(
   const userId = user?.id;
 
   // TODO validate
-  const { message, validFrom, validTo, audience } = req.body as {
+  const { message, validFrom, validTo, audience, place } = req.body as {
     message: string;
     validFrom?: string;
     validTo?: string;
     audience: {
       users: string[];
       lists: string[];
+    };
+    place: null | {
+      center: {
+        lng: number;
+        lat: number;
+      };
+      zoom: number;
+      radius: number;
     };
   };
 
@@ -42,6 +50,10 @@ export default async function handler(
       validFrom,
       validTo,
       userId,
+      lat: place?.center.lat,
+      lng: place?.center.lng,
+      zoom: place?.zoom,
+      radius: place?.radius,
       offerLists: {
         createMany: {
           data: audience.lists.map((listId) => ({

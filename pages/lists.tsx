@@ -30,6 +30,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { Trans, useTranslation } from "next-i18next";
 import { redirectToLogIn } from "../lib/auth";
 import { User } from "@prisma/client";
+import { useDelayedOff } from "../hooks/useDelayedOff";
 
 type Props = {
   lists: ListWithMembers[];
@@ -70,6 +71,8 @@ const Lists: NextPage<Props> = ({ lists }) => {
 
   const [managing, setManaging] = useState(false);
 
+  const mountListManageDialog = useDelayedOff(managing);
+
   const expandedList = lists.find((list) => list.id === expanded);
 
   const { t } = useTranslation("common");
@@ -82,7 +85,7 @@ const Lists: NextPage<Props> = ({ lists }) => {
 
   return (
     <Layout title={t("Lists")}>
-      {expandedList && (
+      {expandedList && mountListManageDialog && (
         <ListManageDialog
           open={managing}
           onClose={(refresh) => {

@@ -6,7 +6,7 @@ import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useCallback, useEffect } from "react";
 import { Layout } from "../components/Layout";
-import { OfferForm } from "../components/OfferInput";
+import { OfferForm } from "../components/OfferForm";
 import { OfferItem } from "../components/Offer";
 import { prisma } from "../lib/prisma";
 import { useFriends } from "../hooks/useFriends";
@@ -65,6 +65,8 @@ const Home: NextPage<Props> = ({ yourOffers, friendsOffers, now }) => {
       (b.validFrom ?? b.createdAt).getTime()
     );
   }
+
+  console.log(yourOffers);
 
   return (
     <Layout title={t("Offers")}>

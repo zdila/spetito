@@ -88,5 +88,12 @@
   "FewFriendsAlert": "Spetito is a very young social network and therefore it is possible that you will find here only a few of your friends. In that case, it's best to contact them to join Spetito. ❤",
   "Modify": "Modify",
   "ListInfoAlert": "In the list, you can manage your friends according to some common interest. You can then list it as the audience for your offer, and only friends on that list will see this offer. Example list: <1>Hiking friends</1> or <3>Family</3>",
-  "WhatIsYourEmail": "What is your email address?"
+  "WhatIsYourEmail": "What is your email address?",
+  "Place": "Place",
+  "placeSet": "place set",
+  "placeNotSet": "place not set",
+  "SetPositionTitle": "Set place",
+  "Radius": "Radius",
+  "Clear": "Clear",
+  "Time": "Time"
 }

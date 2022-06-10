@@ -23,6 +23,10 @@ model Offer {
   offerLists   OfferList[]
   offerUsers   OfferUser[]
   hiddenOffers HiddenOffers[]
+  lng          Float?
+  lat          Float?
+  zoom         Float?
+  radius       Int?
 
   @@map(name: "offers")
 }
