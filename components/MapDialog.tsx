@@ -8,6 +8,8 @@ import {
   Divider,
   Slider,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import maplibregl, { GeoJSONSource, LngLat } from "maplibre-gl";
 import { useTranslation } from "next-i18next";
@@ -29,6 +31,8 @@ export function MapDialog({ open, onClose, value, readOnly }: Props) {
   const [mapContainer, setMapContainer] = useState<HTMLDivElement | null>(null);
 
   const [map, setMap] = useState<maplibregl.Map>();
+
+  console.log({ value });
 
   const [center, setCenter] = useState<LngLat | undefined>(value?.center);
 
@@ -124,14 +128,24 @@ export function MapDialog({ open, onClose, value, readOnly }: Props) {
 
   const nf1 = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });
 
+  const theme = useTheme();
+
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
   return (
-    <Dialog fullWidth maxWidth="xl" open={open} onClose={() => onClose()}>
+    <Dialog
+      fullWidth
+      maxWidth="xl"
+      fullScreen={fullScreen}
+      open={open}
+      onClose={() => onClose()}
+    >
       <DialogTitle>{t(readOnly ? "Place" : "SetPositionTitle")}</DialogTitle>
 
       <DialogContent>
         <Box
           sx={{
-            height: "70vh",
+            height: fullScreen ? "100%" : "70vh",
             minHeight: "300px",
             position: "relative",
           }}

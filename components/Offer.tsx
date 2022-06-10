@@ -141,13 +141,13 @@ export function OfferItem({
                       t("allMyFriends")}
                   </>
                 ) : null}
-              </Typography>
 
-              {offer.lat != null && (
-                <IconButton size="small" onClick={() => setMapShown(true)}>
-                  <PlaceIcon />
-                </IconButton>
-              )}
+                {offer.lat != null && (
+                  <IconButton size="small" onClick={() => setMapShown(true)}>
+                    <PlaceIcon />
+                  </IconButton>
+                )}
+              </Typography>
 
               <>
                 {offer.offerLists?.map((item) => (

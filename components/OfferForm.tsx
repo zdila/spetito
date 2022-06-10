@@ -119,7 +119,7 @@ export function OfferForm({
         zoom: number;
       }
   >(
-    offer
+    offer?.lat != null
       ? {
           center: new LngLat(offer.lng!, offer.lat!),
           zoom: offer.zoom!,
@@ -133,6 +133,8 @@ export function OfferForm({
   const [focused, setFocused] = useState(false);
 
   const [dateTimePickerOpen, setDateTimePickerOpen] = useState(false);
+
+  const tfRef = useRef<HTMLInputElement | null>(null);
 
   return (
     <Paper
@@ -152,8 +154,8 @@ export function OfferForm({
           audience.length > 0 ||
           validFrom ||
           validTo
-            ? rootRef.current?.scrollHeight
-            : "6rem",
+            ? rootRef.current?.scrollHeight ?? 80
+            : (tfRef.current?.scrollHeight ?? 50) + 32,
         ":focus-within": {
           height: rootRef.current?.scrollHeight,
         },
@@ -194,6 +196,7 @@ export function OfferForm({
         onChange={(e) => setMessage(e.currentTarget.value)}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
+        ref={tfRef}
       />
 
       <Box
