@@ -239,7 +239,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
       friendsOffers,
       yourOffers,
       now: new Date(),
-      timeZone: user.extra.timeZone,
+      timeZone: user.timeZone,
     },
   };
 };

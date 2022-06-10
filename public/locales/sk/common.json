@@ -97,5 +97,7 @@
   "Radius": "Polomer",
   "Clear": "Zmazať",
   "Time": "Čas",
-  "TimeZone": "Časové pásmo"
+  "TimeZone": "Časové pásmo",
+  "EmailNotifications": "Posielať notifikácie o ponukách a priateľoch emailom",
+  "BrowserNotifications": "Povoliť pop-up notifikácie"
 }

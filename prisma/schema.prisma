@@ -136,6 +136,8 @@ model User {
   hideFewFriendsAlert Boolean            @default(false)
   language            String?
   timeZone            String?
+  useEmailNotif       Boolean            @default(true)
+  usePushNotif        Boolean            @default(true)
 
   @@map(name: "users")
 }

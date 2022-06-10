@@ -3,23 +3,25 @@ import {
   Avatar,
   Box,
   Button,
-  MenuItem,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
   Paper,
-  Select,
   TextField,
   Typography,
 } from "@mui/material";
 import type { GetServerSideProps, NextPage } from "next";
-import { DefaultUser } from "next-auth";
+import { User } from "next-auth";
+import Email from "next-auth/providers/email";
 import { getSession, signOut, useSession } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LanguageSwitcher } from "../components/LanguageSwitcher";
 import { Layout } from "../components/Layout";
 import { redirectToLogIn } from "../lib/auth";
 
-type Props = { user: DefaultUser };
+type Props = { user: User };
 
 const Settings: NextPage<Props> = ({ user }) => {
   const { t } = useTranslation();
@@ -33,32 +35,35 @@ const Settings: NextPage<Props> = ({ user }) => {
     }
   }
 
-  const session = useSession();
+  const [timeZone, setTimeZone] = useState<string | null>(user.timeZone);
 
-  const [timeZone, setTimeZone] = useState<string | null>(null);
+  const [emailNotifications, setEmailNotifications] = useState(
+    user.useEmailNotif
+  );
 
-  const tz =
-    session.status === "authenticated"
-      ? session.data?.user?.extra.timeZone
-      : null;
+  const [browserNotifications, setBrowserNotifications] = useState(
+    user.usePushNotif
+  );
+
+  const firstRef = useRef(true);
 
   useEffect(() => {
-    if (tz) {
-      setTimeZone(tz);
-    }
-  }, [tz]);
+    if (firstRef.current) {
+      firstRef.current = false;
 
-  const setTimeZone1 = (timeZone: string) => {
-    setTimeZone(timeZone);
+      return;
+    }
 
     fetch("/api/users/_self_", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         timeZone,
+        useEmailNotif: emailNotifications,
+        usePushNotif: browserNotifications,
       }),
     });
-  };
+  }, [timeZone, emailNotifications, browserNotifications]);
 
   return (
     <Layout title={t("Settings")}>
@@ -89,20 +94,31 @@ const Settings: NextPage<Props> = ({ user }) => {
           renderInput={(params) => (
             <TextField {...params} label={t("TimeZone")} />
           )}
-          onChange={(_, value) => setTimeZone1(value)}
+          onChange={(_, value) => setTimeZone(value)}
           value={timeZone ?? ""}
           disableClearable
         />
+
+        <FormGroup>
+          <FormControlLabel
+            control={<Checkbox />}
+            label={t("EmailNotifications")}
+            checked={emailNotifications}
+            onChange={() => setEmailNotifications((b) => !b)}
+          />
+
+          <FormControlLabel
+            control={<Checkbox />}
+            label={t("BrowserNotifications")}
+            checked={browserNotifications}
+            onChange={() => setBrowserNotifications((b) => !b)}
+          />
+        </FormGroup>
 
         <Button onClick={() => deleteAccount()} color="error">
           {t("DeleteAccount")}
         </Button>
       </Paper>
-      {/* <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
-        Notifications
-      </Typography>
-
-      <Paper sx={{ p: 2 }}></Paper> */}
     </Layout>
   );
 };

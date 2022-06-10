@@ -97,5 +97,7 @@
   "Radius": "Radius",
   "Clear": "Clear",
   "Time": "Time",
-  "TimeZone": "Time zone"
+  "TimeZone": "Time zone",
+  "EmailNotifications": "Mail notifications about offers and friends",
+  "BrowserNotifications": "Enable pop-up notifications"
 }

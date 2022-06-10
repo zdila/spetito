@@ -157,7 +157,7 @@ export function Layout({ children, title }: Props) {
 
   const timeZone =
     session.status === "authenticated"
-      ? session.data?.user?.extra.timeZone
+      ? session.data?.user?.timeZone
       : "_loading_";
 
   useEffect(() => {

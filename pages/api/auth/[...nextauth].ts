@@ -44,11 +44,7 @@ export default NextAuth({
   callbacks: {
     session: async ({ session, user }) => {
       if (session.user) {
-        session.user.id = user.id;
-        session.user.extra = {
-          hideFewFriendsAlert: Boolean(user["hideFewFriendsAlert"]),
-          timeZone: user["timeZone"] == null ? null : String(user["timeZone"]),
-        };
+        Object.assign(session.user, user);
       }
 
       return Promise.resolve(session);

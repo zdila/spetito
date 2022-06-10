@@ -1,14 +1,17 @@
-import { List, Offer, OfferList, OfferUser, User } from "@prisma/client";
+import {
+  List,
+  Offer,
+  OfferList,
+  OfferUser,
+  User as PrismaUser,
+} from "@prisma/client";
 import type { DefaultUser } from "next-auth";
 
 declare module "next-auth" {
+  interface User extends PrismaUser {}
+
   interface Session {
-    user?: DefaultUser & {
-      extra: {
-        hideFewFriendsAlert: boolean;
-        timeZone: string | null;
-      };
-    };
+    user?: User;
   }
 }
 
@@ -23,8 +26,8 @@ declare global {
 }
 
 export type OfferExt = Offer & {
-  author: User | null;
+  author: PrismaUser | null;
 
   offerLists?: (OfferList & { list: List })[];
-  offerUsers?: (OfferUser & { user: User })[];
+  offerUsers?: (OfferUser & { user: PrismaUser })[];
 };

@@ -218,7 +218,7 @@ const Friends: NextPage<Props> = ({
 
       <Paper sx={{ p: 2 }}>
         {session.status === "authenticated" &&
-          !session.data?.user?.extra.hideFewFriendsAlert &&
+          !session.data?.user?.hideFewFriendsAlert &&
           (typeof window === "undefined" ||
             !window._spetito_hideFewFriendsAlert) && (
             <Alert
