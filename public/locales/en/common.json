@@ -67,6 +67,7 @@
   "NotificationsDenied": "Notifications are denied.",
   "DeleteAccount": "Delete account",
   "AreYouSure": "Are you sure?",
+  "AreYouReallySure": "Are you really sure?",
   "signInError": {
     "Signin": "Try signing in with a different account.",
     "OAuthSignin": "Try signing in with a different account.",
@@ -95,5 +96,6 @@
   "SetPositionTitle": "Set place",
   "Radius": "Radius",
   "Clear": "Clear",
-  "Time": "Time"
+  "Time": "Time",
+  "TimeZone": "Time zone"
 }

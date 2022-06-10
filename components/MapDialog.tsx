@@ -32,8 +32,6 @@ export function MapDialog({ open, onClose, value, readOnly }: Props) {
 
   const [map, setMap] = useState<maplibregl.Map>();
 
-  console.log({ value });
-
   const [center, setCenter] = useState<LngLat | undefined>(value?.center);
 
   useEffect(() => {

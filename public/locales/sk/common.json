@@ -67,6 +67,7 @@
   "NotificationsDenied": "Notifikácie sú zakázané.",
   "DeleteAccount": "Zmazať účet",
   "AreYouSure": "Ste si istý?",
+  "AreYouReallySure": "Ste si naozaj istý?",
   "signInError": {
     "Signin": "Pokúste sa prihlásiť iným účtom.",
     "OAuthSignin": "Pokúste sa prihlásiť iným účtom.",
@@ -95,5 +96,6 @@
   "SetPositionTitle": "Nastavenie miesta",
   "Radius": "Polomer",
   "Clear": "Zmazať",
-  "Time": "Čas"
+  "Time": "Čas",
+  "TimeZone": "Časové pásmo"
 }

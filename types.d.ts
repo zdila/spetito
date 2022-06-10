@@ -6,6 +6,7 @@ declare module "next-auth" {
     user?: DefaultUser & {
       extra: {
         hideFewFriendsAlert: boolean;
+        timeZone: string | null;
       };
     };
   }

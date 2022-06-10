@@ -47,6 +47,7 @@ export default NextAuth({
         session.user.id = user.id;
         session.user.extra = {
           hideFewFriendsAlert: Boolean(user["hideFewFriendsAlert"]),
+          timeZone: user["timeZone"] == null ? null : String(user["timeZone"]),
         };
       }
 

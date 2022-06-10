@@ -31,9 +31,16 @@ export default async function handler(
     }
 
     if (req.method === "PATCH") {
+      // TODO validate
+      const { hideFewFriendsAlert, timeZone = null } = req.body as {
+        hideFewFriendsAlert?: boolean;
+        timeZone?: string | null;
+      };
+
       await prisma.user.update({
         data: {
-          hideFewFriendsAlert: true,
+          hideFewFriendsAlert,
+          timeZone,
         },
         where: {
           id,

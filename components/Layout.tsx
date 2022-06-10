@@ -13,7 +13,7 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -152,6 +152,27 @@ export function Layout({ children, title }: Props) {
   useEffect(() => {
     setSupportsPush1(supportsPush);
   }, []);
+
+  const session = useSession();
+
+  const timeZone =
+    session.status === "authenticated"
+      ? session.data?.user?.extra.timeZone
+      : "_loading_";
+
+  useEffect(() => {
+    if (timeZone) {
+      return;
+    }
+
+    fetch("/api/users/_self_", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      }),
+    });
+  }, [timeZone]);
 
   const drawer = (
     <>

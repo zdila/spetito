@@ -134,6 +134,8 @@ model User {
   pushRegistrations   PushRegistration[]
   hiddenOffers        HiddenOffers[]
   hideFewFriendsAlert Boolean            @default(false)
+  language            String?
+  timeZone            String?
 
   @@map(name: "users")
 }

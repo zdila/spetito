@@ -13,6 +13,7 @@ import PlaceIcon from "@mui/icons-material/Place";
 import { useDelayedOff } from "../hooks/useDelayedOff";
 import { MapDialog } from "./MapDialog";
 import { LngLat } from "maplibre-gl";
+import { useSession } from "next-auth/react";
 
 type Props = {
   own?: boolean;
@@ -21,6 +22,7 @@ type Props = {
   friends?: User[];
   lists?: List[];
   now?: Date;
+  timeZone?: string;
 };
 
 export function OfferItem({
@@ -30,6 +32,7 @@ export function OfferItem({
   friends,
   lists,
   now,
+  timeZone,
 }: Props) {
   const { t } = useTranslation("common");
 
@@ -104,10 +107,11 @@ export function OfferItem({
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <Typography variant="body2">
                 {/* {(
-                  offer.createdAt.toLocaleDateString(locale) +
+                  offer.createdAt.toLocaleDateString(locale, { timeZone }) +
                   " " +
                   offer.createdAt.toLocaleTimeString(locale, {
                     timeStyle: "short",
+                    timeZone,
                   })
                 ).replaceAll(" ", "\xa0")}{" "} */}
                 {validFrom || validTo ? "🗓" : null}
@@ -116,10 +120,11 @@ export function OfferItem({
                     t("dateFrom") +
                     " " +
                     (
-                      validFrom.toLocaleDateString(locale) +
+                      validFrom.toLocaleDateString(locale, { timeZone }) +
                       " " +
                       validFrom.toLocaleTimeString(locale, {
                         timeStyle: "short",
+                        timeZone,
                       })
                     ).replaceAll(" ", "\xa0")
                   : null}
@@ -128,9 +133,12 @@ export function OfferItem({
                     t("dateTo") +
                     " " +
                     (
-                      validTo.toLocaleDateString(locale) +
+                      validTo.toLocaleDateString(locale, { timeZone }) +
                       " " +
-                      validTo.toLocaleTimeString(locale, { timeStyle: "short" })
+                      validTo.toLocaleTimeString(locale, {
+                        timeStyle: "short",
+                        timeZone,
+                      })
                     ).replaceAll(" ", "\xa0")
                   : null}
                 {offer.offerLists && offer.offerUsers ? (

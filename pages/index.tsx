@@ -23,9 +23,15 @@ type Props = {
     offerUsers: (OfferUser & { user: User })[];
   })[];
   now: Date;
+  timeZone: string | null;
 };
 
-const Home: NextPage<Props> = ({ yourOffers, friendsOffers, now }) => {
+const Home: NextPage<Props> = ({
+  yourOffers,
+  friendsOffers,
+  now,
+  timeZone,
+}) => {
   const router = useRouter();
 
   const friends = useFriends();
@@ -66,8 +72,6 @@ const Home: NextPage<Props> = ({ yourOffers, friendsOffers, now }) => {
     );
   }
 
-  console.log(yourOffers);
-
   return (
     <Layout title={t("Offers")}>
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
@@ -93,6 +97,7 @@ const Home: NextPage<Props> = ({ yourOffers, friendsOffers, now }) => {
               friends={friends}
               lists={lists}
               now={now}
+              timeZone={timeZone ?? undefined}
               own
             />
           ))}
@@ -108,7 +113,12 @@ const Home: NextPage<Props> = ({ yourOffers, friendsOffers, now }) => {
       ) : (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           {[...friendsOffers].sort(compareOffers).map((offer) => (
-            <OfferItem key={offer.id} offer={offer} onDelete={refresh} />
+            <OfferItem
+              key={offer.id}
+              offer={offer}
+              onDelete={refresh}
+              timeZone={timeZone ?? undefined}
+            />
           ))}
         </Box>
       )}
@@ -121,11 +131,13 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 ) => {
   const session = await getSession(context);
 
-  const id = session?.user?.id;
+  const user = session?.user;
 
-  if (!id) {
+  if (!user) {
     return redirectToLogIn(context, "/");
   }
+
+  const id = user.id;
 
   const friendsOffers = await prisma.offer.findMany({
     include: { author: true },
@@ -227,6 +239,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
       friendsOffers,
       yourOffers,
       now: new Date(),
+      timeZone: user.extra.timeZone,
     },
   };
 };
