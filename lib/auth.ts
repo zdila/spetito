@@ -4,14 +4,16 @@ export function redirectToLogIn(
   context: GetServerSidePropsContext,
   path: string
 ) {
-  const callbackUrl =
-    process.env.BASE_URL +
-    (context.locale === "en" ? "" : "/" + context.locale) +
-    path;
+  const localePath = context.locale === "en" ? "" : "/" + context.locale;
+
+  const callbackUrl = process.env.BASE_URL + localePath + path;
 
   return {
     redirect: {
-      destination: "/api/auth/signin?callbackUrl=" + callbackUrl,
+      destination:
+        localePath +
+        "/auth/signin?callbackUrl=" +
+        encodeURIComponent(callbackUrl),
       permanent: false,
     },
   };
