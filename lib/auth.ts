@@ -1,15 +1,17 @@
 import { GetServerSidePropsContext } from "next";
-import { getSession } from "next-auth/react";
 
 export function redirectToLogIn(
   context: GetServerSidePropsContext,
   path: string
 ) {
+  const callbackUrl =
+    process.env.BASE_URL +
+    (context.locale === "en" ? "" : "/" + context.locale) +
+    path;
+
   return {
     redirect: {
-      destination: `/api/auth/signin?callbackUrl=${
-        context.locale === "en" ? "" : "/" + context.locale
-      }${path}`,
+      destination: "/api/auth/signin?callbackUrl=" + callbackUrl,
       permanent: false,
     },
   };
