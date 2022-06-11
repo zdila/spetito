@@ -144,18 +144,19 @@ export function OfferForm({
         display: "flex",
         gap: 2,
         flexWrap: "wrap",
-        height:
-          message.trim() ||
-          focused ||
-          showAudienceDialog ||
-          showMapDialog ||
-          dateTimePickerOpen ||
-          place ||
-          audience.length > 0 ||
-          validFrom ||
-          validTo
-            ? rootRef.current?.scrollHeight ?? 80
-            : (tfRef.current?.scrollHeight ?? 50) + 32,
+        height: offer
+          ? undefined
+          : message.trim() ||
+            focused ||
+            showAudienceDialog ||
+            showMapDialog ||
+            dateTimePickerOpen ||
+            place ||
+            audience.length > 0 ||
+            validFrom ||
+            validTo
+          ? rootRef.current?.scrollHeight ?? 80
+          : (tfRef.current?.scrollHeight ?? 50) + 32,
         ":focus-within": {
           height: rootRef.current?.scrollHeight,
         },
@@ -197,6 +198,7 @@ export function OfferForm({
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         ref={tfRef}
+        autoFocus={!!offer}
       />
 
       <Box
