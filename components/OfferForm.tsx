@@ -111,21 +111,18 @@ export function OfferForm({
 
   const mountMapDialog = useDelayedOff(showMapDialog);
 
-  const [place, setPlace] = useState<
-    | undefined
-    | {
-        center: LngLat;
-        radius: number;
-        zoom: number;
-      }
-  >(
+  const [place, setPlace] = useState<null | {
+    center: LngLat;
+    radius: number;
+    zoom: number;
+  }>(
     offer?.lat != null
       ? {
           center: new LngLat(offer.lng!, offer.lat!),
           zoom: offer.zoom!,
           radius: offer.radius!,
         }
-      : undefined
+      : null
   );
 
   const rootRef = useRef<HTMLFormElement | null>(null);
@@ -181,7 +178,9 @@ export function OfferForm({
           open={showMapDialog}
           value={place}
           onClose={(place) => {
-            setPlace(place);
+            if (place !== undefined) {
+              setPlace(place);
+            }
 
             setShowMapDialog(false);
           }}
@@ -331,7 +330,7 @@ export function OfferForm({
             variant="text"
             onClick={(e) => {
               setMessage("");
-              setPlace(undefined);
+              setPlace(null);
               setValidFrom(null);
               setValidTo(null);
               setAudience([]);

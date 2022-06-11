@@ -20,8 +20,10 @@ import { useRouter } from "next/router";
 
 type Props = {
   open: boolean;
-  value?: { center: LngLat; zoom: number; radius: number };
-  onClose: (result?: { center: LngLat; zoom: number; radius: number }) => void;
+  value: null | { center: LngLat; zoom: number; radius: number };
+  onClose: (
+    result?: null | { center: LngLat; zoom: number; radius: number }
+  ) => void;
   readOnly?: boolean;
 };
 
@@ -198,11 +200,13 @@ export function MapDialog({ open, onClose, value, readOnly }: Props) {
           <Button
             onClick={() =>
               onClose(
-                center && {
-                  center,
-                  zoom: map?.getZoom() ?? 2,
-                  radius: Math.pow(radius ?? 0, 10),
-                }
+                center
+                  ? {
+                      center,
+                      zoom: map?.getZoom() ?? 2,
+                      radius: Math.pow(radius ?? 0, 10),
+                    }
+                  : null
               )
             }
           >

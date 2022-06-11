@@ -78,7 +78,7 @@ export function OfferItem({
           onClose={() => setMapShown(false)}
           value={
             offer.lng == null
-              ? undefined
+              ? null
               : {
                   center: new LngLat(offer.lng!, offer.lat!),
                   zoom: offer.zoom!,
