@@ -120,6 +120,9 @@ const Settings: NextPage<Props> = ({ user }) => {
         <LanguageSwitcher />
 
         <Autocomplete
+          openText={t("open")}
+          clearText={t("clear")}
+          noOptionsText={t("noResults")}
           options={aryIannaTimeZones}
           sx={{ width: 300 }}
           renderInput={(params) => (

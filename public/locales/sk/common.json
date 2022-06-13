@@ -100,5 +100,8 @@
   "TimeZone": "Časové pásmo",
   "EmailNotifications": "Posielať notifikácie o ponukách a priateľoch emailom",
   "BrowserNotifications": "Povoliť pop-up notifikácie",
-  "Ignore": "Ignorovať"
+  "Ignore": "Ignorovať",
+  "noResults": "žiadne výsledky",
+  "clear": "vyčistiť",
+  "open": "otvoriť"
 }

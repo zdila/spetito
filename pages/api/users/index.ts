@@ -46,6 +46,12 @@ export default async function handler(
   const params: Prisma.UserFindManyArgs = { where };
 
   if (req.query.filter === "notFriendsAndNotPending") {
+    if (typeof q !== "string" || q.length < 3) {
+      res.status(400).end();
+
+      return;
+    }
+
     noneOf.push(
       // exclude already invited
       {
@@ -88,6 +94,10 @@ export default async function handler(
         },
       },
     ];
+  } else {
+    res.status(400).end();
+
+    return;
   }
 
   res.json(await prisma.user.findMany(params));

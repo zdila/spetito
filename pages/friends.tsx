@@ -52,7 +52,7 @@ const Friends: NextPage<Props> = ({
   }
 
   useEffect(() => {
-    if (inputValue.trim() === "") {
+    if (inputValue.trim().length < 3) {
       setOptions([]);
 
       return;
@@ -240,6 +240,9 @@ const Friends: NextPage<Props> = ({
           )}
 
         <Autocomplete
+          openText={t("open")}
+          clearText={t("clear")}
+          noOptionsText={t("noResults")}
           getOptionLabel={(option) => option.name ?? "-"}
           renderInput={(params) => (
             <TextField {...params} label={t("YourFriendsName")} fullWidth />

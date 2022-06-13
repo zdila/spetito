@@ -100,5 +100,8 @@
   "TimeZone": "Time zone",
   "EmailNotifications": "Mail notifications about offers and friends",
   "BrowserNotifications": "Enable pop-up notifications",
-  "Ignore": "Ignore"
+  "Ignore": "Ignore",
+  "noResults": "no results",
+  "clear": "clear",
+  "open": "open"
 }
