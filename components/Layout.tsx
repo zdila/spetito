@@ -10,7 +10,6 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Stack,
   Toolbar,
   Typography,
 } from "@mui/material";
@@ -33,6 +32,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
 import { usePushNotificationRegistration } from "../lib/pushRegistration";
 import { getCookie } from "../lib/cookies";
+import { useSnackbar } from "notistack";
+import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
 
 type Props = {
   title: string;
@@ -122,19 +123,23 @@ export function Layout({ children, title }: Props) {
       ? session.data?.user?.timeZone
       : "_loading_";
 
+  const handleFetchFail = useFetchFailHandler();
+
   useEffect(() => {
     if (timeZone) {
       return;
     }
 
-    fetch("/api/users/_self_", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      }),
-    });
-  }, [timeZone]);
+    handleFetchFail(
+      fetch("/api/users/_self_", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        }),
+      })
+    );
+  }, [timeZone, handleFetchFail]);
 
   const drawer = (
     <>

@@ -27,6 +27,7 @@ import { supportsPush } from "../lib/capabilities";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { redirectToLogIn } from "../lib/auth";
+import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
 
 type Props = {
   usersInvitedByMe: User[];
@@ -51,6 +52,8 @@ const Friends: NextPage<Props> = ({
     return (a.name ?? "").localeCompare(b.name ?? "", router.locale);
   }
 
+  const handleFetchFail = useFetchFailHandler();
+
   useEffect(() => {
     if (inputValue.trim().length < 3) {
       setOptions([]);
@@ -61,20 +64,22 @@ const Friends: NextPage<Props> = ({
     const controller = new AbortController();
 
     (async () => {
-      const res = await fetch(
-        "/api/users?q=" +
-          encodeURIComponent(inputValue.trim()) +
-          "&filter=notFriendsAndNotPending",
-        { signal: controller.signal }
+      const res = await handleFetchFail(
+        fetch(
+          "/api/users?q=" +
+            encodeURIComponent(inputValue.trim()) +
+            "&filter=notFriendsAndNotPending",
+          { signal: controller.signal }
+        )
       );
 
-      const options: User[] = await res.json();
-
-      setOptions(options);
+      if (res) {
+        setOptions(await res.json());
+      }
     })();
 
     return () => controller.abort();
-  }, [inputValue]);
+  }, [inputValue, handleFetchFail]);
 
   const refresh = useCallback(() => {
     router.replace(router.asPath);
@@ -85,45 +90,61 @@ const Friends: NextPage<Props> = ({
       return;
     }
 
-    fetch("/api/invites", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId: value?.id }),
-    }).then(() => {
-      setValue(null);
+    handleFetchFail(
+      fetch("/api/invites", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: value?.id }),
+      })
+    ).then((res) => {
+      if (res) {
+        setValue(null);
 
-      setInputValue("");
+        setInputValue("");
 
-      refresh();
+        refresh();
+      }
     });
   });
 
   async function deleteRequest(id: string) {
     if (window.confirm(t("AreYouSure"))) {
-      await fetch("/api/invites/" + encodeURIComponent(id), {
-        method: "DELETE",
-      });
+      const res = await handleFetchFail(
+        fetch("/api/invites/" + encodeURIComponent(id), {
+          method: "DELETE",
+        })
+      );
 
-      refresh();
+      if (res) {
+        refresh();
+      }
     }
   }
 
   async function removeFriend(id: string) {
     if (window.confirm(t("AreYouSure"))) {
-      await fetch("/api/follows/" + encodeURIComponent(id), {
-        method: "DELETE",
-      });
+      const res = await handleFetchFail(
+        fetch("/api/follows/" + encodeURIComponent(id), {
+          method: "DELETE",
+        })
+      );
 
-      refresh();
+      if (res) {
+        refresh();
+      }
     }
   }
 
   async function accept(id: string) {
-    await fetch("/api/invites/" + encodeURIComponent(id), {
-      method: "POST",
-    });
+    const res = await handleFetchFail(
+      fetch("/api/invites/" + encodeURIComponent(id), {
+        method: "POST",
+      })
+    );
 
-    refresh();
+    if (res) {
+      refresh();
+    }
   }
 
   useEffect(() => {
@@ -154,15 +175,19 @@ const Friends: NextPage<Props> = ({
   const [, rerender] = useReducer((state) => state + 1, 0);
 
   function handleFewFriendsAlertOkClick() {
-    fetch("/api/users/_self_", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ hideFewFriendsAlert: true }),
-    }).then(() => {
-      // little hacky; see also https://github.com/nextauthjs/next-auth/discussions/2267
-      window._spetito_hideFewFriendsAlert = true;
+    handleFetchFail(
+      fetch("/api/users/_self_", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ hideFewFriendsAlert: true }),
+      })
+    ).then((res) => {
+      if (res) {
+        // little hacky; see also https://github.com/nextauthjs/next-auth/discussions/2267
+        window._spetito_hideFewFriendsAlert = true;
 
-      rerender();
+        rerender();
+      }
     });
   }
 

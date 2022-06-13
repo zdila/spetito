@@ -103,5 +103,6 @@
   "Ignore": "Ignore",
   "noResults": "no results",
   "clear": "clear",
-  "open": "open"
+  "open": "open",
+  "RequestFailed": "Request failed."
 }

@@ -31,6 +31,7 @@ import { Trans, useTranslation } from "next-i18next";
 import { redirectToLogIn } from "../lib/auth";
 import { User } from "@prisma/client";
 import { useDelayedOff } from "../hooks/useDelayedOff";
+import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
 
 type Props = {
   lists: ListWithMembers[];
@@ -39,13 +40,19 @@ type Props = {
 const Lists: NextPage<Props> = ({ lists }) => {
   const router = useRouter();
 
+  const handleFetchFail = useFetchFailHandler();
+
   async function deleteList(id: string) {
     if (window.confirm(t("AreYouSure"))) {
-      await fetch("/api/lists/" + encodeURIComponent(id), {
-        method: "DELETE",
-      });
+      const res = await handleFetchFail(
+        fetch("/api/lists/" + encodeURIComponent(id), {
+          method: "DELETE",
+        })
+      );
 
-      router.replace(router.asPath);
+      if (res) {
+        router.replace(router.asPath);
+      }
     }
   }
 
@@ -54,17 +61,21 @@ const Lists: NextPage<Props> = ({ lists }) => {
   async function handleCreateClick(e: SyntheticEvent) {
     e.preventDefault();
 
-    await fetch("/api/lists", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name,
-      }),
-    });
+    const res = await handleFetchFail(
+      fetch("/api/lists", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+        }),
+      })
+    );
 
-    setName("");
+    if (res) {
+      setName("");
 
-    router.replace(router.asPath);
+      router.replace(router.asPath);
+    }
   }
 
   const [expanded, setExpanded] = useState<string>();

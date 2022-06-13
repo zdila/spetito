@@ -14,6 +14,7 @@ import { useRouter } from "next/router";
 import enLocale from "date-fns/locale/en-US";
 import skLocale from "date-fns/locale/sk";
 import Head from "next/head";
+import { SnackbarProvider } from "notistack";
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -44,7 +45,12 @@ function MyApp({
               dateAdapter={AdapterDateFns}
               adapterLocale={localeMap[locale] ?? enLocale}
             >
-              <Component {...pageProps} />
+              <SnackbarProvider
+                maxSnack={3}
+                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+              >
+                <Component {...pageProps} />
+              </SnackbarProvider>
             </LocalizationProvider>
           </SessionProvider>
         </ThemeProvider>

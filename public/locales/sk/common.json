@@ -103,5 +103,6 @@
   "Ignore": "Ignorovať",
   "noResults": "žiadne výsledky",
   "clear": "vyčistiť",
-  "open": "otvoriť"
+  "open": "otvoriť",
+  "RequestFailed": "Požiadavka zlyhala."
 }

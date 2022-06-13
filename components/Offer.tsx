@@ -15,6 +15,7 @@ import { MapDialog } from "./MapDialog";
 import { LngLat } from "maplibre-gl";
 import { useSession } from "next-auth/react";
 import { formatDateTime } from "../utility/formatDateTime";
+import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
 
 type Props = {
   own?: boolean;
@@ -43,13 +44,19 @@ export function OfferItem({
 
   const { id, validFrom, validTo, message } = offer;
 
+  const handleFetchFail = useFetchFailHandler();
+
   const handleDeleteClick = useCallback(() => {
     if (window.confirm(t("AreYouSure"))) {
-      fetch("/api/offers/" + id, { method: "DELETE" }).then(() => {
-        onDelete();
-      });
+      handleFetchFail(fetch("/api/offers/" + id, { method: "DELETE" })).then(
+        (res) => {
+          if (res) {
+            onDelete();
+          }
+        }
+      );
     }
-  }, [id, onDelete, t]);
+  }, [id, onDelete, t, handleFetchFail]);
 
   const [editing, setEditing] = useState(false);
 

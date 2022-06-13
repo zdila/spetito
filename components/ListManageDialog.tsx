@@ -19,6 +19,7 @@ import { List, ListMember, User } from "@prisma/client";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
 import { useFriends } from "../hooks/useFriends";
 
 export type ListWithMembers = List & {
@@ -56,13 +57,19 @@ export function ListManageDialog({ open, onClose, list }: Props) {
     );
   };
 
+  const handleFetchFail = useFetchFailHandler();
+
   const handleSave = () => {
-    fetch(`/api/lists/${list.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, members: checked }),
-    }).then(() => {
-      onClose(true);
+    handleFetchFail(
+      fetch(`/api/lists/${list.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, members: checked }),
+      })
+    ).then((res) => {
+      if (res) {
+        onClose(true);
+      }
     });
   };
 

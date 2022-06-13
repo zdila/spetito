@@ -1,9 +1,12 @@
 import { set } from "idb-keyval";
 import { TFunction } from "next-i18next";
 import { useCallback, useEffect, useState } from "react";
+import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
 import { toBase64 } from "./base64";
 
 export function usePushNotificationRegistration(t: TFunction) {
+  const handleFetchFail = useFetchFailHandler();
+
   const register = useCallback(async () => {
     navigator.serviceWorker.register("/sw.js"); // no need to await
 
@@ -17,21 +20,23 @@ export function usePushNotificationRegistration(t: TFunction) {
         applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBKEY,
       });
 
-      await fetch("/api/push", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          endpoint: subscription.endpoint,
-          auth: toBase64(subscription.getKey("auth")),
-          p256dh: toBase64(subscription.getKey("p256dh")),
-        }),
-      });
+      await handleFetchFail(
+        fetch("/api/push", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            endpoint: subscription.endpoint,
+            auth: toBase64(subscription.getKey("auth")),
+            p256dh: toBase64(subscription.getKey("p256dh")),
+          }),
+        })
+      );
     }
 
     new BroadcastChannel("pn_setup_channel").postMessage(true);
 
     setRegistered(true);
-  }, [t]);
+  }, [handleFetchFail, t]);
 
   const unregister = useCallback(async () => {
     const swr = await navigator.serviceWorker.getRegistration();
@@ -40,9 +45,11 @@ export function usePushNotificationRegistration(t: TFunction) {
 
     if (swr && sub?.endpoint) {
       await Promise.all([
-        fetch("/api/push/" + encodeURIComponent(sub.endpoint), {
-          method: "DELETE",
-        }),
+        handleFetchFail(
+          fetch("/api/push/" + encodeURIComponent(sub.endpoint), {
+            method: "DELETE",
+          })
+        ),
         sub.unsubscribe(),
         swr.unregister(),
       ]);
@@ -51,7 +58,7 @@ export function usePushNotificationRegistration(t: TFunction) {
 
       setRegistered(false);
     }
-  }, []);
+  }, [handleFetchFail]);
 
   const [registered, setRegistered] = useState<boolean | null>(null);
 

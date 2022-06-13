@@ -20,6 +20,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useEffect, useRef, useState } from "react";
 import { LanguageSwitcher } from "../components/LanguageSwitcher";
 import { Layout } from "../components/Layout";
+import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
 import { usePermission } from "../hooks/usePermission";
 import { redirectToLogIn } from "../lib/auth";
 import { supportsPush } from "../lib/capabilities";
@@ -34,12 +35,16 @@ type Props = {
 const Settings: NextPage<Props> = ({ user }) => {
   const { t } = useTranslation();
 
+  const handleFetchFail = useFetchFailHandler();
+
   function deleteAccount() {
     if (
       window.confirm(t("AreYouSure")) &&
       window.confirm(t("AreYouReallySure"))
     ) {
-      fetch("/api/users/_self_", { method: "DELETE" }).then(() => signOut());
+      handleFetchFail(fetch("/api/users/_self_", { method: "DELETE" })).then(
+        (res) => res && signOut()
+      );
     }
   }
 
@@ -58,15 +63,17 @@ const Settings: NextPage<Props> = ({ user }) => {
       return;
     }
 
-    fetch("/api/users/_self_", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        timeZone,
-        useEmailNotif: emailNotifications,
-      }),
-    });
-  }, [timeZone, emailNotifications]);
+    handleFetchFail(
+      fetch("/api/users/_self_", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          timeZone,
+          useEmailNotif: emailNotifications,
+        }),
+      })
+    );
+  }, [timeZone, emailNotifications, handleFetchFail]);
 
   const notifPerm = usePermission("notifications");
 

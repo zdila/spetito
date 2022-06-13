@@ -1,8 +1,11 @@
 import { List } from "@prisma/client";
 import { useEffect, useState } from "react";
+import { useFetchFailHandler } from "./useFetchFailHandler";
 
 export function useLists(enabled = true) {
   const [lists, setLists] = useState<List[]>();
+
+  const handleFetchFail = useFetchFailHandler();
 
   useEffect(() => {
     if (enabled) {
@@ -10,15 +13,21 @@ export function useLists(enabled = true) {
 
       const abortController = new AbortController();
 
-      fetch("/api/lists", { signal: abortController.signal })
-        .then((response) => response.json())
-        .then(setLists);
+      (async () => {
+        const response = await handleFetchFail(
+          fetch("/api/lists", { signal: abortController.signal })
+        );
+
+        if (response) {
+          setLists(await response.json());
+        }
+      })();
 
       return () => {
         abortController.abort();
       };
     }
-  }, [enabled]);
+  }, [enabled, handleFetchFail]);
 
   return lists;
 }

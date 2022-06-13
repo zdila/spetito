@@ -20,6 +20,7 @@ import { MapDialog } from "./MapDialog";
 import { useDelayedOff } from "../hooks/useDelayedOff";
 import PlaceIcon from "@mui/icons-material/Place";
 import { LngLat } from "maplibre-gl";
+import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
 
 const maskMap: Record<string, string> = {
   en: "__/__/____ __:__ _M",
@@ -57,27 +58,35 @@ export function OfferForm({
 
   const mask = maskMap[locale];
 
+  const handleFetchFail = useFetchFailHandler();
+
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
 
-    fetch(offer ? "/api/offers/" + offer.id : "/api/offers", {
-      method: offer ? "PUT" : "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        message: message.trim(),
-        validFrom: validFrom?.toISOString(),
-        validTo: validTo?.toISOString(),
-        audience: {
-          users: audience
-            .filter((item) => item.startsWith("u:"))
-            .map((item) => item.slice(2)),
-          lists: audience
-            .filter((item) => item.startsWith("l:"))
-            .map((item) => item.slice(2)),
-        },
-        place: place ?? null,
-      }),
-    }).then(() => {
+    handleFetchFail(
+      fetch(offer ? "/api/offers/" + offer.id : "/api/offers", {
+        method: offer ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: message.trim(),
+          validFrom: validFrom?.toISOString(),
+          validTo: validTo?.toISOString(),
+          audience: {
+            users: audience
+              .filter((item) => item.startsWith("u:"))
+              .map((item) => item.slice(2)),
+            lists: audience
+              .filter((item) => item.startsWith("l:"))
+              .map((item) => item.slice(2)),
+          },
+          place: place ?? null,
+        }),
+      })
+    ).then((res) => {
+      if (!res) {
+        return;
+      }
+
       setMessage("");
 
       setValidFrom(null);
