@@ -13,6 +13,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useRouter } from "next/router";
 import enLocale from "date-fns/locale/en-US";
 import skLocale from "date-fns/locale/sk";
+import Head from "next/head";
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -29,20 +30,26 @@ function MyApp({
   const { locale = "en" } = useRouter();
 
   return (
-    <CacheProvider value={emotionCache}>
-      <ThemeProvider theme={lightTheme}>
-        <CssBaseline />
+    <>
+      <Head>
+        <meta name="viewport" content="initial-scale=1, width=device-width" />
+      </Head>
 
-        <SessionProvider session={pageProps.session}>
-          <LocalizationProvider
-            dateAdapter={AdapterDateFns}
-            adapterLocale={localeMap[locale] ?? enLocale}
-          >
-            <Component {...pageProps} />
-          </LocalizationProvider>
-        </SessionProvider>
-      </ThemeProvider>
-    </CacheProvider>
+      <CacheProvider value={emotionCache}>
+        <ThemeProvider theme={lightTheme}>
+          <CssBaseline />
+
+          <SessionProvider session={pageProps.session}>
+            <LocalizationProvider
+              dateAdapter={AdapterDateFns}
+              adapterLocale={localeMap[locale] ?? enLocale}
+            >
+              <Component {...pageProps} />
+            </LocalizationProvider>
+          </SessionProvider>
+        </ThemeProvider>
+      </CacheProvider>
+    </>
   );
 }
 
