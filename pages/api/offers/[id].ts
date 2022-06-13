@@ -1,7 +1,9 @@
 import { Offer } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
+import { OfferBody, validateDates } from ".";
 import { prisma } from "../../../lib/prisma";
+import { validateSchema } from "../../../lib/schemaValidation";
 
 export default async function handler(
   req: NextApiRequest,
@@ -44,24 +46,13 @@ export default async function handler(
         });
       }
     } else if (req.method === "PUT") {
-      // TODO validate
-      const { message, validFrom, validTo, audience, place } = req.body as {
-        message: string;
-        validFrom: string | null;
-        validTo: string | null;
-        audience: {
-          users: string[];
-          lists: string[];
-        };
-        place: null | {
-          center: {
-            lng: number;
-            lat: number;
-          };
-          zoom: number;
-          radius: number;
-        };
-      };
+      if (!validateSchema(OfferBody, req.body) || !validateDates(req.body)) {
+        res.status(400).end();
+
+        return;
+      }
+
+      const { message, validFrom, validTo, audience, place } = req.body;
 
       await prisma.$transaction(async (prisma) => {
         const offerListIds = (

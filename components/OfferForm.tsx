@@ -52,7 +52,7 @@ export function OfferForm({
     offer?.validFrom ?? null
   );
 
-  const [validTo, setValidTo] = useState<Date | null>(null);
+  const [validTo, setValidTo] = useState<Date | null>(offer?.validTo ?? null);
 
   const { locale = "en" } = useRouter();
 
@@ -69,8 +69,8 @@ export function OfferForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: message.trim(),
-          validFrom: validFrom?.toISOString(),
-          validTo: validTo?.toISOString(),
+          validFrom: validFrom?.toISOString() ?? null,
+          validTo: validTo?.toISOString() ?? null,
           audience: {
             users: audience
               .filter((item) => item.startsWith("u:"))

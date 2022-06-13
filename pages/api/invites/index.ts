@@ -5,6 +5,15 @@ import { FriendRequestMail } from "../../../emails/FriendRequestMail";
 import { prisma } from "../../../lib/prisma";
 import { sendMail } from "../../../utility/mail";
 import { sendPushNotifications } from "../../../utility/pushNotifications";
+import { Type } from "@sinclair/typebox";
+import { validateSchema } from "../../../lib/schemaValidation";
+
+const Body = Type.Object(
+  {
+    userId: Type.String({ minLength: 1 }),
+  },
+  { additionalProperties: false }
+);
 
 export default async function handler(
   req: NextApiRequest,
@@ -26,10 +35,13 @@ export default async function handler(
     return;
   }
 
-  // TODO validate
-  const { userId } = req.body as {
-    userId: string;
-  };
+  if (!validateSchema(Body, req.body)) {
+    res.status(400).end();
+
+    return;
+  }
+
+  const { userId } = req.body;
 
   const result = await prisma.invitation.create({
     data: {

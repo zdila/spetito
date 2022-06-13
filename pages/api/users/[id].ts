@@ -2,6 +2,17 @@ import { Offer } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { prisma } from "../../../lib/prisma";
+import { Type } from "@sinclair/typebox";
+import { validateSchema } from "../../../lib/schemaValidation";
+
+const Body = Type.Object(
+  {
+    hideFewFriendsAlert: Type.Optional(Type.Boolean()),
+    timeZone: Type.Optional(Type.String({ minLength: 2 })),
+    useEmailNotif: Type.Optional(Type.Boolean()),
+  },
+  { additionalProperties: false }
+);
 
 export default async function handler(
   req: NextApiRequest,
@@ -31,12 +42,13 @@ export default async function handler(
     }
 
     if (req.method === "PATCH") {
-      // TODO validate
-      const { hideFewFriendsAlert, timeZone, useEmailNotif } = req.body as {
-        hideFewFriendsAlert?: boolean;
-        timeZone?: string;
-        useEmailNotif?: boolean;
-      };
+      if (!validateSchema(Body, req.body)) {
+        res.status(400).end();
+
+        return;
+      }
+
+      const { hideFewFriendsAlert, timeZone, useEmailNotif } = req.body;
 
       await prisma.user.update({
         data: {

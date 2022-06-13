@@ -2,6 +2,15 @@ import { List } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { prisma } from "../../../lib/prisma";
+import { Type } from "@sinclair/typebox";
+import { validateSchema } from "../../../lib/schemaValidation";
+
+const Body = Type.Object(
+  {
+    name: Type.String({ minLength: 1 }),
+  },
+  { additionalProperties: false }
+);
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,10 +27,13 @@ export default async function handler(
       return;
     }
 
-    // TODO validate
-    const { name } = req.body as {
-      name: string;
-    };
+    if (!validateSchema(Body, req.body)) {
+      res.status(400).end();
+
+      return;
+    }
+
+    const { name } = req.body;
 
     res.json(
       await prisma.list.create({

@@ -1,6 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { prisma } from "../../../lib/prisma";
+import { Type } from "@sinclair/typebox";
+import { validateSchema } from "../../../lib/schemaValidation";
+
+const Body = Type.Object(
+  {
+    name: Type.String({ minLength: 1 }),
+    members: Type.Array(Type.String({ minLength: 1 })),
+  },
+  { additionalProperties: false }
+);
 
 export default async function handler(
   req: NextApiRequest,
@@ -52,11 +62,13 @@ export default async function handler(
       return;
     }
 
-    // TODO validate
-    const { name, members } = req.body as {
-      name: string;
-      members: string[];
-    };
+    if (!validateSchema(Body, req.body)) {
+      res.status(400).end();
+
+      return;
+    }
+
+    const { name, members } = req.body;
 
     const list = await prisma.list.findUnique({
       select: {

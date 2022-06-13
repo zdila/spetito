@@ -5,6 +5,46 @@ import { prisma } from "../../../lib/prisma";
 import { sendMail } from "../../../utility/mail";
 import { sendPushNotifications } from "../../../utility/pushNotifications";
 import { OfferMail } from "../../../emails/OfferMail";
+import { Static, Type } from "@sinclair/typebox";
+import { validateSchema } from "../../../lib/schemaValidation";
+
+export const OfferBody = Type.Object(
+  {
+    message: Type.String(),
+    validFrom: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
+    validTo: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
+    audience: Type.Object({
+      users: Type.Array(Type.String({ minLength: 1 })),
+      lists: Type.Array(Type.String({ minLength: 1 })),
+    }),
+    place: Type.Union([
+      Type.Null(),
+      Type.Object({
+        center: Type.Object({
+          lng: Type.Number(),
+          lat: Type.Number(),
+        }),
+        zoom: Type.Number({ minimum: 0 }),
+        radius: Type.Number({ minimum: 0 }),
+      }),
+    ]),
+  },
+  { additionalProperties: false }
+);
+
+export function validateDates({
+  validFrom,
+  validTo,
+}: Pick<Static<typeof OfferBody>, "validFrom" | "validTo">) {
+  console.log({ validFrom, validTo });
+  return (
+    (validFrom === null || new Date(validFrom).getTime() > Date.now()) &&
+    (validTo === null || new Date(validTo).getTime() > Date.now()) &&
+    (validFrom === null ||
+      validTo === null ||
+      new Date(validFrom).getTime() < new Date(validTo).getTime())
+  );
+}
 
 export default async function handler(
   req: NextApiRequest,
@@ -28,24 +68,13 @@ export default async function handler(
 
   const userId = user?.id;
 
-  // TODO validate
-  const { message, validFrom, validTo, audience, place } = req.body as {
-    message: string;
-    validFrom?: string;
-    validTo?: string;
-    audience: {
-      users: string[];
-      lists: string[];
-    };
-    place: null | {
-      center: {
-        lng: number;
-        lat: number;
-      };
-      zoom: number;
-      radius: number;
-    };
-  };
+  if (!validateSchema(OfferBody, req.body) || !validateDates(req.body)) {
+    res.status(400).end();
+
+    return;
+  }
+
+  const { message, validFrom, validTo, audience, place } = req.body;
 
   const result = await prisma.offer.create({
     data: {
