@@ -52,7 +52,7 @@ export default function AboutSk() {
         <i>Osamelé duše Nitry</i> a pod.
       </p>
 
-      <h2>Prečo nie Facebook?</h2>
+      <h2>Prečo na toto nie je vhodný Facebook?</h2>
 
       <p>
         Facebook síce obsahuje udalosti a tiež je v ňom možné písať ponuky do

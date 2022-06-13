@@ -49,17 +49,17 @@ export default function AboutEn() {
           I bake a great raw cake and I hope I won&apos;t eat it alone at home.
         </li>
 
-        <li> I teach math 😜 </li>
+        <li>I teach math 😜</li>
       </ul>
 
       <p>
         Sharing groups are also planned in the near future similar interests,
         ideally in the same location, for example:
-        <i> Košice dogs </i>, <i> Prešov tourists </i>,
-        <i> The lonely souls of Nitra </i> etc.
+        <i>Košice dogs</i>, <i>Prešov tourists</i>,
+        <i>The lonely souls of Nitra</i>etc.
       </p>
 
-      <h2> Why not Facebook? </h2>
+      <h2>Why Facebook is not suitable for this?</h2>
 
       <p>
         Although Facebook contains events and it is also possible to post offers
@@ -78,7 +78,7 @@ export default function AboutEn() {
         because not everyone &quot;loves him&quot;.
       </p>
 
-      <h2> Why don&apos;t offers include comments and likes? </h2>
+      <h2>Why don&apos;t offers include comments and likes?</h2>
 
       <p>
         Spetito is only for posting and browsing friends&apos; offers. if
