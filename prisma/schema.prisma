@@ -137,7 +137,6 @@ model User {
   language            String?
   timeZone            String?
   useEmailNotif       Boolean            @default(true)
-  usePushNotif        Boolean            @default(true)
 
   @@map(name: "users")
 }

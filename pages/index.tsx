@@ -137,6 +137,14 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
     return redirectToLogIn(context, "/");
   }
 
+  // TODO make it effective on all pages
+  if (context.locale) {
+    await prisma.user.update({
+      data: { language: context.locale },
+      where: { id: user.id },
+    });
+  }
+
   const id = user.id;
 
   const friendsOffers = await prisma.offer.findMany({

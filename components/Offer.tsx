@@ -14,6 +14,7 @@ import { useDelayedOff } from "../hooks/useDelayedOff";
 import { MapDialog } from "./MapDialog";
 import { LngLat } from "maplibre-gl";
 import { useSession } from "next-auth/react";
+import { formatDateTime } from "../utility/formatDateTime";
 
 type Props = {
   own?: boolean;
@@ -106,40 +107,19 @@ export function OfferItem({
 
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <Typography variant="body2">
-                {/* {(
-                  offer.createdAt.toLocaleDateString(locale, { timeZone }) +
-                  " " +
-                  offer.createdAt.toLocaleTimeString(locale, {
-                    timeStyle: "short",
-                    timeZone,
-                  })
-                ).replaceAll(" ", "\xa0")}{" "} */}
+                {/* {formatDateTime(createdAt, locale, timeZone)}{" "} */}
                 {validFrom || validTo ? "🗓" : null}
                 {validFrom
                   ? " " +
                     t("dateFrom") +
                     " " +
-                    (
-                      validFrom.toLocaleDateString(locale, { timeZone }) +
-                      " " +
-                      validFrom.toLocaleTimeString(locale, {
-                        timeStyle: "short",
-                        timeZone,
-                      })
-                    ).replaceAll(" ", "\xa0")
+                    formatDateTime(validFrom, locale, timeZone)
                   : null}
                 {validTo
                   ? " " +
                     t("dateTo") +
                     " " +
-                    (
-                      validTo.toLocaleDateString(locale, { timeZone }) +
-                      " " +
-                      validTo.toLocaleTimeString(locale, {
-                        timeStyle: "short",
-                        timeZone,
-                      })
-                    ).replaceAll(" ", "\xa0")
+                    formatDateTime(validTo, locale, timeZone)
                   : null}
                 {offer.offerLists && offer.offerUsers ? (
                   <>

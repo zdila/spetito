@@ -1,7 +1,10 @@
+import { renderToStaticMarkup } from "react-dom/server";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { prisma } from "../../../lib/prisma";
+import { sendMail } from "../../../utility/mail";
 import { sendPushNotifications } from "../../../utility/pushNotifications";
+import { OfferMail } from "../../../emails/OfferMail";
 
 export default async function handler(
   req: NextApiRequest,
@@ -127,6 +130,25 @@ export default async function handler(
       offer: { id: result.id },
     },
   });
+
+  const recipients = await prisma.user.findMany({
+    where: { NOT: [{ email: null }], useEmailNotif: true },
+  });
+
+  for (const recipient of recipients) {
+    sendMail(
+      {
+        name: recipient.name!,
+        address: recipient.email!,
+      },
+      OfferMail,
+      {
+        offerrer: user.name ?? user.id,
+        offer: result,
+        recipient,
+      }
+    );
+  }
 
   res.json(result);
 }

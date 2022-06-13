@@ -53,7 +53,7 @@
     },
     "accept": {
       "title": "Spetito - prijatá žiadosť o priateľstvo",
-      "body": "<_> prijal(a) tvoju žiadosť o priateľstvo."
+      "body": "<_> prijal(a) vašu žiadosť o priateľstvo."
     },
     "offer": {
       "title": "Spetito - nová ponuka",
@@ -62,9 +62,9 @@
   },
   "Support": "Podpora",
   "PushNotifUnsupported": "Tento prehliadač nepodporuje push notifikácie.",
-  "EnableNotifications": "Povoliť notifikácie",
+  "EnableNotifications": "Povoliť",
   "NotificationsNotEnabled": "Notifikácie nie sú povolené.",
-  "NotificationsDenied": "Notifikácie sú zakázané.",
+  "NotificationsDenied": "Notifikácie sú pre túto stránku vo vašom prehliadači zakázané.",
   "DeleteAccount": "Zmazať účet",
   "AreYouSure": "Ste si istý?",
   "AreYouReallySure": "Ste si naozaj istý?",
@@ -99,5 +99,6 @@
   "Time": "Čas",
   "TimeZone": "Časové pásmo",
   "EmailNotifications": "Posielať notifikácie o ponukách a priateľoch emailom",
-  "BrowserNotifications": "Povoliť pop-up notifikácie"
+  "BrowserNotifications": "Povoliť pop-up notifikácie",
+  "Ignore": "Ignorovať"
 }

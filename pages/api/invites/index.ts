@@ -1,7 +1,9 @@
-import { Invitation } from "@prisma/client";
+import { Invitation, User } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
+import { FriendRequestMail } from "../../../emails/FriendRequestMail";
 import { prisma } from "../../../lib/prisma";
+import { sendMail } from "../../../utility/mail";
 import { sendPushNotifications } from "../../../utility/pushNotifications";
 
 export default async function handler(
@@ -46,6 +48,28 @@ export default async function handler(
     type: "invite",
     payload: { from: { name: user.name, id: user.id } },
   });
+
+  const recipient = await prisma.user.findFirst({
+    where: {
+      id: userId,
+      useEmailNotif: true,
+      NOT: [{ email: null }],
+    },
+  });
+
+  if (recipient?.email) {
+    sendMail(
+      {
+        name: recipient.name!,
+        address: recipient.email,
+      },
+      FriendRequestMail,
+      {
+        sender: user as User,
+        recipient,
+      }
+    );
+  }
 
   res.json(result);
 }

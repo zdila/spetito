@@ -106,7 +106,9 @@ self.addEventListener("push", (event) => {
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
 
-  const type = event.notification.data?.type;
+  const { data } = event.notification;
+
+  const type = data?.type;
 
   if (!["invite", "accept", "offer"].includes(type)) {
     return;
@@ -123,11 +125,27 @@ self.addEventListener("notificationclick", (event) => {
             ((type === "invite" || type === "accept") &&
               pathname === "/friends"))
         ) {
+          if (type === "offer") {
+            client.postMessage({
+              type: "highlightOffer",
+              payload: data.offer.id,
+            });
+          } else {
+            client.postMessage({
+              type: "highlightUser",
+              payload: data.from.id,
+            });
+          }
+
           return client.focus();
         }
       }
 
-      return self.clients.openWindow(type === "offer" ? "/" : "/friends");
+      return self.clients.openWindow(
+        type === "offer"
+          ? "/?highlight-offer=" + data.offer.id
+          : "/friends?highlight-user=" + data.from.id
+      );
     })
   );
 });

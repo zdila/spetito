@@ -49,22 +49,22 @@
   "notifTranslations": {
     "invite": {
       "title": "Spetito friend request",
-      "body": "<_> is sending you a friend request on Spetito."
+      "body": "<_> is sending you a friend request."
     },
     "accept": {
       "title": "Spetito friend request accepted",
-      "body": "<_> has accepted your friend request on Spetito."
+      "body": "<_> has accepted your friend request."
     },
     "offer": {
       "title": "New offer on Spetito",
-      "body": "<_> placed a new offer on Spetito."
+      "body": "<_> placed a new offer."
     }
   },
   "Support": "Support",
   "PushNotifUnsupported": "Push notifications are not supported in this browser.",
-  "EnableNotifications": "Enable notifications",
+  "EnableNotifications": "Enable",
   "NotificationsNotEnabled": "Notifications are not enabled.",
-  "NotificationsDenied": "Notifications are denied.",
+  "NotificationsDenied": "Notifications are denied for this site in your browser.",
   "DeleteAccount": "Delete account",
   "AreYouSure": "Are you sure?",
   "AreYouReallySure": "Are you really sure?",
@@ -99,5 +99,6 @@
   "Time": "Time",
   "TimeZone": "Time zone",
   "EmailNotifications": "Mail notifications about offers and friends",
-  "BrowserNotifications": "Enable pop-up notifications"
+  "BrowserNotifications": "Enable pop-up notifications",
+  "Ignore": "Ignore"
 }

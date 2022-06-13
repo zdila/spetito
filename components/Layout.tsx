@@ -10,6 +10,7 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Stack,
   Toolbar,
   Typography,
 } from "@mui/material";
@@ -17,14 +18,7 @@ import { signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import {
-  Component,
-  ReactComponentElement,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { usePermission } from "../hooks/usePermission";
 import LocalActivityIcon from "@mui/icons-material/LocalActivity";
 import ListIcon from "@mui/icons-material/List";
@@ -33,11 +27,12 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { supportsPush } from "../lib/capabilities";
 import { useTranslation } from "next-i18next";
-import { set } from "idb-keyval";
 import { Logo } from "./Logo";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import MenuIcon from "@mui/icons-material/Menu";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
+import { usePushNotificationRegistration } from "../lib/pushRegistration";
+import { getCookie } from "../lib/cookies";
 
 type Props = {
   title: string;
@@ -45,16 +40,6 @@ type Props = {
 };
 
 const drawerWidth = 240;
-
-function toBase64(arrayBuffer: ArrayBuffer | null) {
-  return (
-    arrayBuffer &&
-    btoa(String.fromCharCode.apply(null, new Uint8Array(arrayBuffer) as any))
-    // .replace(/\+/g, "-")
-    // .replace(/\//g, "_")
-    // .replace(/=+$/, "")
-  );
-}
 
 const menuItems: {
   path: string;
@@ -99,58 +84,35 @@ export function Layout({ children, title }: Props) {
 
   const { t } = useTranslation("common");
 
-  const registerServiceWorkerAndSubscribeToPush = useCallback(async () => {
-    navigator.serviceWorker.register("/sw.js"); // no need to await
-
-    const swr = await navigator.serviceWorker.ready;
-
-    set("notifTranslations", t("notifTranslations", { returnObjects: true }));
-
-    const subscription = await swr.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBKEY,
-    });
-
-    await fetch("/api/push", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        endpoint: subscription.endpoint,
-        auth: toBase64(subscription.getKey("auth")),
-        p256dh: toBase64(subscription.getKey("p256dh")),
-      }),
-    });
-  }, [t]);
+  const [registerPn, unregisterPn] = usePushNotificationRegistration(t);
 
   useEffect(() => {
-    if (supportsPush && notifPerm === "granted" && pushPerm === "granted") {
-      registerServiceWorkerAndSubscribeToPush();
+    if (
+      getCookie("PUSH_NOTIF") !== "false" &&
+      supportsPush &&
+      notifPerm === "granted" &&
+      pushPerm === "granted"
+    ) {
+      registerPn();
     }
-  }, [notifPerm, pushPerm, registerServiceWorkerAndSubscribeToPush]);
+  }, [notifPerm, pushPerm, registerPn]);
 
   const handleRegisterClick = () => {
     Notification.requestPermission();
   };
 
-  const handleLogOutClick = async () => {
-    const swr = await navigator.serviceWorker.getRegistration();
-
-    const sub = await swr?.pushManager.getSubscription();
-
-    if (sub?.endpoint) {
-      await fetch("/api/push/" + encodeURIComponent(sub.endpoint), {
-        method: "DELETE",
-      });
-    }
-
-    signOut();
+  const handleLogOutClick = () => {
+    // TODO handle error
+    unregisterPn().finally(() => {
+      signOut();
+    });
   };
 
-  const [supportsPush1, setSupportsPush1] = useState(true);
+  const [considerPush, setConsiderPush] = useState(false);
 
   // for SSR
   useEffect(() => {
-    setSupportsPush1(supportsPush);
+    setConsiderPush(supportsPush && getCookie("PUSH_NOTIF") !== "false");
   }, []);
 
   const session = useSession();
@@ -217,6 +179,12 @@ export function Layout({ children, title }: Props) {
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+  };
+
+  const handleIgnoreClick = () => {
+    document.cookie = `PUSH_NOTIF=false; path=/`;
+
+    setConsiderPush(false);
   };
 
   return (
@@ -290,24 +258,20 @@ export function Layout({ children, title }: Props) {
 
           <Drawer
             variant="permanent"
-            sx={[
-              {
-                display: { xs: "none", sm: "block" },
+            sx={{
+              display: { xs: "none", sm: "block" },
+              "& .MuiDrawer-paper": {
+                boxSizing: "border-box",
+                width: drawerWidth,
+                backgroundColor: "inherit",
+                border: 0,
+              },
+              "@media (min-width: 1200px)": {
                 "& .MuiDrawer-paper": {
-                  boxSizing: "border-box",
-                  width: drawerWidth,
-                  backgroundColor: "inherit",
-                  border: 0,
+                  left: "calc(100vw / 2 - 600px)", // hacking position because of opsition: fixed
                 },
               },
-              (theme) => ({
-                "@media (min-width: 1200px)": {
-                  "& .MuiDrawer-paper": {
-                    left: "calc(100vw / 2 - 600px)", // hacking position because of opsition: fixed
-                  },
-                },
-              }),
-            ]}
+            }}
             open
           >
             {drawer}
@@ -325,30 +289,51 @@ export function Layout({ children, title }: Props) {
         >
           <Toolbar sx={{ display: { xs: "block", sm: "none" } }} />
 
-          {!supportsPush1 ? (
-            <Alert sx={{ mt: 2 }} severity="error">
-              {t("PushNotifUnsupported")}
-            </Alert>
-          ) : notifPerm === "prompt" ? (
+          {!considerPush ? null : notifPerm === "prompt" ? (
             <Alert
               sx={{ mt: 2 }}
               severity="warning"
               action={
-                <Button
-                  onClick={handleRegisterClick}
-                  color="inherit"
-                  size="small"
-                  variant="text"
-                >
-                  {t("EnableNotifications")}
-                </Button>
+                <>
+                  <Button
+                    onClick={handleRegisterClick}
+                    color="inherit"
+                    size="small"
+                    variant="text"
+                    sx={{ mr: 1 }}
+                  >
+                    {t("EnableNotifications")}
+                  </Button>
+
+                  <Button
+                    onClick={handleIgnoreClick}
+                    color="inherit"
+                    size="small"
+                    variant="text"
+                  >
+                    {t("Ignore")}
+                  </Button>
+                </>
               }
             >
               {t("NotificationsNotEnabled")}
             </Alert>
           ) : (
             notifPerm === "denied" && (
-              <Alert sx={{ mt: 2 }} severity="error">
+              <Alert
+                sx={{ mt: 2 }}
+                severity="error"
+                action={
+                  <Button
+                    onClick={handleIgnoreClick}
+                    color="inherit"
+                    size="small"
+                    variant="text"
+                  >
+                    {t("Ignore")}
+                  </Button>
+                }
+              >
                 {t("NotificationsDenied")}
               </Alert>
             )

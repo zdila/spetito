@@ -1,6 +1,9 @@
+import { User } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
+import { AcceptFriendRequestMail } from "../../../emails/AcceptFriendRequestMail";
 import { prisma } from "../../../lib/prisma";
+import { sendMail } from "../../../utility/mail";
 import { sendPushNotifications } from "../../../utility/pushNotifications";
 
 export default async function handler(
@@ -63,6 +66,28 @@ export default async function handler(
       type: "accept",
       payload: { from: { name: user.name, id: user.id } },
     });
+
+    const recipient = await prisma.user.findFirst({
+      where: {
+        id,
+        useEmailNotif: true,
+        NOT: [{ email: null }],
+      },
+    });
+
+    if (recipient?.email) {
+      sendMail(
+        {
+          name: recipient.name!,
+          address: recipient.email,
+        },
+        AcceptFriendRequestMail,
+        {
+          sender: user as User,
+          recipient,
+        }
+      );
+    }
 
     res.status(204).end();
   } else if (req.method === "DELETE") {
