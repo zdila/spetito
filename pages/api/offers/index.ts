@@ -7,6 +7,7 @@ import { sendPushNotifications } from "../../../utility/pushNotifications";
 import { OfferMail } from "../../../emails/OfferMail";
 import { Static, Type } from "@sinclair/typebox";
 import { validateSchema } from "../../../lib/schemaValidation";
+import { Prisma } from "@prisma/client";
 
 export const OfferBody = Type.Object(
   {
@@ -105,50 +106,52 @@ export default async function handler(
 
   const toEverybody = audience.users.length + audience.lists.length === 0;
 
-  const pushRegistrations = await prisma.pushRegistration.findMany({
-    where: {
-      user: {
-        AND: [
+  const userFilter: Prisma.UserWhereInput = {
+    AND: [
+      {
+        OR: [
           {
-            OR: [
-              {
-                followedBy: {
-                  some: {
-                    followerId: userId,
-                  },
-                },
+            followedBy: {
+              some: {
+                followerId: userId,
               },
-              {
-                following: {
-                  some: {
-                    followingId: userId,
-                  },
-                },
+            },
+          },
+          {
+            following: {
+              some: {
+                followingId: userId,
               },
-            ],
+            },
           },
         ],
-        ...(toEverybody
-          ? {}
-          : {
-              OR: [
-                {
-                  id: {
-                    in: audience.users,
-                  },
-                },
-                {
-                  listMemebers: {
-                    some: {
-                      listId: {
-                        in: audience.lists,
-                      },
-                    },
-                  },
-                },
-              ],
-            }),
       },
+    ],
+    ...(toEverybody
+      ? {}
+      : {
+          OR: [
+            {
+              id: {
+                in: audience.users,
+              },
+            },
+            {
+              listMemebers: {
+                some: {
+                  listId: {
+                    in: audience.lists,
+                  },
+                },
+              },
+            },
+          ],
+        }),
+  };
+
+  const pushRegistrations = await prisma.pushRegistration.findMany({
+    where: {
+      user: userFilter,
     },
   });
 
@@ -161,7 +164,11 @@ export default async function handler(
   });
 
   const recipients = await prisma.user.findMany({
-    where: { NOT: [{ email: null }], useEmailNotif: true },
+    where: {
+      NOT: [{ email: null }],
+      useEmailNotif: true,
+      ...userFilter,
+    },
   });
 
   for (const recipient of recipients) {
