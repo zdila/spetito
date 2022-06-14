@@ -3,7 +3,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
 import { Avatar, Chip, IconButton, Paper, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import { List, Offer, OfferList, OfferUser, User } from "@prisma/client";
+import { List, User } from "@prisma/client";
 import { useTranslation } from "next-i18next";
 import { useCallback, useState } from "react";
 import { useRouter } from "next/router";
@@ -13,7 +13,6 @@ import PlaceIcon from "@mui/icons-material/Place";
 import { useDelayedOff } from "../hooks/useDelayedOff";
 import { MapDialog } from "./MapDialog";
 import { LngLat } from "maplibre-gl";
-import { useSession } from "next-auth/react";
 import { formatDateTime } from "../utility/formatDateTime";
 import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
 

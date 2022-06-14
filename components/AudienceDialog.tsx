@@ -13,7 +13,6 @@ import {
   Checkbox,
   ListItemButton,
   CircularProgress,
-  Box,
 } from "@mui/material";
 import { List, ListMember, User } from "@prisma/client";
 import { useTranslation } from "next-i18next";

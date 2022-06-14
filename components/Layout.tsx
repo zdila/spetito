@@ -32,7 +32,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
 import { usePushNotificationRegistration } from "../lib/pushRegistration";
 import { getCookie } from "../lib/cookies";
-import { useSnackbar } from "notistack";
 import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
 
 type Props = {

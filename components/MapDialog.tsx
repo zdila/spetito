@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import maplibregl, { GeoJSONSource, LngLat } from "maplibre-gl";
 import { useTranslation } from "next-i18next";
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import makeCircle from "@turf/circle";
 import { useRouter } from "next/router";
