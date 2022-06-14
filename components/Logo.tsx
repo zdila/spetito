@@ -1,5 +1,5 @@
 import { Typography } from "@mui/material";
-import { purple } from "@mui/material/colors";
+import { purple, red } from "@mui/material/colors";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 
@@ -16,7 +16,8 @@ export function Logo() {
         display="inline-block"
         component="a"
         sx={{
-          backgroundColor: purple[800],
+          backgroundColor:
+            process.env.NODE_ENV === "development" ? red[800] : purple[800],
           px: 1,
           color: "white",
           fontWeight: "bold",
