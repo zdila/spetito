@@ -37,7 +37,6 @@ export function validateDates({
   validFrom,
   validTo,
 }: Pick<Static<typeof OfferBody>, "validFrom" | "validTo">) {
-  console.log({ validFrom, validTo });
   return (
     (validFrom === null || new Date(validFrom).getTime() > Date.now()) &&
     (validTo === null || new Date(validTo).getTime() > Date.now()) &&
