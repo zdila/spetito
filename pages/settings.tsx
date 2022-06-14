@@ -140,6 +140,28 @@ const Settings: NextPage<Props> = ({ user }) => {
           disableClearable
         />
 
+        <Button
+          onClick={() => deleteAccount()}
+          color="error"
+          sx={{ alignSelf: "flex-end" }}
+        >
+          {t("DeleteAccount")}
+        </Button>
+      </Paper>
+
+      <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
+        {t("Notifications")}
+      </Typography>
+
+      <Paper
+        sx={{
+          p: 2,
+          display: "flex",
+          gap: 2,
+          flexDirection: "column",
+          alignItems: "flex-start",
+        }}
+      >
         <FormGroup>
           <FormControlLabel
             control={<Checkbox />}
@@ -169,10 +191,6 @@ const Settings: NextPage<Props> = ({ user }) => {
             )}
           </FormControl>
         </FormGroup>
-
-        <Button onClick={() => deleteAccount()} color="error">
-          {t("DeleteAccount")}
-        </Button>
       </Paper>
     </Layout>
   );

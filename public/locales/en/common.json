@@ -104,5 +104,6 @@
   "noResults": "no results",
   "clear": "clear",
   "open": "open",
-  "RequestFailed": "Request failed."
+  "RequestFailed": "Request failed.",
+  "Notifications": "Notifications"
 }

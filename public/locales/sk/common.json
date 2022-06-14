@@ -104,5 +104,6 @@
   "noResults": "žiadne výsledky",
   "clear": "vyčistiť",
   "open": "otvoriť",
-  "RequestFailed": "Požiadavka zlyhala."
+  "RequestFailed": "Požiadavka zlyhala.",
+  "Notifications": "Notifikácie"
 }
