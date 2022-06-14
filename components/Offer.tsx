@@ -15,6 +15,7 @@ import { MapDialog } from "./MapDialog";
 import { LngLat } from "maplibre-gl";
 import { formatDateTime } from "../utility/formatDateTime";
 import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
+import { grey } from "@mui/material/colors";
 
 type Props = {
   own?: boolean;
@@ -77,7 +78,15 @@ export function OfferItem({
       }}
     />
   ) : (
-    <Paper sx={{ p: 2 }}>
+    <Paper
+      sx={{
+        p: 2,
+        backgroundColor:
+          offer.validTo && now && offer.validTo.getTime() < now?.getTime()
+            ? grey[300]
+            : undefined,
+      }}
+    >
       {mountMapDialog && (
         <MapDialog
           readOnly
@@ -115,18 +124,36 @@ export function OfferItem({
               <Typography variant="body2">
                 {/* {formatDateTime(createdAt, locale, timeZone)}{" "} */}
                 {validFrom || validTo ? "🗓" : null}
-                {validFrom
-                  ? " " +
-                    t("dateFrom") +
-                    " " +
-                    formatDateTime(validFrom, locale, timeZone)
-                  : null}
-                {validTo
-                  ? " " +
-                    t("dateTo") +
-                    " " +
-                    formatDateTime(validTo, locale, timeZone)
-                  : null}
+                {validFrom ? (
+                  <>
+                    {" " + t("dateFrom") + " "}
+                    <Box
+                      component="span"
+                      sx={
+                        now && validFrom.getTime() < now.getTime()
+                          ? { color: "error.dark" }
+                          : {}
+                      }
+                    >
+                      {formatDateTime(validFrom, locale, timeZone)}
+                    </Box>
+                  </>
+                ) : null}
+                {validTo ? (
+                  <>
+                    {" " + t("dateTo") + " "}
+                    <Box
+                      component="span"
+                      sx={
+                        now && validTo.getTime() < now.getTime()
+                          ? { color: "error.dark" }
+                          : {}
+                      }
+                    >
+                      {formatDateTime(validTo, locale, timeZone)}
+                    </Box>
+                  </>
+                ) : null}
                 {offer.offerLists && offer.offerUsers ? (
                   <>
                     {validFrom || validTo ? "｜" : ""}
