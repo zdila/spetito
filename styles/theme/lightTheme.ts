@@ -23,7 +23,7 @@ export const lightTheme = createTheme({
       main: purple[800],
     },
     background: {
-      default: grey[100],
+      default: grey[200],
     },
   },
 });
