@@ -1,7 +1,14 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
-import { Avatar, Chip, IconButton, Paper, Typography } from "@mui/material";
+import {
+  Avatar,
+  Chip,
+  Divider,
+  IconButton,
+  Paper,
+  Typography,
+} from "@mui/material";
 import { Box } from "@mui/system";
 import { List, User } from "@prisma/client";
 import { useTranslation } from "next-i18next";
@@ -154,39 +161,46 @@ export function OfferItem({
                     </Box>
                   </>
                 ) : null}
-                {offer.offerLists && offer.offerUsers ? (
-                  <>
-                    {validFrom || validTo ? "｜" : ""}
-                    👤{" "}
+              </Typography>
+
+              {offer.offerLists && offer.offerUsers ? (
+                <>
+                  {(validFrom || validTo) && (
+                    <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+                  )}
+                  <Typography>
+                    👤{"\xa0"}
                     {offer.offerLists.length + offer.offerUsers.length === 0 &&
                       t("allMyFriends")}
-                  </>
-                ) : null}
+                  </Typography>
 
-                {offer.lat != null && (
+                  {offer.offerLists?.map((item) => (
+                    <Chip key={item.listId} label={item.list.name} />
+                  ))}
+
+                  {offer.offerUsers?.map((item) => (
+                    <Chip
+                      key={item.userId}
+                      avatar={
+                        item.user.image ? (
+                          <Avatar src={item.user.image} alt="" />
+                        ) : undefined
+                      }
+                      label={item.user.name}
+                    />
+                  ))}
+                </>
+              ) : null}
+
+              {offer.lat != null && (
+                <>
+                  <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+
                   <IconButton size="small" onClick={() => setMapShown(true)}>
                     <PlaceIcon />
                   </IconButton>
-                )}
-              </Typography>
-
-              <>
-                {offer.offerLists?.map((item) => (
-                  <Chip key={item.listId} label={item.list.name} />
-                ))}
-
-                {offer.offerUsers?.map((item) => (
-                  <Chip
-                    key={item.userId}
-                    avatar={
-                      item.user.image ? (
-                        <Avatar src={item.user.image} alt="" />
-                      ) : undefined
-                    }
-                    label={item.user.name}
-                  />
-                ))}
-              </>
+                </>
+              )}
             </Box>
           </Box>
         </Box>
