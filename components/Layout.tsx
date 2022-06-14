@@ -103,10 +103,12 @@ export function Layout({ children, title }: Props) {
   };
 
   const handleLogOutClick = () => {
-    // TODO handle error
-    unregisterPn().finally(() => {
-      signOut();
-    });
+    if (window.confirm(t("AreYouSure"))) {
+      // TODO handle error
+      unregisterPn().finally(() => {
+        signOut();
+      });
+    }
   };
 
   const [considerPush, setConsiderPush] = useState(false);
