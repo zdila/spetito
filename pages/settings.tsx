@@ -124,7 +124,9 @@ const Settings: NextPage<Props> = ({ user }) => {
           <Typography>{user.name}</Typography>
         </Box>
 
-        <LanguageSwitcher />
+        <Box sx={{ mt: 1, mb: 2 }}>
+          <LanguageSwitcher />
+        </Box>
 
         <Autocomplete
           openText={t("open")}
