@@ -18,7 +18,13 @@ import { User } from "@prisma/client";
 import type { GetServerSideProps, NextPage } from "next";
 import { getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useReducer, useState } from "react";
+import {
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
 import { Layout } from "../components/Layout";
 import { prisma } from "../lib/prisma";
 import CheckIcon from "@mui/icons-material/Check";
@@ -28,6 +34,7 @@ import { useTranslation } from "next-i18next";
 import { redirectToLogIn } from "../lib/auth";
 import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
 import { UserAvatar } from "../components/UserAvatar";
+import { useDebounce, useDebouncedCallback } from "use-debounce";
 
 type Props = {
   usersInvitedByMe: User[];
@@ -42,9 +49,9 @@ const Friends: NextPage<Props> = ({
 }) => {
   const [options, setOptions] = useState<readonly User[]>([]);
 
-  const [inputValue, setInputValue] = useState("");
+  const [nameFilter, setNameFilter] = useState("");
 
-  const [value, setValue] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   const router = useRouter();
 
@@ -54,8 +61,15 @@ const Friends: NextPage<Props> = ({
 
   const handleFetchFail = useFetchFailHandler();
 
+  const setNameFilterDebounced = useDebouncedCallback(
+    useCallback((value: string) => {
+      setNameFilter(value);
+    }, []),
+    1000
+  );
+
   useEffect(() => {
-    if (inputValue.trim().length < 3) {
+    if (nameFilter.trim().length < 3) {
       setOptions([]);
 
       return;
@@ -67,7 +81,7 @@ const Friends: NextPage<Props> = ({
       const res = await handleFetchFail(
         fetch(
           "/api/users?q=" +
-            encodeURIComponent(inputValue.trim()) +
+            encodeURIComponent(nameFilter.trim()) +
             "&filter=notFriendsAndNotPending",
           { signal: controller.signal }
         )
@@ -79,14 +93,14 @@ const Friends: NextPage<Props> = ({
     })();
 
     return () => controller.abort();
-  }, [inputValue, handleFetchFail]);
+  }, [nameFilter, handleFetchFail]);
 
   const refresh = useCallback(() => {
     router.replace(router.asPath);
   }, [router]);
 
   const handleRequestClick = useEventCallback(() => {
-    if (!value) {
+    if (!user) {
       return;
     }
 
@@ -94,13 +108,13 @@ const Friends: NextPage<Props> = ({
       fetch("/api/invites", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: value?.id }),
+        body: JSON.stringify({ userId: user?.id }),
       })
     ).then((res) => {
       if (res) {
-        setValue(null);
+        setUser(null);
 
-        setInputValue("");
+        setNameFilter("");
 
         refresh();
       }
@@ -239,7 +253,14 @@ const Friends: NextPage<Props> = ({
         {t("FindFriend")}
       </Typography>
 
-      <Paper sx={{ p: 2 }}>
+      <Paper
+        sx={{ p: 2 }}
+        component="form"
+        onSubmit={(e: SyntheticEvent) => {
+          e.preventDefault();
+          setNameFilterDebounced.flush();
+        }}
+      >
         {session.status === "authenticated" &&
           !session.data?.user?.hideFewFriendsAlert &&
           (typeof window === "undefined" ||
@@ -271,7 +292,7 @@ const Friends: NextPage<Props> = ({
             <TextField {...params} label={t("YourFriendsName")} fullWidth />
           )}
           onInputChange={(event, newInputValue) => {
-            setInputValue(newInputValue);
+            setNameFilterDebounced(newInputValue);
           }}
           options={[...options].sort(compareUsers)}
           autoComplete
@@ -292,13 +313,18 @@ const Friends: NextPage<Props> = ({
               </li>
             );
           }}
-          value={value}
-          onChange={(event, newValue: User | null) => {
-            setValue(newValue);
+          value={user}
+          onChange={(event, user: User | null) => {
+            setUser(user);
           }}
         />
 
-        <Button onClick={handleRequestClick} disabled={!value} sx={{ mt: 2 }}>
+        <Button
+          onClick={handleRequestClick}
+          disabled={!user}
+          type="button"
+          sx={{ mt: 2 }}
+        >
           {t("SendFriendRequest")}
         </Button>
       </Paper>
