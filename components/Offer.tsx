@@ -61,6 +61,8 @@ export function OfferItem({
   const handleFetchFail = useFetchFailHandler();
 
   const handleDeleteClick = useCallback(() => {
+    closeMenu();
+
     if (window.confirm(t("AreYouSure"))) {
       handleFetchFail(fetch("/api/offers/" + id, { method: "DELETE" })).then(
         (res) => {
@@ -81,17 +83,24 @@ export function OfferItem({
   const MapDialog = useLazyMapDialog(mountMapDialog);
 
   const handleCalendarClick = () => {
+    closeMenu();
+
     import("../lib/icalExport").then(({ exportCalendarEvent }) => {
       exportCalendarEvent(t("OfferCalSummary"), offer);
     });
   };
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
   const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+
+  const handleMenuButtonClick = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = () => {
+
+  const closeMenu = () => {
     setAnchorEl(null);
   };
 
@@ -122,10 +131,9 @@ export function OfferItem({
       <IconButton
         size="small"
         sx={{ position: "absolute", right: 0, top: "0.25rem" }}
-        aria-controls={open ? "basic-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
-        onClick={handleClick}
+        onClick={handleMenuButtonClick}
       >
         <MoreVertIcon fontSize="small" />
       </IconButton>
@@ -133,7 +141,7 @@ export function OfferItem({
       <Menu
         anchorEl={anchorEl}
         open={open}
-        onClose={handleClose}
+        onClose={closeMenu}
         anchorOrigin={{
           vertical: "bottom",
           horizontal: "right",
@@ -144,7 +152,12 @@ export function OfferItem({
         }}
       >
         {own && (
-          <MenuItem onClick={() => setEditing(true)}>
+          <MenuItem
+            onClick={() => {
+              closeMenu();
+              setEditing(true);
+            }}
+          >
             <ListItemIcon>
               <EditIcon fontSize="small" />
             </ListItemIcon>
