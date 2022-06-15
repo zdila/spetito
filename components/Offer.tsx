@@ -142,7 +142,6 @@ export function OfferItem({
               )}
 
               <Typography variant="body2">
-                {/* {formatDateTime(createdAt, locale, timeZone)}{" "} */}
                 {validFrom ? (
                   <>
                     {" " + t("dateFrom") + " "}
