@@ -67,8 +67,8 @@ const Home: NextPage<Props> = ({
 
   function compareOffers(a: Offer, b: Offer) {
     return (
-      (a.validFrom ?? a.createdAt).getTime() -
-      (b.validFrom ?? b.createdAt).getTime()
+      (b.validFrom ?? b.createdAt).getTime() -
+      (a.validFrom ?? a.createdAt).getTime()
     );
   }
 
