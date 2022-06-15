@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { List, User } from "@prisma/client";
-import { SyntheticEvent, useRef, useState } from "react";
+import { SyntheticEvent, useEffect, useRef, useState } from "react";
 import { AudienceDialog } from "./AudienceDialog";
 import EditIcon from "@mui/icons-material/Edit";
 import { useTranslation } from "next-i18next";
@@ -136,7 +136,7 @@ export function OfferForm({
       : null
   );
 
-  const rootRef = useRef<HTMLFormElement | null>(null);
+  const contentRef = useRef<HTMLFormElement | null>(null);
 
   const [focused, setFocused] = useState(false);
 
@@ -144,14 +144,33 @@ export function OfferForm({
 
   const tfRef = useRef<HTMLInputElement | null>(null);
 
+  const [contentHeight, setContentHeight] = useState(
+    contentRef.current?.clientHeight
+  );
+
+  useEffect(() => {
+    const container = contentRef.current;
+
+    if (!container) {
+      return;
+    }
+
+    // setContentHeight(container.clientHeight);
+
+    const observer = new ResizeObserver(() => {
+      setContentHeight(container.clientHeight);
+    });
+
+    observer.observe(container);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   return (
     <Paper
-      ref={rootRef}
       sx={{
-        p: 2,
-        display: "flex",
-        gap: 2,
-        flexWrap: "wrap",
         height: offer
           ? undefined
           : message.trim() ||
@@ -163,16 +182,14 @@ export function OfferForm({
             audience.length > 0 ||
             validFrom ||
             validTo
-          ? rootRef.current?.scrollHeight ?? 80
+          ? contentHeight
           : (tfRef.current?.scrollHeight ?? 50) + 32,
         ":focus-within": {
-          height: rootRef.current?.scrollHeight,
+          height: contentHeight,
         },
         overflow: "hidden",
         transition: "height 0.2s",
       }}
-      component="form"
-      onSubmit={handleSubmit}
     >
       {mountAudienceDialog && (
         <AudienceDialog
@@ -198,167 +215,179 @@ export function OfferForm({
         />
       )}
 
-      <TextField
-        label={t("Offer")}
-        fullWidth
-        multiline
-        maxRows={6}
-        value={message}
-        onChange={(e) => setMessage(e.currentTarget.value)}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
-        ref={tfRef}
-        autoFocus={!!offer}
-      />
-
       <Box
         sx={{
-          width: "100%",
+          p: 2,
           display: "flex",
-          rowGap: 2,
-          columnGap: 1,
-          flexDirection: "column",
-          alignItems: "flex-start",
+          gap: 2,
+          flexWrap: "wrap",
         }}
+        ref={contentRef}
+        component="form"
+        onSubmit={handleSubmit}
       >
+        <TextField
+          label={t("Offer")}
+          fullWidth
+          multiline
+          maxRows={6}
+          value={message}
+          onChange={(e) => setMessage(e.currentTarget.value)}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          ref={tfRef}
+          autoFocus={!!offer}
+        />
+
         <Box
           sx={{
+            width: "100%",
             display: "flex",
-            columnGap: 1,
             rowGap: 2,
-            alignItems: "center",
-            flexWrap: "wrap",
+            columnGap: 1,
+            flexDirection: "column",
+            alignItems: "flex-start",
           }}
         >
-          <Typography>{t("Time")}</Typography>
-
-          <DateTimePicker
-            label={t("DateFrom")}
-            renderInput={(props) => (
-              <TextField {...props} inputProps={{ ...props.inputProps }} />
-            )}
-            onChange={(value) => setValidFrom(value)}
-            value={validFrom}
-            mask={mask}
-            ampm={locale === "en"}
-            minDateTime={now}
-            maxDateTime={validTo}
-            onOpen={() => setDateTimePickerOpen(true)}
-            onClose={() => setDateTimePickerOpen(false)}
-          />
-
-          <DateTimePicker
-            label={t("DateTo")}
-            renderInput={(props) => (
-              <TextField {...props} inputProps={{ ...props.inputProps }} />
-            )}
-            onChange={(value) => setValidTo(value)}
-            value={validTo}
-            mask={mask}
-            ampm={locale === "en"}
-            minDateTime={validFrom || now}
-            onOpen={() => setDateTimePickerOpen(true)}
-            onClose={() => setDateTimePickerOpen(false)}
-          />
-        </Box>
-
-        <Box
-          sx={{
-            display: "flex",
-            gap: 1,
-            alignItems: "center",
-            flexWrap: "wrap",
-          }}
-        >
-          <Typography>{t("Audience")}:</Typography>
-
-          {audience.length === 0 ? (
-            <Typography>{t("allMyFriends")}</Typography>
-          ) : (
-            audience.map((item) => {
-              const id = item.slice(2);
-
-              const friend = item.startsWith("u:")
-                ? friends?.find((frined) => frined.id === id)
-                : undefined;
-
-              const list = item.startsWith("l:")
-                ? lists?.find((list) => list.id === id)
-                : undefined;
-
-              return friend || list ? (
-                <Chip
-                  key={item}
-                  avatar={friend && <UserAvatar user={friend} />}
-                  label={list?.name ?? friend?.name ?? "?"}
-                />
-              ) : null;
-            })
-          )}
-
-          <IconButton
-            sx={{ my: -1 }}
-            onClick={() => setShowAudienceDialog(true)}
-            title={t("SetAudience")}
-          >
-            <EditIcon />
-          </IconButton>
-        </Box>
-
-        <Box
-          sx={{
-            display: "flex",
-            gap: 1,
-            alignItems: "center",
-          }}
-        >
-          <Typography>{t("Place")}:</Typography>
-
-          <Typography>{place ? t("placeSet") : t("placeNotSet")}</Typography>
-
-          <IconButton onClick={() => setShowMapDialog(true)}>
-            <PlaceIcon />
-          </IconButton>
-        </Box>
-
-        <Box
-          sx={{
-            display: "flex",
-            gap: 1,
-            flexGrow: 1,
-            alignSelf: "flex-end",
-          }}
-        >
-          <Button disabled={!message.trim()} type="submit">
-            {t(offer ? "Save" : "PlaceThisOffer")}
-          </Button>
-
-          <Button
-            variant="text"
-            onClick={(e) => {
-              setMessage("");
-              setPlace(null);
-              setValidFrom(null);
-              setValidTo(null);
-              setAudience([]);
-
-              onCancel?.();
-
-              e.currentTarget.blur();
+          <Box
+            sx={{
+              display: "flex",
+              columnGap: 1,
+              rowGap: 2,
+              alignItems: "center",
+              flexWrap: "wrap",
             }}
-            disabled={
-              !(
-                offer ||
-                message.trim() ||
-                place ||
-                validFrom ||
-                validTo ||
-                audience.length > 0
-              )
-            }
           >
-            {t("Cancel")}
-          </Button>
+            <Typography>{t("Time")}</Typography>
+
+            <DateTimePicker
+              label={t("DateFrom")}
+              renderInput={(props) => (
+                <TextField {...props} inputProps={{ ...props.inputProps }} />
+              )}
+              onChange={(value) => setValidFrom(value)}
+              value={validFrom}
+              mask={mask}
+              ampm={locale === "en"}
+              minDateTime={now}
+              maxDateTime={validTo}
+              onOpen={() => setDateTimePickerOpen(true)}
+              onClose={() => setDateTimePickerOpen(false)}
+            />
+
+            <DateTimePicker
+              label={t("DateTo")}
+              renderInput={(props) => (
+                <TextField {...props} inputProps={{ ...props.inputProps }} />
+              )}
+              onChange={(value) => setValidTo(value)}
+              value={validTo}
+              mask={mask}
+              ampm={locale === "en"}
+              minDateTime={validFrom || now}
+              onOpen={() => setDateTimePickerOpen(true)}
+              onClose={() => setDateTimePickerOpen(false)}
+            />
+          </Box>
+
+          <Box
+            sx={{
+              display: "flex",
+              gap: 1,
+              alignItems: "center",
+              flexWrap: "wrap",
+            }}
+          >
+            <Typography>{t("Audience")}:</Typography>
+
+            {audience.length === 0 ? (
+              <Typography>{t("allMyFriends")}</Typography>
+            ) : (
+              audience.map((item) => {
+                const id = item.slice(2);
+
+                const friend = item.startsWith("u:")
+                  ? friends?.find((frined) => frined.id === id)
+                  : undefined;
+
+                const list = item.startsWith("l:")
+                  ? lists?.find((list) => list.id === id)
+                  : undefined;
+
+                return friend || list ? (
+                  <Chip
+                    key={item}
+                    avatar={friend && <UserAvatar user={friend} />}
+                    label={list?.name ?? friend?.name ?? "?"}
+                  />
+                ) : null;
+              })
+            )}
+
+            <IconButton
+              sx={{ my: -1 }}
+              onClick={() => setShowAudienceDialog(true)}
+              title={t("SetAudience")}
+            >
+              <EditIcon />
+            </IconButton>
+          </Box>
+
+          <Box
+            sx={{
+              display: "flex",
+              gap: 1,
+              alignItems: "center",
+            }}
+          >
+            <Typography>{t("Place")}:</Typography>
+
+            <Typography>{place ? t("placeSet") : t("placeNotSet")}</Typography>
+
+            <IconButton onClick={() => setShowMapDialog(true)}>
+              <PlaceIcon />
+            </IconButton>
+          </Box>
+
+          <Box
+            sx={{
+              display: "flex",
+              gap: 1,
+              flexGrow: 1,
+              alignSelf: "flex-end",
+            }}
+          >
+            <Button disabled={!message.trim()} type="submit">
+              {t(offer ? "Save" : "PlaceThisOffer")}
+            </Button>
+
+            <Button
+              variant="text"
+              onClick={(e) => {
+                setMessage("");
+                setPlace(null);
+                setValidFrom(null);
+                setValidTo(null);
+                setAudience([]);
+
+                onCancel?.();
+
+                e.currentTarget.blur();
+              }}
+              disabled={
+                !(
+                  offer ||
+                  message.trim() ||
+                  place ||
+                  validFrom ||
+                  validTo ||
+                  audience.length > 0
+                )
+              }
+            >
+              {t("Cancel")}
+            </Button>
+          </Box>
         </Box>
       </Box>
     </Paper>
