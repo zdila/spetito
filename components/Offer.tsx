@@ -1,3 +1,4 @@
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -7,6 +8,10 @@ import {
   Chip,
   Divider,
   IconButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
   Paper,
   Typography,
 } from "@mui/material";
@@ -81,6 +86,15 @@ export function OfferItem({
     });
   };
 
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return editing ? (
     <OfferForm
       friends={friends}
@@ -97,6 +111,7 @@ export function OfferItem({
   ) : (
     <Paper
       sx={{
+        position: "relative",
         p: 2,
         backgroundColor:
           offer.validTo && now && offer.validTo.getTime() < now?.getTime()
@@ -104,6 +119,63 @@ export function OfferItem({
             : undefined,
       }}
     >
+      <IconButton
+        size="small"
+        sx={{ position: "absolute", right: 0, top: "0.25rem" }}
+        aria-controls={open ? "basic-menu" : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? "true" : undefined}
+        onClick={handleClick}
+      >
+        <MoreVertIcon fontSize="small" />
+      </IconButton>
+
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+      >
+        {own && (
+          <MenuItem onClick={() => setEditing(true)}>
+            <ListItemIcon>
+              <EditIcon fontSize="small" />
+            </ListItemIcon>
+
+            <ListItemText>{t("Modify")}</ListItemText>
+          </MenuItem>
+        )}
+
+        <MenuItem onClick={handleDeleteClick} sx={{ color: "error.main" }}>
+          <ListItemIcon sx={{ color: "error.main" }}>
+            {own ? (
+              <DeleteIcon fontSize="small" />
+            ) : (
+              <CloseIcon fontSize="small" />
+            )}
+          </ListItemIcon>
+
+          <ListItemText>{own ? t("Delete") : t("Hide")}</ListItemText>
+        </MenuItem>
+
+        {(validFrom || validTo) && (
+          <MenuItem onClick={handleCalendarClick}>
+            <ListItemIcon>
+              <CalendarTodayIcon fontSize="small" />
+            </ListItemIcon>
+
+            <ListItemText>{t("SaveToCalendar")}</ListItemText>
+          </MenuItem>
+        )}
+      </Menu>
+
       {mountMapDialog && MapDialog && (
         <MapDialog
           readOnly
@@ -142,50 +214,38 @@ export function OfferItem({
           )}
 
           {(validFrom || validTo) && (
-            <Box
-              sx={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
-            >
-              <IconButton
-                size="small"
-                onClick={handleCalendarClick}
-                edge="start"
-              >
-                <CalendarTodayIcon fontSize="small" />
-              </IconButton>
-
-              <Typography variant="body2" component="span">
-                {validFrom ? (
-                  <>
-                    {" " + t("dateFrom") + "\xa0"}
-                    <Box
-                      component="span"
-                      sx={
-                        now && validFrom.getTime() < now.getTime()
-                          ? { color: "error.dark" }
-                          : {}
-                      }
-                    >
-                      {formatDateTime(validFrom, locale, timeZone)}
-                    </Box>
-                  </>
-                ) : null}
-                {validTo ? (
-                  <>
-                    {" " + t("dateTo") + "\xa0"}
-                    <Box
-                      component="span"
-                      sx={
-                        now && validTo.getTime() < now.getTime()
-                          ? { color: "error.dark" }
-                          : {}
-                      }
-                    >
-                      {formatDateTime(validTo, locale, timeZone)}
-                    </Box>
-                  </>
-                ) : null}
-              </Typography>
-            </Box>
+            <Typography variant="body2" component="span">
+              {validFrom ? (
+                <>
+                  {" " + t("dateFrom") + "\xa0"}
+                  <Box
+                    component="span"
+                    sx={
+                      now && validFrom.getTime() < now.getTime()
+                        ? { color: "error.dark" }
+                        : {}
+                    }
+                  >
+                    {formatDateTime(validFrom, locale, timeZone)}
+                  </Box>
+                </>
+              ) : null}
+              {validTo ? (
+                <>
+                  {" " + t("dateTo") + "\xa0"}
+                  <Box
+                    component="span"
+                    sx={
+                      now && validTo.getTime() < now.getTime()
+                        ? { color: "error.dark" }
+                        : {}
+                    }
+                  >
+                    {formatDateTime(validTo, locale, timeZone)}
+                  </Box>
+                </>
+              ) : null}
+            </Typography>
           )}
 
           {offer.offerLists && offer.offerUsers && (validFrom || validTo) && (
@@ -233,32 +293,6 @@ export function OfferItem({
             </>
           )}
         </Box>
-
-        {own && (
-          <IconButton
-            title={t("Modify")}
-            sx={{ alignSelf: "flex-start", mt: -1 }}
-            onClick={() => setEditing(true)}
-            size="small"
-          >
-            <EditIcon fontSize="small" />
-          </IconButton>
-        )}
-
-        <IconButton
-          title={own ? t("Delete") : t("Hide")}
-          color="error"
-          edge="end"
-          sx={{ alignSelf: "flex-start", mt: -1 }}
-          onClick={handleDeleteClick}
-          size="small"
-        >
-          {own ? (
-            <DeleteIcon fontSize="small" />
-          ) : (
-            <CloseIcon fontSize="small" />
-          )}
-        </IconButton>
       </Box>
 
       <Box>

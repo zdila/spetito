@@ -106,5 +106,6 @@
   "open": "open",
   "RequestFailed": "Request failed.",
   "Notifications": "Notifications",
-  "OfferCalSummary": "Offer from www.spetito.com"
+  "OfferCalSummary": "Offer from www.spetito.com",
+  "SaveToCalendar": "Save to calendar"
 }
