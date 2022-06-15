@@ -211,9 +211,17 @@ export function OfferItem({
 
               {offer.lat != null && (
                 <>
-                  <Divider orientation="vertical" flexItem sx={{ ml: 1 }} />
+                  {(offer.validFrom ||
+                    offer.validTo ||
+                    (offer.offerLists && offer.offerUsers)) && (
+                    <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+                  )}
 
-                  <IconButton size="small" onClick={() => setMapShown(true)}>
+                  <IconButton
+                    size="small"
+                    onClick={() => setMapShown(true)}
+                    edge="start"
+                  >
                     <PlaceIcon />
                   </IconButton>
                 </>
