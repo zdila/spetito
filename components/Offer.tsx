@@ -2,11 +2,18 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
-import { Chip, Divider, IconButton, Paper, Typography } from "@mui/material";
+import {
+  Avatar,
+  Chip,
+  Divider,
+  IconButton,
+  Paper,
+  Typography,
+} from "@mui/material";
 import { Box } from "@mui/system";
 import { List, User } from "@prisma/client";
 import { useTranslation } from "next-i18next";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useRouter } from "next/router";
 import { OfferForm } from "./OfferForm";
 import { OfferExt } from "../types";
@@ -17,7 +24,7 @@ import { formatDateTime } from "../utility/formatDateTime";
 import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
 import { grey } from "@mui/material/colors";
 import { useLazyMapDialog } from "../hooks/useLazyMapDialog";
-import { UserAvatar } from "./UserAvatar";
+import { getUserAvatarProps, UserAvatar } from "./UserAvatar";
 
 type Props = {
   own?: boolean;
@@ -191,7 +198,7 @@ export function OfferItem({
                   {offer.offerUsers?.map((item) => (
                     <Chip
                       key={item.userId}
-                      avatar={<UserAvatar user={item.user} />}
+                      avatar={<Avatar {...getUserAvatarProps(item.user)} />}
                       label={item.user.name}
                     />
                   ))}
