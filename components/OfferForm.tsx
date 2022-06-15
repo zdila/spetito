@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Box,
   Button,
   Chip,
@@ -21,6 +20,7 @@ import PlaceIcon from "@mui/icons-material/Place";
 import { LngLat } from "maplibre-gl";
 import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
 import { useLazyMapDialog } from "../hooks/useLazyMapDialog";
+import { UserAvatar } from "./UserAvatar";
 
 const maskMap: Record<string, string> = {
   en: "__/__/____ __:__ _M",
@@ -289,11 +289,7 @@ export function OfferForm({
               return friend || list ? (
                 <Chip
                   key={item}
-                  avatar={
-                    friend?.image ? (
-                      <Avatar src={friend.image} alt="" />
-                    ) : undefined
-                  }
+                  avatar={friend && <UserAvatar user={friend} />}
                   label={list?.name ?? friend?.name ?? "?"}
                 />
               ) : null;

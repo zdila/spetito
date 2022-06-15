@@ -5,7 +5,6 @@ import {
   ListItem,
   ListItemText,
   ListItemAvatar,
-  Avatar,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -19,6 +18,7 @@ import { useTranslation } from "next-i18next";
 import { useEffect, useState } from "react";
 import { useFriends } from "../hooks/useFriends";
 import { useLists } from "../hooks/useLists";
+import { UserAvatar } from "./UserAvatar";
 
 export type ListWithMembers = List & {
   members: (ListMember & { user: User })[];
@@ -125,11 +125,9 @@ export function AudienceDialog({ open, onClose, audience }: Props) {
                     disablePadding
                   >
                     <ListItemButton onClick={() => checkListItem(key)}>
-                      {user.image && (
-                        <ListItemAvatar>
-                          <Avatar src={user.image} alt="" />
-                        </ListItemAvatar>
-                      )}
+                      <ListItemAvatar>
+                        <UserAvatar user={user} />
+                      </ListItemAvatar>
 
                       <ListItemText primary={user.name} />
                     </ListItemButton>

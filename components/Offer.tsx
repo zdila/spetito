@@ -2,14 +2,7 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
-import {
-  Avatar,
-  Chip,
-  Divider,
-  IconButton,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { Chip, Divider, IconButton, Paper, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { List, User } from "@prisma/client";
 import { useTranslation } from "next-i18next";
@@ -24,6 +17,7 @@ import { formatDateTime } from "../utility/formatDateTime";
 import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
 import { grey } from "@mui/material/colors";
 import { useLazyMapDialog } from "../hooks/useLazyMapDialog";
+import { UserAvatar } from "./UserAvatar";
 
 type Props = {
   own?: boolean;
@@ -121,7 +115,7 @@ export function OfferItem({
       )}
 
       <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
-        {offer.author.image && <Avatar src={offer.author.image} alt="" />}
+        {<UserAvatar user={offer.author} />}
 
         <Box
           sx={{
@@ -198,11 +192,7 @@ export function OfferItem({
                   {offer.offerUsers?.map((item) => (
                     <Chip
                       key={item.userId}
-                      avatar={
-                        item.user.image ? (
-                          <Avatar src={item.user.image} alt="" />
-                        ) : undefined
-                      }
+                      avatar={<UserAvatar user={item.user} />}
                       label={item.user.name}
                     />
                   ))}

@@ -1,6 +1,5 @@
 import {
   Autocomplete,
-  Avatar,
   Box,
   Button,
   Checkbox,
@@ -20,6 +19,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useEffect, useRef, useState } from "react";
 import { LanguageSwitcher } from "../components/LanguageSwitcher";
 import { Layout } from "../components/Layout";
+import { UserAvatar } from "../components/UserAvatar";
 import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
 import { usePermission } from "../hooks/usePermission";
 import { redirectToLogIn } from "../lib/auth";
@@ -119,7 +119,7 @@ const Settings: NextPage<Props> = ({ user }) => {
         }}
       >
         <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-          {user.image && <Avatar src={user.image} />}
+          <UserAvatar user={user} />
 
           <Typography>{user.name}</Typography>
         </Box>

@@ -20,7 +20,7 @@ export default async function handler(
     return;
   }
 
-  await prisma.pushRegistration.delete({
+  await prisma.pushRegistration.deleteMany({
     where: { endpoint },
   });
 

@@ -27,7 +27,7 @@ export function sendPushNotifications(
             err instanceof WebPushError &&
             err.body.startsWith("push subscription has unsubscribed or expired")
           ) {
-            return prisma.pushRegistration.delete({
+            return prisma.pushRegistration.deleteMany({
               where: {
                 endpoint: err.endpoint,
               },

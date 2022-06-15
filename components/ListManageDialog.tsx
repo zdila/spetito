@@ -6,7 +6,6 @@ import {
   ListItem,
   ListItemText,
   ListItemAvatar,
-  Avatar,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -21,6 +20,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
 import { useFriends } from "../hooks/useFriends";
+import { UserAvatar } from "./UserAvatar";
 
 export type ListWithMembers = List & {
   members: (ListMember & { user: User })[];
@@ -117,7 +117,7 @@ export function ListManageDialog({ open, onClose, list }: Props) {
                 <ListItemButton onClick={() => checkListItem(user.id)}>
                   {user.image && (
                     <ListItemAvatar>
-                      <Avatar src={user.image} alt="" />
+                      <UserAvatar user={user} />
                     </ListItemAvatar>
                   )}
 

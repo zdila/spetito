@@ -12,7 +12,6 @@ import {
   ListItem,
   ListItemText,
   ListItemAvatar,
-  Avatar,
   Alert,
 } from "@mui/material";
 import { User } from "@prisma/client";
@@ -28,6 +27,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 import { redirectToLogIn } from "../lib/auth";
 import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
+import { UserAvatar } from "../components/UserAvatar";
 
 type Props = {
   usersInvitedByMe: User[];
@@ -223,11 +223,9 @@ const Friends: NextPage<Props> = ({
                     </>
                   }
                 >
-                  {user.image && (
-                    <ListItemAvatar>
-                      <Avatar src={user.image} alt="" />
-                    </ListItemAvatar>
-                  )}
+                  <ListItemAvatar>
+                    <UserAvatar user={user} />
+                  </ListItemAvatar>
 
                   <ListItemText primary={user.name} />
                 </ListItem>
@@ -282,11 +280,13 @@ const Friends: NextPage<Props> = ({
           renderOption={(props, option) => {
             return (
               <li key={option.id} {...props}>
-                {option.image && (
-                  <Avatar src={option.image} sx={{ mr: 1 }} alt="" />
-                )}
+                <UserAvatar user={option} />
 
-                <Typography variant="body2" color="text.secondary">
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ ml: 1 }}
+                >
                   {option.name ?? "-"}
                 </Typography>
               </li>
@@ -325,11 +325,9 @@ const Friends: NextPage<Props> = ({
                     </IconButton>
                   }
                 >
-                  {user.image && (
-                    <ListItemAvatar>
-                      <Avatar src={user.image} alt="" />
-                    </ListItemAvatar>
-                  )}
+                  <ListItemAvatar>
+                    <UserAvatar user={user} />
+                  </ListItemAvatar>
 
                   <ListItemText primary={user.name} />
                 </ListItem>
@@ -364,7 +362,7 @@ const Friends: NextPage<Props> = ({
               >
                 {user.image && (
                   <ListItemAvatar>
-                    <Avatar src={user.image} alt="" />
+                    <UserAvatar user={user} />
                   </ListItemAvatar>
                 )}
 

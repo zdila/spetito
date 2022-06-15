@@ -8,7 +8,6 @@ import {
   ListItem,
   ListItemText,
   ListItemAvatar,
-  Avatar,
   Accordion,
   AccordionSummary,
   AccordionDetails,
@@ -32,6 +31,7 @@ import { redirectToLogIn } from "../lib/auth";
 import { User } from "@prisma/client";
 import { useDelayedOff } from "../hooks/useDelayedOff";
 import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
+import { UserAvatar } from "../components/UserAvatar";
 
 type Props = {
   lists: ListWithMembers[];
@@ -166,11 +166,9 @@ const Lists: NextPage<Props> = ({ lists }) => {
                     <MuiList disablePadding>
                       {[...list.members].sort(compareUsers).map((member) => (
                         <ListItem key={member.userId}>
-                          {member.user.image && (
-                            <ListItemAvatar>
-                              <Avatar src={member.user.image} alt="" />
-                            </ListItemAvatar>
-                          )}
+                          <ListItemAvatar>
+                            <UserAvatar user={member.user} />
+                          </ListItemAvatar>
 
                           <ListItemText primary={member.user.name} />
                         </ListItem>
