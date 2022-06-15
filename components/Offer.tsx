@@ -248,7 +248,7 @@ export function OfferItem({
             </Typography>
           )}
 
-          {offer.offerLists && offer.offerUsers && (validFrom || validTo) && (
+          {offer.offerLists && offer.offerUsers && (
             <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
           )}
 
@@ -277,11 +277,7 @@ export function OfferItem({
 
           {offer.lat != null && (
             <>
-              {(offer.validFrom ||
-                offer.validTo ||
-                (offer.offerLists && offer.offerUsers)) && (
-                <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
-              )}
+              <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
 
               <IconButton
                 size="small"
