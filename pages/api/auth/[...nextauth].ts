@@ -42,6 +42,27 @@ export default NextAuth({
   adapter: PrismaAdapter(prisma),
   secret: process.env.SECRET,
   callbacks: {
+    // hack to derive name from email if name is not provided
+    signIn(params) {
+      function emailToName(email: string) {
+        return email
+          .replace(/@.*/, "")
+          .split(/[\W_]+/)
+          .filter((a) => a)
+          .map((a) => a[0].toUpperCase() + a.slice(1))
+          .join(" ");
+      }
+
+      if (params.user && !params.user.name && params.user.email) {
+        params.user.name = emailToName(params.user.email);
+      }
+
+      if (params.profile && !params.profile.name && params.profile.email) {
+        params.profile.name = emailToName(params.profile.email);
+      }
+
+      return true;
+    },
     session: async ({ session, user }) => {
       if (session.user) {
         Object.assign(session.user, user);
