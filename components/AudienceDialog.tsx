@@ -61,6 +61,42 @@ export function AudienceDialog({ open, onClose, audience }: Props) {
 
       <DialogContent>
         <>
+          <Typography variant="caption">{t("Lists")}</Typography>
+
+          {!lists ? (
+            <CircularProgress
+              sx={{ display: "block", my: 1, marginX: "auto" }}
+            />
+          ) : lists.length === 0 ? (
+            <Typography sx={{ my: 1 }} color="text.secondary">
+              {t("YouHaveNoLists")}
+            </Typography>
+          ) : (
+            <MuiList>
+              {lists?.map((list) => {
+                const key = "l:" + list.id;
+
+                return (
+                  <ListItem
+                    key={key}
+                    secondaryAction={
+                      <Checkbox
+                        edge="end"
+                        onChange={() => checkListItem(key)}
+                        checked={checked.indexOf(key) !== -1}
+                      />
+                    }
+                    disablePadding
+                  >
+                    <ListItemButton onClick={() => checkListItem(key)}>
+                      <ListItemText primary={list.name} />
+                    </ListItemButton>
+                  </ListItem>
+                );
+              })}
+            </MuiList>
+          )}
+
           <Typography variant="caption">{t("Friends")}</Typography>
 
           {!friends ? (
@@ -96,42 +132,6 @@ export function AudienceDialog({ open, onClose, audience }: Props) {
                       )}
 
                       <ListItemText primary={user.name} />
-                    </ListItemButton>
-                  </ListItem>
-                );
-              })}
-            </MuiList>
-          )}
-
-          <Typography variant="caption">{t("Lists")}</Typography>
-
-          {!lists ? (
-            <CircularProgress
-              sx={{ display: "block", my: 1, marginX: "auto" }}
-            />
-          ) : lists.length === 0 ? (
-            <Typography sx={{ my: 1 }} color="text.secondary">
-              {t("YouHaveNoLists")}
-            </Typography>
-          ) : (
-            <MuiList>
-              {lists?.map((list) => {
-                const key = "l:" + list.id;
-
-                return (
-                  <ListItem
-                    key={key}
-                    secondaryAction={
-                      <Checkbox
-                        edge="end"
-                        onChange={() => checkListItem(key)}
-                        checked={checked.indexOf(key) !== -1}
-                      />
-                    }
-                    disablePadding
-                  >
-                    <ListItemButton onClick={() => checkListItem(key)}>
-                      <ListItemText primary={list.name} />
                     </ListItemButton>
                   </ListItem>
                 );
