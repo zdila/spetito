@@ -12,5 +12,5 @@ export function formatDateTime(
       timeStyle: "short",
       timeZone: timeZone ?? undefined,
     })
-  );
+  ).replace(/ /g, "\xa0");
 }

@@ -39,7 +39,7 @@ type Props = {
   children: ReactNode;
 };
 
-const drawerWidth = 240;
+const drawerWidth = 200;
 
 const menuItems: {
   path: string;

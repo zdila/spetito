@@ -121,37 +121,42 @@ export function OfferItem({
         />
       )}
 
-      <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
-        {<UserAvatar user={offer.author} />}
+      <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+        <UserAvatar
+          user={offer.author}
+          sx={{ alignSelf: "flex-start", mr: 1.5 }}
+        />
 
         <Box
           sx={{
             flexGrow: 1,
             display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
+            alignItems: "center",
+            flexWrap: "wrap",
           }}
         >
-          <Box>
-            <Typography variant="body2" sx={{ mb: 0.5 }}>
-              {offer.author.name ?? "nobody"}
-            </Typography>
+          <Typography variant="body2">{offer.author.name ?? "???"}</Typography>
 
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              {(validFrom || validTo) && (
-                <IconButton
-                  size="small"
-                  onClick={handleCalendarClick}
-                  edge="start"
-                >
-                  <CalendarTodayIcon />
-                </IconButton>
-              )}
+          {(validFrom || validTo) && (
+            <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+          )}
 
-              <Typography variant="body2">
+          {(validFrom || validTo) && (
+            <Box
+              sx={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
+            >
+              <IconButton
+                size="small"
+                onClick={handleCalendarClick}
+                edge="start"
+              >
+                <CalendarTodayIcon fontSize="small" />
+              </IconButton>
+
+              <Typography variant="body2" component="span">
                 {validFrom ? (
                   <>
-                    {" " + t("dateFrom") + " "}
+                    {" " + t("dateFrom") + "\xa0"}
                     <Box
                       component="span"
                       sx={
@@ -166,7 +171,7 @@ export function OfferItem({
                 ) : null}
                 {validTo ? (
                   <>
-                    {" " + t("dateTo") + " "}
+                    {" " + t("dateTo") + "\xa0"}
                     <Box
                       component="span"
                       sx={
@@ -180,60 +185,63 @@ export function OfferItem({
                   </>
                 ) : null}
               </Typography>
-
-              {offer.offerLists && offer.offerUsers ? (
-                <>
-                  {(validFrom || validTo) && (
-                    <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
-                  )}
-                  <Typography>
-                    {offer.offerLists.length + offer.offerUsers.length === 0 &&
-                      t("allMyFriends")}
-                  </Typography>
-
-                  {offer.offerLists?.map((item) => (
-                    <Chip key={item.listId} label={item.list.name} />
-                  ))}
-
-                  {offer.offerUsers?.map((item) => (
-                    <Chip
-                      key={item.userId}
-                      avatar={<Avatar {...getUserAvatarProps(item.user)} />}
-                      label={item.user.name}
-                    />
-                  ))}
-                </>
-              ) : null}
-
-              {offer.lat != null && (
-                <>
-                  {(offer.validFrom ||
-                    offer.validTo ||
-                    (offer.offerLists && offer.offerUsers)) && (
-                    <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
-                  )}
-
-                  <IconButton
-                    size="small"
-                    onClick={() => setMapShown(true)}
-                    edge="start"
-                  >
-                    <PlaceIcon />
-                  </IconButton>
-                </>
-              )}
             </Box>
-          </Box>
+          )}
+
+          {offer.offerLists && offer.offerUsers && (validFrom || validTo) && (
+            <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+          )}
+
+          {offer.offerLists && offer.offerUsers ? (
+            <Box
+              sx={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
+            >
+              <Typography variant="body2">
+                {offer.offerLists.length + offer.offerUsers.length === 0 &&
+                  t("allMyFriends")}
+              </Typography>
+
+              {offer.offerLists?.map((item) => (
+                <Chip key={item.listId} label={item.list.name} />
+              ))}
+
+              {offer.offerUsers?.map((item) => (
+                <Chip
+                  key={item.userId}
+                  avatar={<Avatar {...getUserAvatarProps(item.user)} />}
+                  label={item.user.name}
+                />
+              ))}
+            </Box>
+          ) : null}
+
+          {offer.lat != null && (
+            <>
+              {(offer.validFrom ||
+                offer.validTo ||
+                (offer.offerLists && offer.offerUsers)) && (
+                <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+              )}
+
+              <IconButton
+                size="small"
+                onClick={() => setMapShown(true)}
+                edge="start"
+              >
+                <PlaceIcon fontSize="small" />
+              </IconButton>
+            </>
+          )}
         </Box>
 
         {own && (
           <IconButton
             title={t("Modify")}
-            edge="end"
             sx={{ alignSelf: "flex-start", mt: -1 }}
             onClick={() => setEditing(true)}
+            size="small"
           >
-            <EditIcon />
+            <EditIcon fontSize="small" />
           </IconButton>
         )}
 
@@ -243,8 +251,13 @@ export function OfferItem({
           edge="end"
           sx={{ alignSelf: "flex-start", mt: -1 }}
           onClick={handleDeleteClick}
+          size="small"
         >
-          {own ? <DeleteIcon /> : <CloseIcon />}
+          {own ? (
+            <DeleteIcon fontSize="small" />
+          ) : (
+            <CloseIcon fontSize="small" />
+          )}
         </IconButton>
       </Box>
 
