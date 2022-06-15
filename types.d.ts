@@ -26,7 +26,7 @@ declare global {
 }
 
 export type OfferExt = Offer & {
-  author: PrismaUser | null;
+  author: PrismaUser;
 
   offerLists?: (OfferList & { list: List })[];
   offerUsers?: (OfferUser & { user: PrismaUser })[];

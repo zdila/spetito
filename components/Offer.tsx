@@ -1,3 +1,4 @@
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
@@ -71,6 +72,12 @@ export function OfferItem({
 
   const mountMapDialog = useDelayedOff(mapShown);
 
+  const handleCalendarClick = () => {
+    import("../lib/icalExport").then(({ exportCalendarEvent }) => {
+      exportCalendarEvent(t("OfferCalSummary"), offer);
+    });
+  };
+
   return editing ? (
     <OfferForm
       friends={friends}
@@ -112,7 +119,7 @@ export function OfferItem({
       )}
 
       <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
-        {offer.author?.image && <Avatar src={offer.author?.image} alt="" />}
+        {offer.author.image && <Avatar src={offer.author.image} alt="" />}
 
         <Box
           sx={{
@@ -124,13 +131,22 @@ export function OfferItem({
         >
           <Box>
             <Typography variant="body2" sx={{ mb: 0.5 }}>
-              {offer.author?.name ?? "nobody"}
+              {offer.author.name ?? "nobody"}
             </Typography>
 
             <Box sx={{ display: "flex", alignItems: "center" }}>
+              {(validFrom || validTo) && (
+                <IconButton
+                  size="small"
+                  onClick={handleCalendarClick}
+                  edge="start"
+                >
+                  <CalendarTodayIcon />
+                </IconButton>
+              )}
+
               <Typography variant="body2">
                 {/* {formatDateTime(createdAt, locale, timeZone)}{" "} */}
-                {validFrom || validTo ? "🗓" : null}
                 {validFrom ? (
                   <>
                     {" " + t("dateFrom") + " "}
@@ -169,7 +185,6 @@ export function OfferItem({
                     <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
                   )}
                   <Typography>
-                    👤{"\xa0"}
                     {offer.offerLists.length + offer.offerUsers.length === 0 &&
                       t("allMyFriends")}
                   </Typography>

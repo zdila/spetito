@@ -105,5 +105,6 @@
   "clear": "clear",
   "open": "open",
   "RequestFailed": "Request failed.",
-  "Notifications": "Notifications"
+  "Notifications": "Notifications",
+  "OfferCalSummary": "Offer from www.spetito.com"
 }

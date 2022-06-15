@@ -7,6 +7,8 @@ const nextConfig = {
   reactStrictMode: true,
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     if (!isServer) {
+      config.resolve.fallback = { fs: false };
+
       config.plugins.push(
         new InjectManifest({
           swSrc: "./sw.ts",
