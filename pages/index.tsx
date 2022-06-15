@@ -16,9 +16,9 @@ import { useTranslation } from "next-i18next";
 import { redirectToLogIn } from "../lib/auth";
 
 type Props = {
-  friendsOffers: (Offer & { author: User | null })[];
+  friendsOffers: (Offer & { author: User })[];
   yourOffers: (Offer & {
-    author: User | null;
+    author: User;
     offerLists: (OfferList & { list: List })[];
     offerUsers: (OfferUser & { user: User })[];
   })[];

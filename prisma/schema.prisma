@@ -18,8 +18,8 @@ model Offer {
   validFrom    DateTime?      @map(name: "valid_from")
   validTo      DateTime?      @map(name: "valid_to")
   message      String
-  author       User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId       String?
+  author       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
   offerLists   OfferList[]
   offerUsers   OfferUser[]
   hiddenOffers HiddenOffers[]
