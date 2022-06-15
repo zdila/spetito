@@ -13,17 +13,17 @@ import {
 import { Box } from "@mui/system";
 import { List, User } from "@prisma/client";
 import { useTranslation } from "next-i18next";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { OfferForm } from "./OfferForm";
 import { OfferExt } from "../types";
 import PlaceIcon from "@mui/icons-material/Place";
 import { useDelayedOff } from "../hooks/useDelayedOff";
-import { MapDialog } from "./MapDialog";
 import { LngLat } from "maplibre-gl";
 import { formatDateTime } from "../utility/formatDateTime";
 import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
 import { grey } from "@mui/material/colors";
+import { useLazyMapDialog } from "../hooks/useLazyMapDialog";
 
 type Props = {
   own?: boolean;
@@ -72,6 +72,8 @@ export function OfferItem({
 
   const mountMapDialog = useDelayedOff(mapShown);
 
+  const MapDialog = useLazyMapDialog(mountMapDialog);
+
   const handleCalendarClick = () => {
     import("../lib/icalExport").then(({ exportCalendarEvent }) => {
       exportCalendarEvent(t("OfferCalSummary"), offer);
@@ -101,7 +103,7 @@ export function OfferItem({
             : undefined,
       }}
     >
-      {mountMapDialog && (
+      {mountMapDialog && MapDialog && (
         <MapDialog
           readOnly
           open={mapShown}

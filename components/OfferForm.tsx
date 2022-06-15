@@ -16,11 +16,11 @@ import { useTranslation } from "next-i18next";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import { useRouter } from "next/router";
 import { OfferExt } from "../types";
-import { MapDialog } from "./MapDialog";
 import { useDelayedOff } from "../hooks/useDelayedOff";
 import PlaceIcon from "@mui/icons-material/Place";
 import { LngLat } from "maplibre-gl";
 import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
+import { useLazyMapDialog } from "../hooks/useLazyMapDialog";
 
 const maskMap: Record<string, string> = {
   en: "__/__/____ __:__ _M",
@@ -120,6 +120,8 @@ export function OfferForm({
 
   const mountMapDialog = useDelayedOff(showMapDialog);
 
+  const MapDialog = useLazyMapDialog(mountMapDialog);
+
   const [place, setPlace] = useState<null | {
     center: LngLat;
     radius: number;
@@ -182,7 +184,7 @@ export function OfferForm({
         />
       )}
 
-      {mountMapDialog && (
+      {mountMapDialog && MapDialog && (
         <MapDialog
           open={showMapDialog}
           value={place}

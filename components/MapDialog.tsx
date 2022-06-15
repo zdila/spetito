@@ -221,3 +221,5 @@ export function MapDialog({ open, onClose, value, readOnly }: Props) {
     </Dialog>
   );
 }
+
+export type MapDialogType = typeof MapDialog;
