@@ -188,7 +188,7 @@ export function Layout({ children, title }: Props) {
   };
 
   const handleIgnoreClick = () => {
-    document.cookie = `PUSH_NOTIF=false; path=/`;
+    document.cookie = "PUSH_NOTIF=false; path=/";
 
     setConsiderPush(false);
   };

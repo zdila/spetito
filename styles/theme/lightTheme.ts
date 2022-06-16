@@ -8,14 +8,6 @@ export const lightTheme = createTheme({
         variant: "contained",
       },
     },
-    // MuiAppBar: {
-    //   styleOverrides: {
-    //     root: {
-    //       backgroundColor: "white",
-    //       color: purple[800],
-    //     },
-    //   },
-    // },
   },
   palette: {
     mode: "light",
@@ -24,6 +16,25 @@ export const lightTheme = createTheme({
     },
     background: {
       default: grey[200],
+    },
+  },
+});
+
+export const darkTheme = createTheme({
+  components: {
+    MuiButton: {
+      defaultProps: {
+        variant: "contained",
+      },
+    },
+  },
+  palette: {
+    mode: "dark",
+    primary: {
+      main: purple[800],
+    },
+    background: {
+      default: grey[800],
     },
   },
 });

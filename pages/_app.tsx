@@ -1,9 +1,8 @@
-import type { AppProps } from "next/app";
-import React from "react";
+import type { AppContext, AppInitialProps, AppProps } from "next/app";
 import { CacheProvider } from "@emotion/react";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import { createEmotionCache } from "../utility/createEmotionCache";
-import { lightTheme } from "../styles/theme/lightTheme";
+import { darkTheme, lightTheme } from "../styles/theme/lightTheme";
 import "../styles/globals.css";
 import { EmotionCache } from "@emotion/cache";
 import { SessionProvider } from "next-auth/react";
@@ -15,6 +14,7 @@ import enLocale from "date-fns/locale/en-US";
 import skLocale from "date-fns/locale/sk";
 import Head from "next/head";
 import { SnackbarProvider } from "notistack";
+import { useDarkMode } from "../hooks/useDarkMode";
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -30,6 +30,8 @@ function MyApp({
 }: AppProps & { emotionCache: EmotionCache }) {
   const { locale = "en" } = useRouter();
 
+  const darkMode = useDarkMode(pageProps.isDarkMode);
+
   return (
     <>
       <Head>
@@ -37,7 +39,7 @@ function MyApp({
       </Head>
 
       <CacheProvider value={emotionCache}>
-        <ThemeProvider theme={lightTheme}>
+        <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
           <CssBaseline />
 
           <SessionProvider session={pageProps.session}>
@@ -58,5 +60,18 @@ function MyApp({
     </>
   );
 }
+
+MyApp.getInitialProps = async ({
+  ctx,
+}: AppContext): Promise<AppInitialProps> => {
+  const darkMode = (ctx.req as any).cookies?.["DARK_MODE"];
+
+  return {
+    pageProps: {
+      isDarkMode:
+        darkMode === "true" ? true : darkMode === "false" ? false : undefined,
+    },
+  };
+};
 
 export default appWithTranslation(MyApp);
