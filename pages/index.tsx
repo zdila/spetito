@@ -4,7 +4,7 @@ import { List, Offer, OfferList, OfferUser, User } from "@prisma/client";
 import type { GetServerSideProps, NextPage } from "next";
 import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
 import { OfferForm } from "../components/OfferForm";
 import { OfferItem } from "../components/Offer";
@@ -14,6 +14,7 @@ import { useLists } from "../hooks/useLists";
 import { supportsPush } from "../lib/capabilities";
 import { useTranslation } from "next-i18next";
 import { redirectToLogIn } from "../lib/auth";
+import { useAutoclearState } from "../hooks/useAutoclearState";
 
 type Props = {
   friendsOffers: (Offer & { author: User })[];
@@ -72,6 +73,8 @@ const Home: NextPage<Props> = ({
     );
   }
 
+  const highlightOfferId = useAutoclearState(router.query["highlight-offer"]);
+
   return (
     <Layout title={t("Offers")}>
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
@@ -93,6 +96,7 @@ const Home: NextPage<Props> = ({
             <OfferItem
               key={offer.id}
               offer={offer}
+              highlight={highlightOfferId === offer.id}
               onDelete={refresh}
               friends={friends}
               lists={lists}
@@ -116,6 +120,7 @@ const Home: NextPage<Props> = ({
             <OfferItem
               key={offer.id}
               offer={offer}
+              highlight={highlightOfferId === offer.id}
               onDelete={refresh}
               timeZone={timeZone ?? undefined}
             />

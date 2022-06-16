@@ -27,7 +27,7 @@ import { useDelayedOff } from "../hooks/useDelayedOff";
 import { LngLat } from "maplibre-gl";
 import { formatDateTime } from "../utility/formatDateTime";
 import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
-import { grey } from "@mui/material/colors";
+import { grey, yellow } from "@mui/material/colors";
 import { useLazyMapDialog } from "../hooks/useLazyMapDialog";
 import { getUserAvatarProps, UserAvatar } from "./UserAvatar";
 
@@ -39,6 +39,7 @@ type Props = {
   lists?: List[];
   now?: Date;
   timeZone?: string;
+  highlight?: boolean;
 };
 
 export function OfferItem({
@@ -49,6 +50,7 @@ export function OfferItem({
   lists,
   now,
   timeZone,
+  highlight = false,
 }: Props) {
   const { t } = useTranslation("common");
 
@@ -122,10 +124,12 @@ export function OfferItem({
       sx={{
         position: "relative",
         p: 2,
-        backgroundColor:
-          offer.validTo && now && offer.validTo.getTime() < now?.getTime()
-            ? grey[300]
-            : undefined,
+        backgroundColor: highlight
+          ? yellow[200]
+          : offer.validTo && now && offer.validTo.getTime() < now?.getTime()
+          ? grey[300]
+          : undefined,
+        transition: "background-color 5s",
       }}
     >
       <IconButton
