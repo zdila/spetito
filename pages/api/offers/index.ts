@@ -11,7 +11,7 @@ import { Prisma } from "@prisma/client";
 
 export const OfferBody = Type.Object(
   {
-    message: Type.String(),
+    message: Type.String({ maxLength: 2000 }),
     validFrom: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
     validTo: Type.Union([Type.String({ format: "date-time" }), Type.Null()]),
     audience: Type.Object({

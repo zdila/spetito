@@ -30,6 +30,9 @@ import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
 import { grey, yellow } from "@mui/material/colors";
 import { useLazyMapDialog } from "../hooks/useLazyMapDialog";
 import { getUserAvatarProps, UserAvatar } from "./UserAvatar";
+import ReactMarkdown from "react-markdown";
+import remarkGemoji from "remark-gemoji";
+import remarkGfm from "remark-gfm";
 
 type Props = {
   own?: boolean;
@@ -319,6 +322,8 @@ export function OfferItem({
           // Instead use this non-standard one:
           wordBreak: "break-word",
         }}
+        component={ReactMarkdown}
+        remarkPlugins={[remarkGemoji, remarkGfm]}
       >
         {message}
       </Typography>
