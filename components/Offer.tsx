@@ -224,7 +224,7 @@ export function OfferItem({
             flexWrap: "wrap",
           }}
         >
-          <Typography variant="body2">{offer.author.name ?? "???"}</Typography>
+          <Typography variant="body2">{offer.author.name ?? "?"}</Typography>
 
           {(validFrom || validTo) && (
             <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />

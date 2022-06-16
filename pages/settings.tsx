@@ -16,7 +16,7 @@ import { User } from "next-auth";
 import { getSession, signOut } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { LanguageSwitcher } from "../components/LanguageSwitcher";
 import { Layout } from "../components/Layout";
 import { UserAvatar } from "../components/UserAvatar";
@@ -103,6 +103,40 @@ const Settings: NextPage<Props> = ({ user }) => {
     setSupportsPush1(supportsPush);
   }, []);
 
+  const tzMap = useMemo(() => {
+    const now = new Date();
+
+    return new Map(
+      aryIannaTimeZones
+        .map((tz) => {
+          const offset = getTimezoneOffset(now, tz);
+
+          const a = Math.abs(offset);
+
+          return {
+            tz,
+            title:
+              (offset > 0 ? "-" : "+") +
+              String(Math.floor(a / 60)).padStart(2, "0") +
+              ":" +
+              String(a % 60).padStart(2, "0"),
+            offset,
+          };
+        })
+        .sort((a, b) =>
+          a.offset < b.offset
+            ? 1
+            : a.offset > b.offset
+            ? -1
+            : a.tz.localeCompare(b.tz)
+        )
+        .map(({ tz, title }) => [
+          tz,
+          `(UTC${title}) ${tz.replace(/_/g, "\xa0")}`,
+        ])
+    );
+  }, []);
+
   return (
     <Layout title={t("Settings")}>
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
@@ -137,6 +171,7 @@ const Settings: NextPage<Props> = ({ user }) => {
           renderInput={(params) => (
             <TextField {...params} label={t("TimeZone")} />
           )}
+          getOptionLabel={(id) => tzMap.get(id) ?? "?"}
           onChange={(_, value) => setTimeZone(value)}
           value={timeZone ?? ""}
           disableClearable
@@ -197,6 +232,21 @@ const Settings: NextPage<Props> = ({ user }) => {
     </Layout>
   );
 };
+
+function getTimezoneOffset(d: Date, tz: string) {
+  const a = d
+    .toLocaleString("ja", { timeZone: tz })
+    .split(/[/\s:]/)
+    .map((x) => Number(x));
+
+  a[1]--;
+
+  const t1 = Date.UTC.apply(null, a as [number, number]);
+
+  const t2 = new Date(d).setMilliseconds(0);
+
+  return (t2 - t1) / 60 / 1000;
+}
 
 export const getServerSideProps: GetServerSideProps<Props> = async (
   context

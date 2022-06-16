@@ -9,12 +9,12 @@ export function exportCalendarEvent(summary: string, offer: OfferExt) {
     end: offer.validTo,
     summary,
     description: { plain: offer.message },
-    organizer: { name: offer.author.name ?? "???" }, // TODO email if allows
+    organizer: { name: offer.author.name ?? "?" }, // TODO email if allows
     url: "https://www.spetito.com/?highlight-offer=" + offer.id,
     location:
       offer.lat != null && offer.lng != null
         ? {
-            title: "???", // TODO rev. geocoding
+            title: "?", // TODO rev. geocoding
             radius: offer.radius ?? undefined,
             geo: {
               lat: offer.lat,
