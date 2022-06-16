@@ -308,9 +308,20 @@ export function OfferItem({
         </Box>
       </Box>
 
-      <Box>
-        <Typography variant="body1">{message}</Typography>
-      </Box>
+      <Typography
+        variant="body1"
+        sx={{
+          hyphens: "auto",
+          overflowWrap: "break-word",
+          wordWrap: "break-word",
+          // This is the dangerous one in WebKit, as it breaks things wherever
+          // wordBreak: "break-all",
+          // Instead use this non-standard one:
+          wordBreak: "break-word",
+        }}
+      >
+        {message}
+      </Typography>
     </Paper>
   );
 }

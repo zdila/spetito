@@ -238,6 +238,7 @@ export function OfferForm({
           onBlur={() => setFocused(false)}
           ref={tfRef}
           autoFocus={!!offer}
+          inputProps={{ maxLength: 2000 }}
         />
 
         <Box
