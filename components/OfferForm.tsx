@@ -378,16 +378,6 @@ export function OfferForm({
 
                 e.currentTarget.blur();
               }}
-              disabled={
-                !(
-                  offer ||
-                  message.trim() ||
-                  place ||
-                  validFrom ||
-                  validTo ||
-                  audience.length > 0
-                )
-              }
             >
               {t("Cancel")}
             </Button>
