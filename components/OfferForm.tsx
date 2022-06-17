@@ -61,6 +61,14 @@ export function OfferForm({
 
   const handleFetchFail = useFetchFailHandler();
 
+  function clear() {
+    setMessage("");
+    setPlace(null);
+    setValidFrom(null);
+    setValidTo(null);
+    setAudience([]);
+  }
+
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
 
@@ -88,13 +96,7 @@ export function OfferForm({
         return;
       }
 
-      setMessage("");
-
-      setValidFrom(null);
-
-      setValidTo(null);
-
-      setAudience([]);
+      clear();
 
       onSaved?.();
     });
@@ -368,11 +370,7 @@ export function OfferForm({
             <Button
               variant="text"
               onClick={(e) => {
-                setMessage("");
-                setPlace(null);
-                setValidFrom(null);
-                setValidTo(null);
-                setAudience([]);
+                clear();
 
                 onCancel?.();
 
