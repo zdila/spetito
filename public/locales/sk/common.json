@@ -107,5 +107,7 @@
   "RequestFailed": "Požiadavka zlyhala.",
   "Notifications": "Notifikácie",
   "OfferCalSummary": "Ponuka z www.spetito.com",
-  "SaveToCalendar": "Uložiť do kalendára"
+  "SaveToCalendar": "Uložiť do kalendára",
+  "CheckYourEmail": "Skontrolujte svoju poštu",
+  "SignInEmailInfo": "Na vašu emailovú adresu bol odoslaný odkaz na prihlásenie."
 }

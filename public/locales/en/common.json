@@ -107,5 +107,7 @@
   "RequestFailed": "Request failed.",
   "Notifications": "Notifications",
   "OfferCalSummary": "Offer from www.spetito.com",
-  "SaveToCalendar": "Save to calendar"
+  "SaveToCalendar": "Save to calendar",
+  "CheckYourEmail": "Check your email",
+  "SignInEmailInfo": "A sign in link has been sent to your email address."
 }
