@@ -105,9 +105,11 @@ export default async function handler(
             },
             offerUsers: {
               createMany: {
-                data: audience.users.map((userId) => ({
-                  userId,
-                })),
+                data: audience.users
+                  .filter((userId) => !offerUserIds.includes(userId))
+                  .map((userId) => ({
+                    userId,
+                  })),
               },
             },
           },
