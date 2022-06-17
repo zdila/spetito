@@ -274,7 +274,12 @@ export function OfferItem({
 
           {offer.offerLists && offer.offerUsers ? (
             <Box
-              sx={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                flexWrap: "wrap",
+                gap: 1,
+              }}
             >
               <Typography variant="body2">
                 {offer.offerLists.length + offer.offerUsers.length === 0 &&
