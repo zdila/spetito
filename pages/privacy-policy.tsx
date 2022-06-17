@@ -515,7 +515,7 @@ const PrivacyPolicyPage: NextPage<Props> = ({}) => {
           us:
         </p>
         <ul>
-          <li>By email: m.zdila@gmail.com</li>
+          <li>By email: info@spetito.com</li>
         </ul>
       </Paper>
     );

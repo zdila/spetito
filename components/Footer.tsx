@@ -19,8 +19,7 @@ export function Footer() {
       }}
     >
       <Typography>
-        &copy; <MuiLink href="mailto:m.zdila@gmail.com">Martin Ždila</MuiLink>{" "}
-        2022
+        &copy; <MuiLink href="mailto:info@spetito.com">Spetito</MuiLink> 2022
       </Typography>
 
       <Box>
