@@ -281,10 +281,9 @@ export function OfferItem({
                 gap: 1,
               }}
             >
-              <Typography variant="body2">
-                {offer.offerLists.length + offer.offerUsers.length === 0 &&
-                  t("allMyFriends")}
-              </Typography>
+              {offer.offerLists.length + offer.offerUsers.length === 0 && (
+                <Typography variant="body2">{t("allMyFriends")}</Typography>
+              )}
 
               {offer.offerLists?.map((item) => (
                 <Chip key={item.listId} label={item.list.name} />
