@@ -27,7 +27,6 @@ import { useDelayedOff } from "../hooks/useDelayedOff";
 import { LngLat } from "maplibre-gl";
 import { formatDateTime } from "../utility/formatDateTime";
 import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
-import { grey, yellow } from "@mui/material/colors";
 import { useLazyMapDialog } from "../hooks/useLazyMapDialog";
 import { getUserAvatarProps, UserAvatar } from "./UserAvatar";
 import ReactMarkdown from "react-markdown";
@@ -115,7 +114,7 @@ export function OfferItem({
     <OfferForm
       friends={friends}
       lists={lists}
-      now={now ?? new Date()}
+      now={now}
       offer={offer}
       onCancel={() => setEditing(false)}
       onSaved={() => {
@@ -130,9 +129,9 @@ export function OfferItem({
         position: "relative",
         p: 2,
         backgroundColor: highlight
-          ? yellow[200]
-          : offer.validTo && now && offer.validTo.getTime() < now?.getTime()
-          ? grey[300]
+          ? "highlightItem.main"
+          : offer.validTo && offer.validTo.getTime() < now.getTime()
+          ? "oldOffer.main"
           : undefined,
         transition: "background-color 5s",
       }}

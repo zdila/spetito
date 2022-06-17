@@ -34,9 +34,8 @@ import { useTranslation } from "next-i18next";
 import { redirectToLogIn } from "../lib/auth";
 import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
 import { UserAvatar } from "../components/UserAvatar";
-import { useDebounce, useDebouncedCallback } from "use-debounce";
+import { useDebouncedCallback } from "use-debounce";
 import { useAutoclearState } from "../hooks/useAutoclearState";
-import { yellow } from "@mui/material/colors";
 
 type Props = {
   usersInvitedByMe: User[];
@@ -225,7 +224,9 @@ const Friends: NextPage<Props> = ({
                   sx={{
                     transition: "background-color 5s",
                     backgroundColor:
-                      highlightUserId === user.id ? yellow[200] : undefined,
+                      highlightUserId === user.id
+                        ? "highlightItem.main"
+                        : undefined,
                   }}
                   secondaryAction={
                     <>
@@ -352,7 +353,9 @@ const Friends: NextPage<Props> = ({
                   sx={{
                     transition: "background-color 5s",
                     backgroundColor:
-                      highlightUserId === user.id ? yellow[200] : undefined,
+                      highlightUserId === user.id
+                        ? "highlightItem.main"
+                        : undefined,
                   }}
                   secondaryAction={
                     <IconButton
@@ -392,7 +395,9 @@ const Friends: NextPage<Props> = ({
                 sx={{
                   transition: "background-color 5s",
                   backgroundColor:
-                    highlightUserId === user.id ? yellow[200] : undefined,
+                    highlightUserId === user.id
+                      ? "highlightItem.main"
+                      : undefined,
                 }}
                 secondaryAction={
                   <IconButton

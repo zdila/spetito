@@ -31,3 +31,23 @@ export type OfferExt = Offer & {
   offerLists?: (OfferList & { list: List })[];
   offerUsers?: (OfferUser & { user: PrismaUser })[];
 };
+
+// define custom colors: https://material-ui.com/customization/palette/
+declare module "@mui/material/styles/createPalette" {
+  interface Palette {
+    oldOffer: Palette["primary"];
+    highlightItem: Palette["primary"];
+  }
+  interface PaletteOptions {
+    oldOffer: PaletteOptions["primary"];
+    highlightItem: PaletteOptions["primary"];
+  }
+}
+
+// Extend color prop on components
+declare module "@mui/material/Chip" {
+  export interface ChipPropsColorOverrides {
+    oldOffer: true;
+    highlightItem: true;
+  }
+}

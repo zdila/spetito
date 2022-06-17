@@ -2,7 +2,7 @@ import type { AppContext, AppInitialProps, AppProps } from "next/app";
 import { CacheProvider } from "@emotion/react";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import { createEmotionCache } from "../utility/createEmotionCache";
-import { darkTheme, lightTheme } from "../styles/theme/lightTheme";
+import { darkTheme, lightTheme } from "../styles/theme/themes";
 import "../styles/globals.css";
 import { EmotionCache } from "@emotion/cache";
 import { SessionProvider } from "next-auth/react";
