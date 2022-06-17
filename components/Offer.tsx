@@ -68,15 +68,17 @@ export function OfferItem({
   const handleDeleteClick = useCallback(() => {
     closeMenu();
 
-    if (window.confirm(t("AreYouSure"))) {
-      handleFetchFail(fetch("/api/offers/" + id, { method: "DELETE" })).then(
-        (res) => {
-          if (res) {
-            onDelete();
+    window.setTimeout(() => {
+      if (window.confirm(t("AreYouSure"))) {
+        handleFetchFail(fetch("/api/offers/" + id, { method: "DELETE" })).then(
+          (res) => {
+            if (res) {
+              onDelete();
+            }
           }
-        }
-      );
-    }
+        );
+      }
+    });
   }, [id, onDelete, t, handleFetchFail]);
 
   const [editing, setEditing] = useState(false);
