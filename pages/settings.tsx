@@ -8,6 +8,7 @@ import {
   FormGroup,
   FormHelperText,
   Paper,
+  Switch,
   TextField,
   Typography,
 } from "@mui/material";
@@ -201,7 +202,7 @@ const Settings: NextPage<Props> = ({ user }) => {
       >
         <FormGroup>
           <FormControlLabel
-            control={<Checkbox />}
+            control={<Switch />}
             label={t("EmailNotifications")}
             checked={emailNotifications}
             onChange={() => setEmailNotifications((b) => !b)}
@@ -210,7 +211,7 @@ const Settings: NextPage<Props> = ({ user }) => {
 
           <FormControl>
             <FormControlLabel
-              control={<Checkbox indeterminate={registered === null} />}
+              control={<Switch />}
               label={t("BrowserNotifications")}
               checked={registered ?? false}
               onChange={handlePnCheck}
