@@ -1,35 +1,36 @@
 /* eslint-disable @next/next/no-head-element */
 
 import { ReactNode } from "react";
+import { I18nextProvider, useSSR, useTranslation } from "react-i18next";
+import { i18nInstance, resources } from "./translation";
 
 type Props = {
-  lang: "en" | "sk";
-  title: string;
+  titleKey: string;
   children: ReactNode;
+  language?: string | null;
 };
 
-const messages = {
-  en: {
-    noReply: "Please do not reply to this email.",
-    unsubscribeInfo: "You can manage notification messages at ",
-  },
-  sk: {
-    noReply: "Prosím, neodpovedajte na tento email.",
-    unsubscribeInfo: "Notifikačné oznámenia môžete spravovať na ",
-  },
-};
+export function MailTemplate(props: Props) {
+  return (
+    <I18nextProvider i18n={i18nInstance}>
+      <MailTemplateInt {...props} />
+    </I18nextProvider>
+  );
+}
 
-export function MailTemplate({ lang, children, title }: Props) {
-  const m = messages[lang];
+function MailTemplateInt({ children, language, titleKey }: Props) {
+  useSSR(resources, language ?? "en");
+
+  const { t } = useTranslation("mail");
 
   return (
-    <html lang={lang}>
-      <head>
+    <html>
+      <head lang={language ?? "en"}>
         <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <title>{title}</title>
+        <title>{t(titleKey)}</title>
       </head>
 
       <body>
@@ -37,10 +38,10 @@ export function MailTemplate({ lang, children, title }: Props) {
 
         <hr />
 
-        <p>{m.noReply}</p>
+        <p>{t("template.noReply")}</p>
 
         <p>
-          {m.unsubscribeInfo}
+          {t("template/unsubscribeInfo")}
           <a href={process.env.BASE_URL + "/settings"}>
             {process.env.BASE_URL + "/settings"}
           </a>

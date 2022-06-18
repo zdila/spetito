@@ -75,11 +75,7 @@ export default async function handler(
         name: recipient.name!,
         address: recipient.email,
       },
-      FriendRequestMail,
-      {
-        sender: user as User,
-        recipient,
-      }
+      <FriendRequestMail sender={user as User} recipient={recipient} />
     );
   }
 

@@ -1,5 +1,5 @@
-import { Offer, User } from "@prisma/client";
-import { formatDateTime } from "../utility/formatDateTime";
+import { User } from "@prisma/client";
+import { Trans, useTranslation } from "react-i18next";
 import { MailTemplate } from "./MailTemplate";
 
 type Props = {
@@ -7,38 +7,36 @@ type Props = {
   recipient: User;
 };
 
-const messages = {
-  en: {
-    title: "Spetito friend request accepted",
-    body: (sender: User, href: string) => (
-      <>
-        {sender.name} has <a href={href}>accepted your friend request</a>.
-      </>
-    ),
-  },
-  sk: {
-    title: "Spetito - prijatá žiadosť o priateľstvo",
-    body: (sender: User, href: string) => (
-      <>
-        {sender.name} prijal(a) vašu <a href={href}>žiadosť o priateľstvo</a>.
-      </>
-    ),
-  },
-};
+export function AcceptFriendRequestMail(props: Props) {
+  return (
+    <MailTemplate
+      language={props.recipient.language}
+      titleKey="acceptFriendRequest.title"
+    >
+      <AcceptFriendRequestMailInt {...props} />
+    </MailTemplate>
+  );
+}
 
-export function AcceptFriendRequestMail({ sender, recipient }: Props) {
-  const lang = (recipient.language ?? "en") as keyof typeof messages;
-
-  const m = messages[lang];
+function AcceptFriendRequestMailInt({ sender }: Props) {
+  const { t } = useTranslation("mail", { keyPrefix: "acceptFriendRequest" });
 
   return (
-    <MailTemplate lang={lang} title={m.title}>
-      <p>
-        {m.body(
-          sender,
-          process.env.BASE_URL + "/friends?highlight-user=" + sender.id
-        )}
-      </p>
-    </MailTemplate>
+    <p>
+      <Trans
+        t={t}
+        i18nKey="body"
+        values={{ friend: sender.name }}
+        components={{
+          link: (
+            <a
+              href={
+                process.env.BASE_URL + "/friends?highlight-user=" + sender.id
+              }
+            />
+          ),
+        }}
+      />
+    </p>
   );
 }

@@ -1,0 +1,19 @@
+{
+  "template": {
+    "noReply": "Prosím, neodpovedajte na tento email.",
+    "unsubscribeInfo": "Notifikačné oznámenia môžete spravovať na "
+  },
+  "offer": {
+    "title": "Spetito - nová ponuka",
+    "body": "{{offerrer}} dal(a) <link>novú ponuku</link>:",
+    "valid": "Platné"
+  },
+  "friendRequest": {
+    "title": "Spetito - žiadosť o priateľstvo",
+    "body": "{{requester}} vám posiela <link>žiadosť o priateľstvo</link>."
+  },
+  "acceptFriendRequest": {
+    "title": "Spetito - prijatá žiadosť o priateľstvo",
+    "body": "{{friend}} prijal(a) vašu <link>žiadosť o priateľstvo</link>."
+  }
+}

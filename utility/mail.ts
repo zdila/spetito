@@ -1,9 +1,9 @@
 import nodemailer from "nodemailer";
 import { Address } from "nodemailer/lib/mailer";
-import { createElement, FunctionComponent } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { decode } from "html-entities";
 import { htmlToText } from "html-to-text";
+import { ReactElement } from "react";
 
 const transport = nodemailer.createTransport({
   port: Number(process.env.EMAIL_SERVER_PORT ?? "465"),
@@ -16,10 +16,9 @@ const transport = nodemailer.createTransport({
 
 export function sendMail<P>(
   bcc: string | Address | (string | Address)[],
-  template: FunctionComponent<P>,
-  props: P
+  mail: ReactElement
 ) {
-  const html = renderToStaticMarkup(createElement<P>(template, props));
+  const html = renderToStaticMarkup(mail);
 
   transport.sendMail(
     {

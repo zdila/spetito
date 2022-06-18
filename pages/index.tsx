@@ -123,6 +123,7 @@ const Home: NextPage<Props> = ({
               highlight={highlightOfferId === offer.id}
               onDelete={refresh}
               timeZone={timeZone ?? undefined}
+              now={now}
             />
           ))}
         </Box>

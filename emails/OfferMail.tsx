@@ -1,5 +1,6 @@
 import { Offer, User } from "@prisma/client";
-import { formatDateTime } from "../utility/formatDateTime";
+import { Trans, useTranslation } from "react-i18next";
+import { formatTimeRange } from "../utility/formatDateTime";
 import { MailTemplate } from "./MailTemplate";
 
 type Props = {
@@ -8,43 +9,34 @@ type Props = {
   recipient: User;
 };
 
-const messages = {
-  en: {
-    title: "New offer on Spetito",
-    body: (offerrer: string, href: string) => (
-      <>
-        {offerrer} placed a <a href={href}>new offer</a>:
-      </>
-    ),
-    validFrom: "Valid from ",
-    validTo: "Valid to ",
-    to: " to ",
-  },
-  sk: {
-    title: "Spetito - nová ponuka",
-    body: (offerrer: string, href: string) => (
-      <>
-        {offerrer} dal(a) <a href={href}>novú ponuku</a>:
-      </>
-    ),
-    validFrom: "Platné od ",
-    validTo: "Platné do ",
-    to: " do ",
-  },
-};
+export function OfferMail(props: Props) {
+  return (
+    <MailTemplate language={props.recipient.language} titleKey="offer.title">
+      <OfferMailInt {...props} />
+    </MailTemplate>
+  );
+}
 
-export function OfferMail({ offerrer, offer, recipient }: Props) {
-  const lang = (recipient.language ?? "en") as keyof typeof messages;
+function OfferMailInt({ offerrer, offer, recipient }: Props) {
+  const { t: ct } = useTranslation("common");
 
-  const m = messages[lang];
+  const { t } = useTranslation("mail", { keyPrefix: "offer" });
 
   return (
-    <MailTemplate lang={lang} title={m.title}>
+    <>
       <p>
-        {m.body(
-          offerrer,
-          process.env.BASE_URL + "/?highlight-offer=" + offer.id
-        )}
+        <Trans
+          t={t}
+          i18nKey="body"
+          values={{ offerrer }}
+          components={{
+            link: (
+              <a
+                href={process.env.BASE_URL + "/?highlight-offer=" + offer.id}
+              />
+            ),
+          }}
+        />
       </p>
 
       <p>
@@ -53,23 +45,19 @@ export function OfferMail({ offerrer, offer, recipient }: Props) {
 
       {(offer.validFrom || offer.validTo) && (
         <p>
-          {offer.validFrom &&
-            m.validFrom +
-              formatDateTime(
-                offer.validFrom,
-                recipient.language,
-                recipient.timeZone
-              )}
-
-          {offer.validTo &&
-            (offer.validFrom ? m.to : m.validTo) +
-              formatDateTime(
-                offer.validTo,
-                recipient.language,
-                recipient.timeZone
-              )}
+          {t("valid")}{" "}
+          {formatTimeRange(
+            offer.validFrom,
+            offer.validTo,
+            recipient.language,
+            recipient.timeZone,
+            new Date(),
+            ct,
+            <span style={{ color: "red" }} />,
+            true
+          )}
         </p>
       )}
-    </MailTemplate>
+    </>
   );
 }

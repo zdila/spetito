@@ -176,12 +176,11 @@ export default async function handler(
         name: recipient.name!,
         address: recipient.email!,
       },
-      OfferMail,
-      {
-        offerrer: user.name ?? user.id,
-        offer: result,
-        recipient,
-      }
+      <OfferMail
+        offerrer={user.name ?? user.id}
+        offer={result}
+        recipient={recipient}
+      />
     );
   }
 

@@ -1,0 +1,19 @@
+{
+  "template": {
+    "noReply": "Please do not reply to this email.",
+    "unsubscribeInfo": "You can manage notification messages at "
+  },
+  "offer": {
+    "title": "New offer on Spetito",
+    "body": "{{offerrer}} placed a <link>new offer</link>",
+    "valid": "Valid"
+  },
+  "friendRequest": {
+    "title": "Spetito friend request",
+    "body": "{{requester}} is sending you a <link>friend request</link>."
+  },
+  "acceptFriendRequest": {
+    "title": "Spetito friend request accepted",
+    "body": "{{friend}} has <link>accepted your friend request</link>."
+  }
+}

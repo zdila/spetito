@@ -88,7 +88,7 @@
   "OK": "Dobre",
   "FewFriendsAlert": "Spetito je veľmi mladá sociálna sieť a preto je možné, že v nej nájdete iba málo vaších priateľov. V tom prípade je najlepšie ich osloviť, aby sa do Spetita pridali. ❤",
   "Modify": "Upraviť",
-  "ListInfoAlert": "V zozname si viete spravovať vašich priateľov podľa nejakého spoločného záujmu. Potom ho môžete uviesť ako publikum vašej ponuky a takto budú túto ponuku vidieť iba priatelia z daného zoznamu. Príklad zoznamu: <1>Kamaráti na turistiku</1> alebo <3>Rodina</3>",
+  "ListInfoAlert": "V zozname si viete spravovať vašich priateľov podľa nejakého spoločného záujmu. Potom ho môžete uviesť ako publikum vašej ponuky a takto budú túto ponuku vidieť iba priatelia z daného zoznamu. Príklad zoznamu: <italic>Kamaráti na turistiku</italic> alebo <italic>Rodina</italic>",
   "WhatIsYourEmail": "Aka je vaša emailová adresa?",
   "Place": "Miesto",
   "placeSet": "miesto nastavené",
@@ -109,5 +109,12 @@
   "OfferCalSummary": "Ponuka z www.spetito.com",
   "SaveToCalendar": "Uložiť do kalendára",
   "CheckYourEmail": "Skontrolujte svoju poštu",
-  "SignInEmailInfo": "Na vašu emailovú adresu bol odoslaný odkaz na prihlásenie."
+  "SignInEmailInfo": "Na vašu emailovú adresu bol odoslaný odkaz na prihlásenie.",
+  "yesterday": "včera",
+  "today": "dnes",
+  "tomorrow": "zajtra",
+  "diffDayFromTo": "od <from>{{df}} {{tf}}</from> do <to>{{dt}} {{tt}}</to>",
+  "sameDayFromTo": "<to>{{df}}<to> od <from>{{tf}}</from> do <to>{{tt}}</to>",
+  "onlyFrom": "od <from>{{df}} {{tf}}</from>",
+  "onlyTo": "do <to>{{dt}} {{tt}}</to>"
 }

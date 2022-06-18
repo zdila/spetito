@@ -25,7 +25,7 @@ import { OfferExt } from "../types";
 import PlaceIcon from "@mui/icons-material/Place";
 import { useDelayedOff } from "../hooks/useDelayedOff";
 import { LngLat } from "maplibre-gl";
-import { formatDateTime } from "../utility/formatDateTime";
+import { formatTimeRange } from "../utility/formatDateTime";
 import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
 import { useLazyMapDialog } from "../hooks/useLazyMapDialog";
 import { getUserAvatarProps, UserAvatar } from "./UserAvatar";
@@ -39,7 +39,7 @@ type Props = {
   onDelete: () => void;
   friends?: User[];
   lists?: List[];
-  now?: Date;
+  now: Date;
   timeZone?: string;
   highlight?: boolean;
 };
@@ -236,36 +236,15 @@ export function OfferItem({
 
           {(validFrom || validTo) && (
             <Typography variant="body2" component="span">
-              {validFrom ? (
-                <>
-                  {" " + t("dateFrom") + "\xa0"}
-                  <Box
-                    component="span"
-                    sx={
-                      now && validFrom.getTime() < now.getTime()
-                        ? { color: "error.dark" }
-                        : {}
-                    }
-                  >
-                    {formatDateTime(validFrom, locale, timeZone)}
-                  </Box>
-                </>
-              ) : null}
-              {validTo ? (
-                <>
-                  {" " + t("dateTo") + "\xa0"}
-                  <Box
-                    component="span"
-                    sx={
-                      now && validTo.getTime() < now.getTime()
-                        ? { color: "error.dark" }
-                        : {}
-                    }
-                  >
-                    {formatDateTime(validTo, locale, timeZone)}
-                  </Box>
-                </>
-              ) : null}
+              {formatTimeRange(
+                validFrom,
+                validTo,
+                locale,
+                timeZone,
+                now,
+                t,
+                <Box component="span" sx={{ color: "error.dark" }} />
+              )}
             </Typography>
           )}
 

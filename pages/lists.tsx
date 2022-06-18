@@ -112,9 +112,7 @@ const Lists: NextPage<Props> = ({ lists }) => {
 
       {lists.length === 0 && (
         <Alert severity="info" sx={{ mt: 2 }}>
-          <Trans t={t} i18nKey="ListInfoAlert">
-            text <i>sample1</i>, <i>sample2</i>
-          </Trans>
+          <Trans t={t} i18nKey="ListInfoAlert" components={{ italic: <i /> }} />
         </Alert>
       )}
 

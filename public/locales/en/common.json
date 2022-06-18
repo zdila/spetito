@@ -88,7 +88,7 @@
   "OK": "OK",
   "FewFriendsAlert": "Spetito is a very young social network and therefore it is possible that you will find here only a few of your friends. In that case, it's best to contact them to join Spetito. ❤",
   "Modify": "Modify",
-  "ListInfoAlert": "In the list, you can manage your friends according to some common interest. You can then list it as the audience for your offer, and only friends on that list will see this offer. Example list: <1>Hiking friends</1> or <3>Family</3>",
+  "ListInfoAlert": "In the list, you can manage your friends according to some common interest. You can then list it as the audience for your offer, and only friends on that list will see this offer. Example list: <italic>Hiking friends</italic> or <italic>Family</italic>",
   "WhatIsYourEmail": "What is your email address?",
   "Place": "Place",
   "placeSet": "place set",
@@ -109,5 +109,12 @@
   "OfferCalSummary": "Offer from www.spetito.com",
   "SaveToCalendar": "Save to calendar",
   "CheckYourEmail": "Check your email",
-  "SignInEmailInfo": "A sign in link has been sent to your email address."
+  "SignInEmailInfo": "A sign in link has been sent to your email address.",
+  "yesterday": "yesterday",
+  "today": "today",
+  "tomorrow": "tomorrow",
+  "diffDayFromTo": "from <from>{{df}} {{tf}}</from> to <to>{{dt}} {{tt}}</to>",
+  "sameDayFromTo": "<to>{{df}}<to> from <from>{{tf}}</from> to <to>{{tt}}</to>",
+  "onlyFrom": "from <from>{{df}} {{tf}}</from>",
+  "onlyTo": "to <to>{{dt}} {{tt}}</to>"
 }
