@@ -64,12 +64,15 @@ function MyApp({
 MyApp.getInitialProps = async ({
   ctx,
 }: AppContext): Promise<AppInitialProps> => {
-  const darkMode = (ctx.req as any).cookies?.["DARK_MODE"];
+  const prefferColorScheme = ctx.req?.headers["sec-ch-prefers-color-scheme"];
+
+  const darkModeCookie = (ctx.req as any).cookies?.["DARK_MODE"];
 
   return {
     pageProps: {
       isDarkMode:
-        darkMode === "true" ? true : darkMode === "false" ? false : undefined,
+        (prefferColorScheme && prefferColorScheme === "dark") ||
+        (darkModeCookie && darkModeCookie === "true"),
     },
   };
 };
