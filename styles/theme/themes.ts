@@ -36,7 +36,8 @@ export const darkTheme = createTheme({
     MuiPaper: {
       styleOverrides: {
         root: {
-          backgroundColor: "rgba(255, 255, 255, 0.03)",
+          backgroundColor: "#181818",
+          // backgroundColor: "rgba(255, 255, 255, 0.03)", // causes transparent modals
         },
       },
     },
