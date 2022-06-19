@@ -41,7 +41,7 @@ function MailTemplateInt({ children, language, titleKey }: Props) {
         <p>{t("template.noReply")}</p>
 
         <p>
-          {t("template/unsubscribeInfo")}
+          {t("template.unsubscribeInfo")}
           <a href={process.env.BASE_URL + "/settings"}>
             {process.env.BASE_URL + "/settings"}
           </a>
