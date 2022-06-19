@@ -1,4 +1,4 @@
-import { amber, brown, grey, purple, yellow } from "@mui/material/colors";
+import { deepPurple, brown, grey, purple, yellow } from "@mui/material/colors";
 import { createTheme } from "@mui/material/styles";
 
 export const lightTheme = createTheme({
@@ -33,14 +33,21 @@ export const darkTheme = createTheme({
         variant: "contained",
       },
     },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "rgba(255, 255, 255, 0.03)",
+        },
+      },
+    },
   },
   palette: {
     mode: "dark",
     primary: {
-      main: purple[800],
+      main: deepPurple[200],
     },
     background: {
-      default: grey[800],
+      // default: grey[800],
     },
     oldOffer: {
       main: grey[900],
