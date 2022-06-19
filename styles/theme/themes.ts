@@ -48,7 +48,7 @@ export const darkTheme = createTheme({
       main: deepPurple[200],
     },
     oldOffer: {
-      main: "#381010",
+      main: "#301010",
     },
     highlightItem: {
       main: brown[700],
