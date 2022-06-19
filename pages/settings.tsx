@@ -92,7 +92,7 @@ const Settings: NextPage<Props> = ({ user }) => {
   }, [notifPerm]);
 
   const handlePnCheck = (_: unknown, checked: boolean) => {
-    document.cookie = `PUSH_NOTIF=${checked}; path=/`;
+    document.cookie = `PUSH_NOTIF=${checked}; path=/; SameSite=Lax`;
 
     if (checked) {
       registerPn();

@@ -13,7 +13,7 @@ export function LanguageSwitcher() {
     const { lang } = e.currentTarget.dataset;
 
     if (lang) {
-      document.cookie = `NEXT_LOCALE=${lang}; path=/`;
+      document.cookie = `NEXT_LOCALE=${lang}; path=/; SameSite=Lax`;
     }
   };
 

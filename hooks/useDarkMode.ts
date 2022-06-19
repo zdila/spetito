@@ -7,10 +7,10 @@ export function useDarkMode(serverDarkMode?: boolean) {
     const darkMode = !!window?.matchMedia?.("(prefers-color-scheme: dark)")
       .matches;
 
-    document.cookie = `DARK_MODE=${darkMode}; path=/`;
+    document.cookie = `DARK_MODE=${darkMode}; path=/; SameSite=Lax`;
 
     function handleMediaQueryListEvent(event: MediaQueryListEvent) {
-      document.cookie = `DARK_MODE=${event.matches}; path=/`;
+      document.cookie = `DARK_MODE=${event.matches}; path=/; SameSite=Lax`;
 
       setDarkMode(event.matches);
     }
