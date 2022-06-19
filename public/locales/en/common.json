@@ -116,5 +116,6 @@
   "diffDayFromTo": "from <from>{{df}} {{tf}}</from> to <to>{{dt}} {{tt}}</to>",
   "sameDayFromTo": "<to>{{df}}<to> from <from>{{tf}}</from> to <to>{{tt}}</to>",
   "onlyFrom": "from <from>{{df}} {{tf}}</from>",
-  "onlyTo": "to <to>{{dt}} {{tt}}</to>"
+  "onlyTo": "to <to>{{dt}} {{tt}}</to>",
+  "YourName": "Your name"
 }

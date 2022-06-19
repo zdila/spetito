@@ -2,11 +2,11 @@ import {
   Autocomplete,
   Box,
   Button,
-  Checkbox,
   FormControl,
   FormControlLabel,
   FormGroup,
   FormHelperText,
+  IconButton,
   Paper,
   Switch,
   TextField,
@@ -17,7 +17,7 @@ import { User } from "next-auth";
 import { getSession, signOut } from "next-auth/react";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { SyntheticEvent, useEffect, useMemo, useRef, useState } from "react";
 import { LanguageSwitcher } from "../components/LanguageSwitcher";
 import { Layout } from "../components/Layout";
 import { UserAvatar } from "../components/UserAvatar";
@@ -28,6 +28,10 @@ import { supportsPush } from "../lib/capabilities";
 import { prisma } from "../lib/prisma";
 import { usePushNotificationRegistration } from "../lib/pushRegistration";
 import { aryIannaTimeZones } from "../lib/timezones";
+import EditIcon from "@mui/icons-material/Edit";
+import CloseIcon from "@mui/icons-material/Close";
+import CheckIcon from "@mui/icons-material/Check";
+import { useRouter } from "next/router";
 
 type Props = {
   user: User;
@@ -138,6 +142,30 @@ const Settings: NextPage<Props> = ({ user }) => {
     );
   }, []);
 
+  const [name, setName] = useState<string>();
+
+  const router = useRouter();
+
+  const handleNameFormSubmit = (e: SyntheticEvent) => {
+    e.preventDefault();
+
+    handleFetchFail(
+      fetch("/api/users/_self_", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name?.trim(),
+        }),
+      })
+    ).then((res) => {
+      if (res) {
+        setName(undefined);
+
+        router.replace(router.asPath);
+      }
+    });
+  };
+
   return (
     <Layout title={t("Settings")}>
       <Typography variant="h5" sx={{ mt: 2, mb: 1 }}>
@@ -153,10 +181,52 @@ const Settings: NextPage<Props> = ({ user }) => {
           alignItems: "flex-start",
         }}
       >
-        <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+        <Box
+          sx={{ display: "flex", gap: 1, alignItems: "center" }}
+          component="form"
+          onSubmit={handleNameFormSubmit}
+        >
           <UserAvatar user={user} />
 
-          <Typography>{user.name}</Typography>
+          {name !== undefined ? (
+            <>
+              <TextField
+                label={t("YourName")}
+                value={name}
+                onChange={(e) => setName(e.currentTarget.value)}
+              />
+
+              <Box>
+                <IconButton
+                  type="submit"
+                  size="small"
+                  color="success"
+                  disabled={name.trim().length === 0}
+                >
+                  <CheckIcon fontSize="small" />
+                </IconButton>
+
+                <IconButton
+                  type="button"
+                  size="small"
+                  color="error"
+                  onClick={() => {
+                    setName(undefined);
+                  }}
+                >
+                  <CloseIcon fontSize="small" />
+                </IconButton>
+              </Box>
+            </>
+          ) : (
+            <>
+              <Typography>{user.name}</Typography>
+
+              <IconButton size="small" onClick={() => setName(user.name ?? "")}>
+                <EditIcon fontSize="small" />
+              </IconButton>
+            </>
+          )}
         </Box>
 
         <Box sx={{ mt: 1, mb: 2 }}>

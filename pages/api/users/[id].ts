@@ -7,6 +7,7 @@ import { validateSchema } from "../../../lib/schemaValidation";
 
 const Body = Type.Object(
   {
+    name: Type.Optional(Type.String({ minLength: 1 })),
     hideFewFriendsAlert: Type.Optional(Type.Boolean()),
     timeZone: Type.Optional(Type.String({ minLength: 2 })),
     useEmailNotif: Type.Optional(Type.Boolean()),
@@ -48,10 +49,11 @@ export default async function handler(
         return;
       }
 
-      const { hideFewFriendsAlert, timeZone, useEmailNotif } = req.body;
+      const { hideFewFriendsAlert, timeZone, useEmailNotif, name } = req.body;
 
       await prisma.user.update({
         data: {
+          name,
           hideFewFriendsAlert,
           timeZone,
           useEmailNotif,
