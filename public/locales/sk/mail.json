@@ -1,7 +1,8 @@
 {
   "template": {
-    "noReply": "Prosím, neodpovedajte na tento email.",
-    "unsubscribeInfo": "Notifikačné oznámenia môžete spravovať na "
+    "noReply": "Prosím, neodpovedajte na tento e-mail.",
+    "unsubscribeInfo": "Notifikačné oznámenia môžete spravovať na ",
+    "ignoreIfNotYou": "Ak ste si tento e-mail nevyžiadali, môžete ho pokojne ignorovať."
   },
   "offer": {
     "title": "Spetito - nová ponuka",
@@ -15,5 +16,9 @@
   "acceptFriendRequest": {
     "title": "Spetito - prijatá žiadosť o priateľstvo",
     "body": "{{friend}} prijal(a) vašu <appLink>žiadosť o priateľstvo</appLink>."
+  },
+  "signIn": {
+    "title": "Prihlásenie sa do Spetita",
+    "body": "Na prihlásenie sa do Spetita ako <bold>{{email}}</bold> prosím následujte <signInLink>tento odkaz</signInLink>."
   }
 }

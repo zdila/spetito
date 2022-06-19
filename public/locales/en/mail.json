@@ -1,7 +1,8 @@
 {
   "template": {
-    "noReply": "Please do not reply to this email.",
-    "unsubscribeInfo": "You can manage notification messages at "
+    "noReply": "Please do not reply to this e-mail.",
+    "unsubscribeInfo": "You can manage notification messages at ",
+    "ignoreIfNotYou": "If you did not request this e-mail you can safely ignore it."
   },
   "offer": {
     "title": "New offer on Spetito",
@@ -15,5 +16,9 @@
   "acceptFriendRequest": {
     "title": "Spetito friend request accepted",
     "body": "{{friend}} has <link>accepted your friend request</link>."
+  },
+  "signIn": {
+    "title": "Sign in to Spetito",
+    "body": "Please follow <signInLink>this link</signInLink> to sign in as <bold>{{email}}</bold>."
   }
 }

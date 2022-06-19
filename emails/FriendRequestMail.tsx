@@ -18,7 +18,7 @@ export function FriendRequestMail(props: Props) {
   );
 }
 
-function FriendRequestMailInt({ sender, recipient }: Props) {
+function FriendRequestMailInt({ sender }: Props) {
   const { t } = useTranslation("mail", { keyPrefix: "friendRequest" });
 
   return (

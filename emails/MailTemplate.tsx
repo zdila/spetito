@@ -8,6 +8,7 @@ type Props = {
   titleKey: string;
   children: ReactNode;
   language?: string | null;
+  login?: boolean;
 };
 
 export function MailTemplate(props: Props) {
@@ -20,7 +21,7 @@ export function MailTemplate(props: Props) {
 
 // design at https://codesandbox.io/s/ancient-sound-v6m12g?file=/src/App.js:745-780
 
-function MailTemplateInt({ children, language, titleKey }: Props) {
+function MailTemplateInt({ children, language, titleKey, login }: Props) {
   useSSR(resources, language ?? "en");
 
   const { t } = useTranslation("mail");
@@ -79,13 +80,17 @@ function MailTemplateInt({ children, language, titleKey }: Props) {
           <div style={{ fontSize: "90%", color: "#888" }}>
             <p>{t("template.noReply")}</p>
 
-            <p>
-              {t("template.unsubscribeInfo")}
-              <a href={process.env.BASE_URL + "/settings"}>
-                {process.env.BASE_URL + "/settings"}
-              </a>
-              .
-            </p>
+            {login ? (
+              <p>{t("template.ignoreIfNotYou")}</p>
+            ) : (
+              <p>
+                {t("template.unsubscribeInfo")}
+                <a href={process.env.BASE_URL + "/settings"}>
+                  {process.env.BASE_URL + "/settings"}
+                </a>
+                .
+              </p>
+            )}
           </div>
         </div>
       </body>

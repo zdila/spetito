@@ -7,6 +7,8 @@ import TwitterProvider from "next-auth/providers/twitter";
 import FacebookProvider from "next-auth/providers/facebook";
 import EmailProvider from "next-auth/providers/email";
 import { prisma } from "../../../lib/prisma";
+import { sendMail } from "../../../utility/mail";
+import { SignInMail } from "../../../emails/SignInMail";
 
 export default NextAuth({
   providers: [
@@ -28,15 +30,27 @@ export default NextAuth({
       clientSecret: process.env.GITHUB_SECRET,
     }),
     EmailProvider({
-      server: {
-        host: process.env.EMAIL_SERVER_HOST,
-        port: Number(process.env.EMAIL_SERVER_PORT ?? "465"),
-        auth: {
-          user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD,
-        },
-      },
       from: process.env.EMAIL_FROM,
+      sendVerificationRequest({ identifier: email, url }) {
+        const callbackUrl = new URL(url).searchParams.get("callbackUrl");
+
+        let language = "en";
+
+        if (callbackUrl) {
+          const { pathname } = new URL(callbackUrl);
+
+          const m = /^\/(\w\w)(\/|$)/.exec(pathname);
+
+          if (m) {
+            language = m[1];
+          }
+        }
+
+        sendMail(
+          email,
+          <SignInMail language={language} url={url} email={email} />
+        );
+      },
     }),
   ],
   adapter: PrismaAdapter(prisma),
