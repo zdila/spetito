@@ -18,13 +18,15 @@ export function MailTemplate(props: Props) {
   );
 }
 
+// design at https://codesandbox.io/s/ancient-sound-v6m12g?file=/src/App.js:745-780
+
 function MailTemplateInt({ children, language, titleKey }: Props) {
   useSSR(resources, language ?? "en");
 
   const { t } = useTranslation("mail");
 
   return (
-    <html>
+    <html style={{ margin: 0, padding: 0 }}>
       <head lang={language ?? "en"}>
         <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
@@ -33,20 +35,59 @@ function MailTemplateInt({ children, language, titleKey }: Props) {
         <title>{t(titleKey)}</title>
       </head>
 
-      <body>
-        {children}
+      <body
+        style={{
+          backgroundColor: "#eee",
+          fontFamily: "Helvetica, Arial, sans-serif",
+          margin: 0,
+          padding: "1rem",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "600px",
+            margin: "0 auto",
+            lineHeight: "1.5",
+          }}
+        >
+          <div
+            style={{
+              fontSize: "2rem",
+              display: "inline-block",
+              backgroundColor: "#6a1b9a",
+              padding: "0 0.5rem",
+              color: "white",
+              fontWeight: "bold",
+              borderRadius: "4px",
+            }}
+          >
+            Spetito
+          </div>
 
-        <hr />
+          <div
+            style={{
+              fontSize: "1.125rem",
+              marginTop: "1rem",
+              backgroundColor: "white",
+              padding: "1rem",
+              borderRadius: "4px",
+            }}
+          >
+            {children}
+          </div>
 
-        <p>{t("template.noReply")}</p>
+          <div style={{ fontSize: "90%", color: "#888" }}>
+            <p>{t("template.noReply")}</p>
 
-        <p>
-          {t("template.unsubscribeInfo")}
-          <a href={process.env.BASE_URL + "/settings"}>
-            {process.env.BASE_URL + "/settings"}
-          </a>
-          .
-        </p>
+            <p>
+              {t("template.unsubscribeInfo")}
+              <a href={process.env.BASE_URL + "/settings"}>
+                {process.env.BASE_URL + "/settings"}
+              </a>
+              .
+            </p>
+          </div>
+        </div>
       </body>
     </html>
   );

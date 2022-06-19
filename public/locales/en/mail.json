@@ -6,7 +6,7 @@
   "offer": {
     "title": "New offer on Spetito",
     "body": "{{offerrer}} placed a <link>new offer</link>",
-    "valid": "Valid"
+    "bodyWithTime": "{{offerrer}} placed a <link>new offer</link> which is valid <timeRange />:"
   },
   "friendRequest": {
     "title": "Spetito friend request",

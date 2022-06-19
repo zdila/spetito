@@ -5,15 +5,15 @@
   },
   "offer": {
     "title": "Spetito - nová ponuka",
-    "body": "{{offerrer}} dal(a) <link>novú ponuku</link>:",
-    "valid": "Platné"
+    "body": "{{offerrer}} dal(a) <appLink>novú ponuku</appLink>:",
+    "bodyWithTime": "{{offerrer}} dal(a) <appLink>novú ponuku</appLink>, ktorá je platná <timeRange />:"
   },
   "friendRequest": {
     "title": "Spetito - žiadosť o priateľstvo",
-    "body": "{{requester}} vám posiela <link>žiadosť o priateľstvo</link>."
+    "body": "{{requester}} vám posiela <appLink>žiadosť o priateľstvo</appLink>."
   },
   "acceptFriendRequest": {
     "title": "Spetito - prijatá žiadosť o priateľstvo",
-    "body": "{{friend}} prijal(a) vašu <link>žiadosť o priateľstvo</link>."
+    "body": "{{friend}} prijal(a) vašu <appLink>žiadosť o priateľstvo</appLink>."
   }
 }

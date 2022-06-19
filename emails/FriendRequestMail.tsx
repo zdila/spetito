@@ -28,7 +28,7 @@ function FriendRequestMailInt({ sender, recipient }: Props) {
         i18nKey="body"
         values={{ requester: sender.name }}
         components={{
-          link: (
+          appLink: (
             <a
               href={
                 process.env.BASE_URL + "/friends?highlight-user=" + sender.id
