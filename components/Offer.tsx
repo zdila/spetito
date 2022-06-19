@@ -248,6 +248,16 @@ export function OfferItem({
             </Typography>
           )}
 
+          {offer.lat != null && (
+            <>
+              <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+
+              <IconButton size="small" onClick={() => setMapShown(true)}>
+                <PlaceIcon fontSize="small" />
+              </IconButton>
+            </>
+          )}
+
           {offer.offerLists && offer.offerUsers && (
             <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
           )}
@@ -278,20 +288,6 @@ export function OfferItem({
               ))}
             </Box>
           ) : null}
-
-          {offer.lat != null && (
-            <>
-              <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
-
-              <IconButton
-                size="small"
-                onClick={() => setMapShown(true)}
-                edge="start"
-              >
-                <PlaceIcon fontSize="small" />
-              </IconButton>
-            </>
-          )}
         </Box>
       </Box>
 
