@@ -13,8 +13,6 @@ export async function sendOfferNotifications(
 ) {
   const toEverybody = audience.users.length + audience.lists.length === 0;
 
-  console.log("AAAAAAAAAAAAAAA");
-
   const recipients = await prisma.user.findMany({
     include: { pushRegistrations: true },
     where: {
@@ -65,8 +63,6 @@ export async function sendOfferNotifications(
           }),
     },
   });
-
-  console.log("BBBBBBBBBBB", recipients);
 
   await prisma.notifiedOffers.createMany({
     data: recipients.map((user) => ({
