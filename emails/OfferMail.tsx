@@ -1,6 +1,7 @@
 import { Offer, User } from "@prisma/client";
 import { ReactElement } from "react";
 import { Trans, useTranslation } from "react-i18next";
+import { markupToReact } from "../lib/markupToReact";
 import { formatTimeRange } from "../utility/formatDateTime";
 import { MailTemplate } from "./MailTemplate";
 
@@ -54,7 +55,15 @@ function OfferMailInt({ offerrer, offer, recipient }: Props) {
         />
       </p>
 
-      <p style={{ fontStyle: "italic" }}>{offer.message}</p>
+      <div
+        style={{
+          backgroundColor: "#eee",
+          padding: "1rem",
+          borderRadius: "4px",
+        }}
+      >
+        {markupToReact(offer.message)}
+      </div>
     </>
   );
 }

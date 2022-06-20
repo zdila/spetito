@@ -1,6 +1,6 @@
+import { ReactElement } from "react";
 import { TFunction } from "react-i18next";
 import { Trans } from "react-i18next";
-import { ReactElement } from "react-markdown/lib/react-markdown";
 
 export function formatTimeRange(
   from: Date | undefined | null,

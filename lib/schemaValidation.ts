@@ -33,5 +33,11 @@ export function validateSchema<T extends TSchema>(
   schema: T,
   obj: unknown
 ): obj is Static<T> {
-  return ajv.validate(schema, obj);
+  const ok = ajv.validate(schema, obj);
+
+  if (!ok) {
+    console.error(ajv.errorsText(ajv.errors));
+  }
+
+  return ok;
 }

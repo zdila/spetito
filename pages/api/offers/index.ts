@@ -22,7 +22,7 @@ export const OfferBody = Type.Object(
           lat: Type.Number(),
         }),
         zoom: Type.Number({ minimum: 0 }),
-        radius: Type.Number({ minimum: 0 }),
+        radius: Type.Union([Type.Null(), Type.Number({ minimum: 0 })]),
       }),
     ]),
   },
