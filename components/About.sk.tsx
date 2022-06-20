@@ -23,10 +23,7 @@ export default function AboutSk() {
           Idem sa bikovať na košické singletraily. Uvítam bikerskú spoločnosť.
         </li>
 
-        <li>
-          Večer budem na chate, návšteva ma poteší. Pivko je vychladené. Predtým
-          sa mi prosím ozvite.
-        </li>
+        <li>Večer budem na chate, návšteva ma poteší. Pivko je vychladené.</li>
 
         <li>
           Tento víkend plánujem výlet zo Štrbského plesa na Kriváň. Parťáci,
