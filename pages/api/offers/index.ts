@@ -1,13 +1,9 @@
-import { renderToStaticMarkup } from "react-dom/server";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { prisma } from "../../../lib/prisma";
-import { sendMail } from "../../../utility/mail";
-import { sendPushNotifications } from "../../../utility/pushNotifications";
-import { OfferMail } from "../../../emails/OfferMail";
 import { Static, Type } from "@sinclair/typebox";
 import { validateSchema } from "../../../lib/schemaValidation";
-import { Prisma } from "@prisma/client";
+import { sendOfferNotifications } from "./offerNotification";
 
 export const OfferBody = Type.Object(
   {
@@ -33,10 +29,12 @@ export const OfferBody = Type.Object(
   { additionalProperties: false }
 );
 
+export type OfferBody = Static<typeof OfferBody>;
+
 export function validateDates({
   validFrom,
   validTo,
-}: Pick<Static<typeof OfferBody>, "validFrom" | "validTo">) {
+}: Pick<OfferBody, "validFrom" | "validTo">) {
   return (
     (validFrom === null || new Date(validFrom).getTime() > Date.now()) &&
     (validTo === null || new Date(validTo).getTime() > Date.now()) &&
@@ -103,86 +101,7 @@ export default async function handler(
     },
   });
 
-  const toEverybody = audience.users.length + audience.lists.length === 0;
-
-  const userFilter: Prisma.UserWhereInput = {
-    AND: [
-      {
-        OR: [
-          {
-            followedBy: {
-              some: {
-                followerId: userId,
-              },
-            },
-          },
-          {
-            following: {
-              some: {
-                followingId: userId,
-              },
-            },
-          },
-        ],
-      },
-    ],
-    ...(toEverybody
-      ? {}
-      : {
-          OR: [
-            {
-              id: {
-                in: audience.users,
-              },
-            },
-            {
-              listMemebers: {
-                some: {
-                  listId: {
-                    in: audience.lists,
-                  },
-                },
-              },
-            },
-          ],
-        }),
-  };
-
-  const pushRegistrations = await prisma.pushRegistration.findMany({
-    where: {
-      user: userFilter,
-    },
-  });
-
-  sendPushNotifications(pushRegistrations, {
-    type: "offer",
-    payload: {
-      from: { name: user.name, id: user.id },
-      offer: { id: result.id },
-    },
-  });
-
-  const recipients = await prisma.user.findMany({
-    where: {
-      NOT: [{ email: null }],
-      useEmailNotif: true,
-      ...userFilter,
-    },
-  });
-
-  for (const recipient of recipients) {
-    sendMail(
-      {
-        name: recipient.name!,
-        address: recipient.email!,
-      },
-      <OfferMail
-        offerrer={user.name ?? user.id}
-        offer={result}
-        recipient={recipient}
-      />
-    );
-  }
+  await sendOfferNotifications(result, user, audience);
 
   res.json(result);
 }

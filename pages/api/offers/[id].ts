@@ -4,6 +4,7 @@ import { getSession } from "next-auth/react";
 import { OfferBody, validateDates } from ".";
 import { prisma } from "../../../lib/prisma";
 import { validateSchema } from "../../../lib/schemaValidation";
+import { sendOfferNotifications } from "./offerNotification";
 
 export default async function handler(
   req: NextApiRequest,
@@ -20,9 +21,9 @@ export default async function handler(
 
     const session = await getSession({ req });
 
-    const userId = session?.user?.id;
+    const user = session?.user;
 
-    if (!userId) {
+    if (!user) {
       res.status(403).end();
 
       return;
@@ -32,7 +33,7 @@ export default async function handler(
       const { count } = await prisma.offer.deleteMany({
         where: {
           id,
-          userId,
+          userId: user.id,
         },
       });
 
@@ -41,7 +42,7 @@ export default async function handler(
         await prisma.hiddenOffers.create({
           data: {
             offerId: id,
-            userId,
+            userId: user.id,
           },
         });
       }
@@ -54,7 +55,7 @@ export default async function handler(
 
       const { message, validFrom, validTo, audience, place } = req.body;
 
-      await prisma.$transaction(async (prisma) => {
+      const offer = await prisma.$transaction(async (prisma) => {
         const offerListIds = (
           await prisma.offerList.findMany({
             where: { offerId: id },
@@ -85,7 +86,7 @@ export default async function handler(
           },
         });
 
-        await prisma.offer.update({
+        return await prisma.offer.update({
           data: {
             message,
             validFrom,
@@ -96,7 +97,7 @@ export default async function handler(
             radius: place?.radius ? Math.floor(place?.radius) : undefined,
             offerLists: {
               createMany: {
-                data: audience.lists
+                data: audience.lists // TODO check if the list is ours
                   .filter((listId) => !offerListIds.includes(listId))
                   .map((listId) => ({
                     listId,
@@ -105,7 +106,7 @@ export default async function handler(
             },
             offerUsers: {
               createMany: {
-                data: audience.users
+                data: audience.users // TODO check if we are friends
                   .filter((userId) => !offerUserIds.includes(userId))
                   .map((userId) => ({
                     userId,
@@ -116,6 +117,8 @@ export default async function handler(
           where: { id },
         });
       });
+
+      await sendOfferNotifications(offer, user, audience);
     }
 
     res.status(204).end();

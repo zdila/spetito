@@ -12,21 +12,22 @@ datasource db {
 }
 
 model Offer {
-  id           String         @id @default(cuid())
-  createdAt    DateTime       @default(now()) @map(name: "created_at")
-  updatedAt    DateTime       @updatedAt @map(name: "updated_at")
-  validFrom    DateTime?      @map(name: "valid_from")
-  validTo      DateTime?      @map(name: "valid_to")
-  message      String         @db.VarChar(2000)
-  author       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId       String
-  offerLists   OfferList[]
-  offerUsers   OfferUser[]
-  hiddenOffers HiddenOffers[]
-  lng          Float?
-  lat          Float?
-  zoom         Float?
-  radius       Int?
+  id             String           @id @default(cuid())
+  createdAt      DateTime         @default(now()) @map(name: "created_at")
+  updatedAt      DateTime         @updatedAt @map(name: "updated_at")
+  validFrom      DateTime?        @map(name: "valid_from")
+  validTo        DateTime?        @map(name: "valid_to")
+  message        String           @db.VarChar(2000)
+  author         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
+  offerLists     OfferList[]
+  offerUsers     OfferUser[]
+  hiddenOffers   HiddenOffers[]
+  notifiedOffers NotifiedOffers[]
+  lng            Float?
+  lat            Float?
+  zoom           Float?
+  radius         Int?
 
   @@map(name: "offers")
 }
@@ -39,6 +40,16 @@ model HiddenOffers {
 
   @@id([offerId, userId])
   @@map(name: "hidden_offers")
+}
+
+model NotifiedOffers {
+  offer   Offer  @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  offerId String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String
+
+  @@id([offerId, userId])
+  @@map(name: "notified_offers")
 }
 
 model List {
@@ -133,6 +144,7 @@ model User {
   offerUsers          OfferUser[]
   pushRegistrations   PushRegistration[]
   hiddenOffers        HiddenOffers[]
+  notifiedOffers      NotifiedOffers[]
   hideFewFriendsAlert Boolean            @default(false)
   language            String?
   timeZone            String?
