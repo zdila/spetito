@@ -62,10 +62,14 @@ export default async function handler(
       },
     });
 
-    sendPushNotifications(pushRegistrations, {
-      type: "accept",
-      payload: { from: { name: user.name, id: user.id } },
-    });
+    sendPushNotifications(
+      pushRegistrations,
+      {
+        type: "accept",
+        payload: { from: { name: user.name, id: user.id } },
+      },
+      24 * 3600
+    );
 
     const recipient = await prisma.user.findFirst({
       where: {

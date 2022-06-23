@@ -79,7 +79,10 @@ export async function sendOfferNotifications(
         from: { name: user.name, id: user.id },
         offer: { id: offer.id },
       },
-    }
+    },
+    offer.validTo
+      ? Math.min((offer.validTo.getTime() - Date.now()) / 1000, 24 * 3600)
+      : 24 * 3600
   );
 
   for (const recipient of recipients) {

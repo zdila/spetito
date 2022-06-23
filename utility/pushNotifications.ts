@@ -5,7 +5,8 @@ import { prisma } from "../lib/prisma";
 
 export function sendPushNotifications(
   pushRegistrations: PushRegistration[],
-  payload: Record<string, unknown>
+  payload: Record<string, unknown>,
+  ttl?: number
 ) {
   const pnPayload = JSON.stringify(payload);
 
@@ -20,7 +21,10 @@ export function sendPushNotifications(
               p256dh: pushRegistration.p256dh.toString("base64url"),
             },
           },
-          pnPayload
+          pnPayload,
+          {
+            TTL: ttl,
+          }
         )
         .catch((err) => {
           if (
