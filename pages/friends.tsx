@@ -14,7 +14,6 @@ import {
   ListItemAvatar,
   Alert,
 } from "@mui/material";
-import { User } from "@prisma/client";
 import type { GetServerSideProps, NextPage } from "next";
 import { getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -36,11 +35,12 @@ import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
 import { UserAvatar } from "../components/UserAvatar";
 import { useDebouncedCallback } from "use-debounce";
 import { useAutoclearState } from "../hooks/useAutoclearState";
+import { PublicUser } from "../types";
 
 type Props = {
-  usersInvitedByMe: User[];
-  usersInvitingMe: User[];
-  friends: User[];
+  usersInvitedByMe: PublicUser[];
+  usersInvitingMe: PublicUser[];
+  friends: PublicUser[];
 };
 
 const Friends: NextPage<Props> = ({
@@ -48,15 +48,15 @@ const Friends: NextPage<Props> = ({
   usersInvitingMe,
   friends,
 }) => {
-  const [options, setOptions] = useState<readonly User[]>([]);
+  const [options, setOptions] = useState<readonly PublicUser[]>([]);
 
   const [nameFilter, setNameFilter] = useState("");
 
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<PublicUser | null>(null);
 
   const router = useRouter();
 
-  function compareUsers(a: User, b: User) {
+  function compareUsers(a: PublicUser, b: PublicUser) {
     return (a.name ?? "").localeCompare(b.name ?? "", router.locale);
   }
 
@@ -324,7 +324,7 @@ const Friends: NextPage<Props> = ({
             );
           }}
           value={user}
-          onChange={(event, user: User | null) => {
+          onChange={(event, user: PublicUser | null) => {
             setUser(user);
           }}
         />
@@ -438,6 +438,11 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   }
 
   const usersInvitedByMe = await prisma.user.findMany({
+    select: {
+      id: true,
+      name: true,
+      image: true,
+    },
     where: {
       invitedBy: {
         some: {
@@ -448,6 +453,11 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   });
 
   const usersInvitingMe = await prisma.user.findMany({
+    select: {
+      id: true,
+      name: true,
+      image: true,
+    },
     where: {
       inviting: {
         some: {
@@ -458,6 +468,11 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   });
 
   const friends = await prisma.user.findMany({
+    select: {
+      id: true,
+      name: true,
+      image: true,
+    },
     where: {
       OR: [
         {

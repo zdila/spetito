@@ -20,10 +20,11 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
 import { useFriends } from "../hooks/useFriends";
+import { PublicUser } from "../types";
 import { UserAvatar } from "./UserAvatar";
 
 export type ListWithMembers = List & {
-  members: (ListMember & { user: User })[];
+  members: (ListMember & { user: PublicUser })[];
 };
 
 type Props = {

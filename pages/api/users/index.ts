@@ -1,6 +1,5 @@
 import { Prisma } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { User } from "next-auth";
 import { assertHttpMethod } from "../../../lib/assertHttpMethod";
 import { getSessionUserOrThrow } from "../../../lib/getSessionUserOrThrow";
 import { prisma } from "../../../lib/prisma";
@@ -8,10 +7,14 @@ import {
   HttpError,
   withHttpErrorHandler,
 } from "../../../lib/withHttpErrorHandler";
+import { PublicUser } from "../../../types";
 
 export default withHttpErrorHandler(handler);
 
-async function handler(req: NextApiRequest, res: NextApiResponse<User[]>) {
+async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<PublicUser[]>
+) {
   assertHttpMethod(req, "GET");
 
   const { id } = await getSessionUserOrThrow(req);
@@ -34,8 +37,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse<User[]>) {
       contains: q,
     };
   }
-
-  const params: Prisma.UserFindManyArgs = { where };
 
   if (req.query.filter === "notFriendsAndNotPending") {
     if (typeof q !== "string" || q.length < 3) {
@@ -88,5 +89,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse<User[]>) {
     throw new HttpError(400);
   }
 
-  res.json(await prisma.user.findMany(params));
+  res.json(
+    await prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        image: true,
+      },
+      where,
+    })
+  );
 }

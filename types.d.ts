@@ -26,10 +26,10 @@ declare global {
 }
 
 export type OfferExt = Offer & {
-  author: PrismaUser;
+  author: PublicUser;
 
   offerLists?: (OfferList & { list: List })[];
-  offerUsers?: (OfferUser & { user: PrismaUser })[];
+  offerUsers?: (OfferUser & { user: PublicUser })[];
 };
 
 // define custom colors: https://material-ui.com/customization/palette/
@@ -51,3 +51,5 @@ declare module "@mui/material/Chip" {
     highlightItem: true;
   }
 }
+
+export type PublicUser = Pick<User, "id" | "name" | "image">;

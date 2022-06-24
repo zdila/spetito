@@ -1,6 +1,6 @@
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { Box, Typography } from "@mui/material";
-import { List, Offer, OfferList, OfferUser, User } from "@prisma/client";
+import { List, Offer, OfferList, OfferUser } from "@prisma/client";
 import type { GetServerSideProps, NextPage } from "next";
 import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -15,13 +15,14 @@ import { supportsPush } from "../lib/capabilities";
 import { useTranslation } from "next-i18next";
 import { redirectToLogIn } from "../lib/auth";
 import { useAutoclearState } from "../hooks/useAutoclearState";
+import { PublicUser } from "../types";
 
 type Props = {
-  friendsOffers: (Offer & { author: User })[];
+  friendsOffers: (Offer & { author: PublicUser })[];
   yourOffers: (Offer & {
-    author: User;
+    author: PublicUser;
     offerLists: (OfferList & { list: List })[];
-    offerUsers: (OfferUser & { user: User })[];
+    offerUsers: (OfferUser & { user: PublicUser })[];
   })[];
   now: Date;
   timeZone: string | null;
@@ -154,7 +155,15 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
   const id = user.id;
 
   const friendsOffers = await prisma.offer.findMany({
-    include: { author: true },
+    include: {
+      author: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+        },
+      },
+    },
     where: {
       AND: [
         {
@@ -234,12 +243,26 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 
   const yourOffers = await prisma.offer.findMany({
     include: {
-      author: true,
+      author: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+        },
+      },
       offerLists: {
         include: { list: true },
       },
       offerUsers: {
-        include: { user: true },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
+        },
       },
     },
     where: {

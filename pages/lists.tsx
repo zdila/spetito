@@ -32,6 +32,7 @@ import { User } from "@prisma/client";
 import { useDelayedOff } from "../hooks/useDelayedOff";
 import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
 import { UserAvatar } from "../components/UserAvatar";
+import { PublicUser } from "../types";
 
 type Props = {
   lists: ListWithMembers[];
@@ -90,7 +91,7 @@ const Lists: NextPage<Props> = ({ lists }) => {
 
   const { locale } = useRouter();
 
-  function compareUsers(a: { user: User }, b: { user: User }) {
+  function compareUsers(a: { user: PublicUser }, b: { user: PublicUser }) {
     return (a.user.name ?? "").localeCompare(b.user.name ?? "", locale);
   }
 
@@ -207,7 +208,13 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
     include: {
       members: {
         include: {
-          user: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
         },
       },
     },
