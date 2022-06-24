@@ -12,7 +12,7 @@ import {
 export default withHttpErrorHandler(handler);
 
 async function handler(req: NextApiRequest, res: NextApiResponse<User[]>) {
-  assertHttpMethod(req, "POST");
+  assertHttpMethod(req, "GET");
 
   const { id } = await getSessionUserOrThrow(req);
 

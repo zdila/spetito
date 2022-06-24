@@ -6,7 +6,7 @@ import { sendMail } from "../../../utility/mail";
 import { sendPushNotifications } from "../../../utility/pushNotifications";
 import { Type } from "@sinclair/typebox";
 import { validateSchemaOrThrow } from "../../../lib/schemaValidation";
-import { days, limit } from "../../../lib/limit";
+import { days, limit, multiLimit } from "../../../lib/limit";
 import { withHttpErrorHandler } from "../../../lib/withHttpErrorHandler";
 import { getSessionUserOrThrow } from "../../../lib/getSessionUserOrThrow";
 import { assertHttpMethod } from "../../../lib/assertHttpMethod";
@@ -29,9 +29,17 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Invitation>) {
 
   const { userId } = req.body;
 
-  await Promise.all([
-    limit(`invite-${user.id}-${userId}`, 2, days(1)),
-    limit(`invite-${user.id}`, 10, days(1)),
+  await multiLimit([
+    {
+      key: `invite-${user.id}-${userId}`,
+      maxCount: 2,
+      timeSpan: days(1),
+    },
+    {
+      key: `invite-${user.id}`,
+      maxCount: 10,
+      timeSpan: days(1),
+    },
   ]);
 
   const result = await prisma.invitation.create({

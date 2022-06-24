@@ -44,11 +44,9 @@ export function validateSchemaOrThrow<T extends TSchema>(
   obj: unknown
 ): asserts obj is Static<T> {
   if (!ajv.validate(schema, obj)) {
-    return undefined!;
+    throw new HttpError(400, {
+      errorCode: "invalid_schema",
+      details: ajv.errors,
+    });
   }
-
-  throw new HttpError(400, {
-    errorCode: "invalid_schema",
-    details: ajv.errors,
-  });
 }

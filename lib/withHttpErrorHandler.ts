@@ -22,8 +22,12 @@ export function withHttpErrorHandler<T>(handle: NextApiHandler<T>) {
         res.status(e.statusCode);
 
         if (e.body !== undefined) {
+          res.end();
+        } else {
           res.send(e.body);
         }
+      } else {
+        throw e;
       }
     }
   };
