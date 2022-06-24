@@ -1,33 +1,26 @@
 import { Offer } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getSession } from "next-auth/react";
 import { OfferBody, validateDates } from ".";
+import { getSessionUserOrThrow } from "../../../lib/getSessionUserOrThrow";
 import { prisma } from "../../../lib/prisma";
-import { validateSchema } from "../../../lib/schemaValidation";
-import { sendOfferNotifications } from "./offerNotification";
+import { validateSchemaOrThrow } from "../../../lib/schemaValidation";
+import {
+  HttpError,
+  withHttpErrorHandler,
+} from "../../../lib/withHttpErrorHandler";
+import { sendOfferNotifications } from "../../../lib/offerNotification";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<Offer>
-) {
+export default withHttpErrorHandler(handler);
+
+async function handler(req: NextApiRequest, res: NextApiResponse<Offer>) {
   if (req.method === "DELETE" || req.method === "PUT") {
     const { id } = req.query;
 
     if (typeof id !== "string") {
-      res.status(400).end();
-
-      return;
+      throw new HttpError(400);
     }
 
-    const session = await getSession({ req });
-
-    const user = session?.user;
-
-    if (!user) {
-      res.status(403).end();
-
-      return;
-    }
+    const user = await getSessionUserOrThrow(req);
 
     if (req.method === "DELETE") {
       const { count } = await prisma.offer.deleteMany({
@@ -47,10 +40,10 @@ export default async function handler(
         });
       }
     } else if (req.method === "PUT") {
-      if (!validateSchema(OfferBody, req.body) || !validateDates(req.body)) {
-        res.status(400).end();
+      validateSchemaOrThrow(OfferBody, req.body);
 
-        return;
+      if (!validateDates(req.body)) {
+        throw new HttpError(400, { errorCode: "invalid_dates" });
       }
 
       const { message, validFrom, validTo, audience, place } = req.body;

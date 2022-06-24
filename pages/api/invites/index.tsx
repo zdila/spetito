@@ -1,12 +1,15 @@
 import { Invitation, User } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getSession } from "next-auth/react";
 import { FriendRequestMail } from "../../../emails/FriendRequestMail";
 import { prisma } from "../../../lib/prisma";
 import { sendMail } from "../../../utility/mail";
 import { sendPushNotifications } from "../../../utility/pushNotifications";
 import { Type } from "@sinclair/typebox";
-import { validateSchema } from "../../../lib/schemaValidation";
+import { validateSchemaOrThrow } from "../../../lib/schemaValidation";
+import { days, limit } from "../../../lib/limit";
+import { withHttpErrorHandler } from "../../../lib/withHttpErrorHandler";
+import { getSessionUserOrThrow } from "../../../lib/getSessionUserOrThrow";
+import { assertHttpMethod } from "../../../lib/assertHttpMethod";
 
 const Body = Type.Object(
   {
@@ -15,33 +18,21 @@ const Body = Type.Object(
   { additionalProperties: false }
 );
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<Invitation>
-) {
-  if (req.method !== "POST") {
-    res.status(405).end();
+export default withHttpErrorHandler(handler);
 
-    return;
-  }
+async function handler(req: NextApiRequest, res: NextApiResponse<Invitation>) {
+  assertHttpMethod(req, "POST");
 
-  const session = await getSession({ req });
+  const user = await getSessionUserOrThrow(req);
 
-  const user = session?.user;
-
-  if (!user) {
-    res.status(403).end();
-
-    return;
-  }
-
-  if (!validateSchema(Body, req.body)) {
-    res.status(400).end();
-
-    return;
-  }
+  validateSchemaOrThrow(Body, req.body);
 
   const { userId } = req.body;
+
+  await Promise.all([
+    limit(`invite-${user.id}-${userId}`, 2, days(1)),
+    limit(`invite-${user.id}`, 10, days(1)),
+  ]);
 
   const result = await prisma.invitation.create({
     data: {

@@ -1,8 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getSession } from "next-auth/react";
 import { prisma } from "../../../lib/prisma";
 import { Type } from "@sinclair/typebox";
-import { validateSchema } from "../../../lib/schemaValidation";
+import { validateSchemaOrThrow } from "../../../lib/schemaValidation";
+import {
+  HttpError,
+  withHttpErrorHandler,
+} from "../../../lib/withHttpErrorHandler";
+import { getSessionUserOrThrow } from "../../../lib/getSessionUserOrThrow";
 
 const Body = Type.Object(
   {
@@ -12,33 +16,22 @@ const Body = Type.Object(
   { additionalProperties: false }
 );
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default withHttpErrorHandler(handler);
+
+async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "DELETE") {
     const { id } = req.query;
 
     if (typeof id !== "string") {
-      res.status(400).end();
-
-      return;
+      throw new HttpError(400);
     }
 
-    const session = await getSession({ req });
-
-    const userId = session?.user?.id;
-
-    if (!userId) {
-      res.status(403).end();
-
-      return;
-    }
+    const user = await getSessionUserOrThrow(req);
 
     await prisma.list.deleteMany({
       where: {
         id,
-        userId,
+        userId: user.id,
       },
     });
 
@@ -47,26 +40,12 @@ export default async function handler(
     const { id } = req.query;
 
     if (typeof id !== "string") {
-      res.status(400).end();
-
-      return;
+      throw new HttpError(400);
     }
 
-    const session = await getSession({ req });
+    const user = await getSessionUserOrThrow(req);
 
-    const userId = session?.user?.id;
-
-    if (!userId) {
-      res.status(403).end();
-
-      return;
-    }
-
-    if (!validateSchema(Body, req.body)) {
-      res.status(400).end();
-
-      return;
-    }
+    validateSchemaOrThrow(Body, req.body);
 
     const { name, members } = req.body;
 
@@ -84,15 +63,11 @@ export default async function handler(
     });
 
     if (!list) {
-      res.status(404).end();
-
-      return;
+      throw new HttpError(404);
     }
 
-    if (list.owner.id !== userId) {
-      res.status(403).end();
-
-      return;
+    if (list.owner.id !== user.id) {
+      throw new HttpError(403);
     }
 
     await prisma.$transaction(async (prisma) => {

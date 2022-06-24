@@ -15,7 +15,11 @@ export function useFetchFailHandler() {
             return res;
           }
 
-          throw new Error();
+          if (res.status === 429) {
+            enqueueSnackbar(t("RequestLimitExceeded"), { variant: "error" });
+          } else {
+            throw new Error();
+          }
         })
         .catch((err) => {
           if (err instanceof DOMException && err.name === "AbortError") {

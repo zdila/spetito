@@ -1,33 +1,28 @@
 import { User } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getSession } from "next-auth/react";
 import { AcceptFriendRequestMail } from "../../../emails/AcceptFriendRequestMail";
+import { getSessionUserOrThrow } from "../../../lib/getSessionUserOrThrow";
 import { prisma } from "../../../lib/prisma";
+import {
+  HttpError,
+  withHttpErrorHandler,
+} from "../../../lib/withHttpErrorHandler";
 import { sendMail } from "../../../utility/mail";
 import { sendPushNotifications } from "../../../utility/pushNotifications";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default withHttpErrorHandler(handler);
+
+async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
+    // accept invite
+
     const { id } = req.query;
 
     if (typeof id !== "string") {
-      res.status(400).end();
-
-      return;
+      throw new HttpError(400);
     }
 
-    const session = await getSession({ req });
-
-    const user = session?.user;
-
-    if (!user) {
-      res.status(403).end();
-
-      return;
-    }
+    const user = await getSessionUserOrThrow(req);
 
     await prisma.$transaction(async (prisma) => {
       const [x] = await prisma.invitation.findMany({
@@ -38,7 +33,7 @@ export default async function handler(
       });
 
       if (!x) {
-        throw new Error("no such invitation"); // TODO 404
+        throw new HttpError(404);
       }
 
       await prisma.follows.create({
@@ -91,36 +86,28 @@ export default async function handler(
 
     res.status(204).end();
   } else if (req.method === "DELETE") {
+    // reject invite
+
     const { id } = req.query;
 
     if (typeof id !== "string") {
-      res.status(400).end();
-
-      return;
+      throw new HttpError(400);
     }
 
-    const session = await getSession({ req });
-
-    const userId = session?.user?.id;
-
-    if (!userId) {
-      res.status(403).end();
-
-      return;
-    }
+    const user = await getSessionUserOrThrow(req);
 
     await prisma.invitation.deleteMany({
       where: {
         OR: [
           // delete invitation from me
           {
-            inviterId: userId,
+            inviterId: user.id,
             invitingId: id,
           },
           // delete someone elses invitation
           {
             inviterId: id,
-            invitingId: userId,
+            invitingId: user.id,
           },
         ],
       },

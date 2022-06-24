@@ -1,9 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getSession } from "next-auth/react";
 import { prisma } from "../../../lib/prisma";
 import { Static, Type } from "@sinclair/typebox";
-import { validateSchema } from "../../../lib/schemaValidation";
-import { sendOfferNotifications } from "./offerNotification";
+import { validateSchemaOrThrow } from "../../../lib/schemaValidation";
+import { sendOfferNotifications } from "../../../lib/offerNotification";
+import {
+  HttpError,
+  withHttpErrorHandler,
+} from "../../../lib/withHttpErrorHandler";
+import { assertHttpMethod } from "../../../lib/assertHttpMethod";
+import { getSessionUserOrThrow } from "../../../lib/getSessionUserOrThrow";
+import { days, limit } from "../../../lib/limit";
 
 export const OfferBody = Type.Object(
   {
@@ -44,33 +50,20 @@ export function validateDates({
   );
 }
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== "POST") {
-    res.status(405).end();
+export default withHttpErrorHandler(handler);
 
-    return;
+async function handler(req: NextApiRequest, res: NextApiResponse) {
+  assertHttpMethod(req, "POST");
+
+  const user = await getSessionUserOrThrow(req);
+
+  validateSchemaOrThrow(OfferBody, req.body);
+
+  if (!validateDates(req.body)) {
+    throw new HttpError(400, { errorCode: "invalid_dates" });
   }
 
-  const session = await getSession({ req });
-
-  const user = session?.user;
-
-  if (!user) {
-    res.status(403).end();
-
-    return;
-  }
-
-  const userId = user?.id;
-
-  if (!validateSchema(OfferBody, req.body) || !validateDates(req.body)) {
-    res.status(400).end();
-
-    return;
-  }
+  await limit(`offer-${user.id}`, 5, days(1));
 
   const { message, validFrom, validTo, audience, place } = req.body;
 
@@ -79,7 +72,7 @@ export default async function handler(
       message,
       validFrom,
       validTo,
-      userId,
+      userId: user.id,
       lat: place?.center.lat,
       lng: place?.center.lng,
       zoom: place?.zoom,

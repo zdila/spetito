@@ -105,6 +105,7 @@
   "clear": "clear",
   "open": "open",
   "RequestFailed": "Request failed.",
+  "RequestLimitExceeded": "You reached the limit of this request kind. You can retry later.",
   "Notifications": "Notifications",
   "OfferCalSummary": "Offer from www.spetito.com",
   "SaveToCalendar": "Save to calendar",

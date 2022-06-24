@@ -3,7 +3,7 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["interactiveTransactions"]
+  previewFeatures = ["interactiveTransactions", "extendedIndexes"]
 }
 
 datasource db {
@@ -192,4 +192,13 @@ model PushRegistration {
   p256dh   Bytes
 
   @@map("push_registrations")
+}
+
+model LimitLog {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  key       String
+
+  @@index([createdAt])
+  @@map(name: "limit_log")
 }

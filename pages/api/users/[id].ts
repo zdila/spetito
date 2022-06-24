@@ -3,7 +3,11 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { prisma } from "../../../lib/prisma";
 import { Type } from "@sinclair/typebox";
-import { validateSchema } from "../../../lib/schemaValidation";
+import { validateSchemaOrThrow } from "../../../lib/schemaValidation";
+import {
+  HttpError,
+  withHttpErrorHandler,
+} from "../../../lib/withHttpErrorHandler";
 
 const Body = Type.Object(
   {
@@ -15,17 +19,14 @@ const Body = Type.Object(
   { additionalProperties: false }
 );
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<Offer>
-) {
+export default withHttpErrorHandler(handler);
+
+async function handler(req: NextApiRequest, res: NextApiResponse<Offer>) {
   if (req.method === "PATCH" || req.method === "DELETE") {
     let { id } = req.query;
 
     if (typeof id !== "string") {
-      res.status(400).end();
-
-      return;
+      throw new HttpError(400);
     }
 
     const session = await getSession({ req });
@@ -37,17 +38,11 @@ export default async function handler(
     }
 
     if (!userId || userId !== id) {
-      res.status(403).end();
-
-      return;
+      throw new HttpError(403);
     }
 
     if (req.method === "PATCH") {
-      if (!validateSchema(Body, req.body)) {
-        res.status(400).end();
-
-        return;
-      }
+      validateSchemaOrThrow(Body, req.body);
 
       const { hideFewFriendsAlert, timeZone, useEmailNotif, name } = req.body;
 

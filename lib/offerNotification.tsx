@@ -1,10 +1,10 @@
 import { Offer, Prisma } from "@prisma/client";
 import { User } from "next-auth";
-import type { OfferBody } from ".";
-import { OfferMail } from "../../../emails/OfferMail";
-import { prisma } from "../../../lib/prisma";
-import { sendMail } from "../../../utility/mail";
-import { sendPushNotifications } from "../../../utility/pushNotifications";
+import type { OfferBody } from "../pages/api/offers";
+import { OfferMail } from "../emails/OfferMail";
+import { prisma } from "./prisma";
+import { sendMail } from "../utility/mail";
+import { sendPushNotifications } from "../utility/pushNotifications";
 
 export async function sendOfferNotifications(
   offer: Offer,

@@ -1,67 +1,59 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getSession } from "next-auth/react";
+import { assertHttpMethod } from "../../../lib/assertHttpMethod";
+import { getSessionUserOrThrow } from "../../../lib/getSessionUserOrThrow";
 import { prisma } from "../../../lib/prisma";
+import {
+  HttpError,
+  withHttpErrorHandler,
+} from "../../../lib/withHttpErrorHandler";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method === "DELETE") {
-    const { id } = req.query;
+export default withHttpErrorHandler(handler);
 
-    if (typeof id !== "string") {
-      res.status(400).end();
+async function handler(req: NextApiRequest, res: NextApiResponse) {
+  assertHttpMethod(req, "DELETE");
 
-      return;
-    }
+  const { id } = req.query;
 
-    const session = await getSession({ req });
+  if (typeof id !== "string") {
+    throw new HttpError(400);
+  }
 
-    const userId = session?.user?.id;
+  const user = await getSessionUserOrThrow(req);
 
-    if (!userId) {
-      res.status(403).end();
+  await prisma.follows.deleteMany({
+    where: {
+      OR: [
+        {
+          followerId: user.id,
+          followingId: id,
+        },
+        {
+          followerId: id,
+          followingId: user.id,
+        },
+      ],
+    },
+  });
 
-      return;
-    }
-
-    await prisma.follows.deleteMany({
-      where: {
-        OR: [
-          {
-            followerId: userId,
-            followingId: id,
+  // nicer would be DB trigger
+  await prisma.listMember.deleteMany({
+    where: {
+      OR: [
+        {
+          list: {
+            userId: user.id,
           },
-          {
-            followerId: id,
-            followingId: userId,
-          },
-        ],
-      },
-    });
-
-    // nicer would be DB trigger
-    await prisma.listMember.deleteMany({
-      where: {
-        OR: [
-          {
-            list: {
-              userId,
-            },
+          userId: id,
+        },
+        {
+          list: {
             userId: id,
           },
-          {
-            list: {
-              userId: id,
-            },
-            userId,
-          },
-        ],
-      },
-    });
+          userId: user.id,
+        },
+      ],
+    },
+  });
 
-    res.status(204).end();
-  } else {
-    res.status(405).end();
-  }
+  res.status(204).end();
 }
