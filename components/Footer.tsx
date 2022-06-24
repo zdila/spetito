@@ -19,7 +19,8 @@ export function Footer() {
       }}
     >
       <Typography>
-        &copy; <MuiLink href="mailto:info@spetito.com">Spetito</MuiLink> 2022
+        &copy; Spetito 2022｜
+        <MuiLink href="mailto:info@spetito.com">spetito@spetito.com</MuiLink>
       </Typography>
 
       <Box>
