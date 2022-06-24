@@ -1,4 +1,4 @@
-import { Box, Typography, Link as MuiLink } from "@mui/material";
+import { Box, Link as MuiLink } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import Link from "next/link";
 
