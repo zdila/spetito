@@ -3,6 +3,7 @@ import { useTranslation } from "next-i18next";
 import Link from "next/link";
 
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { SpetitoLinks } from "./SpetitoLinks";
 
 export function Footer() {
   const { t } = useTranslation();
@@ -18,10 +19,7 @@ export function Footer() {
         flexWrap: "wrap",
       }}
     >
-      <Typography>
-        &copy; Spetito 2022｜
-        <MuiLink href="mailto:info@spetito.com">spetito@spetito.com</MuiLink>
-      </Typography>
+      <SpetitoLinks />
 
       <Box>
         <Link href="/privacy-policy" passHref>

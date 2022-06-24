@@ -1,6 +1,7 @@
 import { Link as MuiLink, Box, Typography } from "@mui/material";
 import { useTranslation } from "next-i18next";
 import Link from "next/link";
+import { SpetitoLinks } from "./SpetitoLinks";
 
 export function SupportLinks() {
   const { t } = useTranslation();
@@ -15,10 +16,7 @@ export function SupportLinks() {
         flexWrap: "wrap",
       }}
     >
-      <Typography>
-        &copy; Spetito 2022｜
-        <MuiLink href="mailto:info@spetito.com">spetito@spetito.com</MuiLink>
-      </Typography>
+      <SpetitoLinks />
 
       <Box>
         <Link href="/support" passHref>
