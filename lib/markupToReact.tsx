@@ -1,11 +1,5 @@
-import {
-  cloneElement,
-  Fragment,
-  isValidElement,
-  ReactNode,
-  useEffect,
-  useState,
-} from "react";
+import { Link } from "@mui/material";
+import { cloneElement, Fragment, isValidElement, ReactNode } from "react";
 
 type Ref = {
   op: string;
@@ -180,15 +174,15 @@ export function markupToReact(str: string) {
         );
       } else if (ref.op === "link") {
         nodes.push(
-          <a href={ref.href} target="_blank" rel="noopener noreferrer">
+          <Link href={ref.href} target="_blank" rel="noopener noreferrer">
             {replace(ref.content)}
-          </a>
+          </Link>
         );
       } else if (ref.op === "bareLink") {
         nodes.push(
-          <a href={ref.href} target="_blank" rel="noopener noreferrer">
+          <Link href={ref.href} target="_blank" rel="noopener noreferrer">
             {ref.href}
-          </a>
+          </Link>
         );
       }
 
