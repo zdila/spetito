@@ -1,4 +1,11 @@
-import { Fragment, ReactNode, useEffect, useState } from "react";
+import {
+  cloneElement,
+  Fragment,
+  isValidElement,
+  ReactNode,
+  useEffect,
+  useState,
+} from "react";
 
 type Ref = {
   op: string;
@@ -190,7 +197,13 @@ export function markupToReact(str: string) {
 
     nodes.push(replaceIcons(res.slice(last)));
 
-    return <Fragment>{nodes}</Fragment>;
+    return (
+      <Fragment>
+        {nodes.map((el, i) =>
+          isValidElement(el) ? cloneElement(el, { key: i }) : el
+        )}
+      </Fragment>
+    );
   }
 
   function markupToReactInt(str: string, paragraphs = false) {
