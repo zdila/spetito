@@ -69,6 +69,8 @@ const Friends: NextPage<Props> = ({
     1000
   );
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     if (nameFilter.trim().length < 3) {
       setOptions([]);
@@ -79,6 +81,8 @@ const Friends: NextPage<Props> = ({
     const controller = new AbortController();
 
     (async () => {
+      setLoading(true);
+
       const res = await handleFetchFail(
         fetch(
           "/api/users?q=" +
@@ -87,6 +91,8 @@ const Friends: NextPage<Props> = ({
           { signal: controller.signal }
         )
       );
+
+      setLoading(false);
 
       if (res) {
         setOptions(await res.json());
@@ -208,6 +214,8 @@ const Friends: NextPage<Props> = ({
 
   const highlightUserId = useAutoclearState(router.query["highlight-user"]);
 
+  const [open, setOpen] = useState(false);
+
   return (
     <Layout title={t("Friends")}>
       {usersInvitingMe.length === 0 ? null : (
@@ -297,7 +305,13 @@ const Friends: NextPage<Props> = ({
           openText={t("open")}
           clearText={t("clear")}
           noOptionsText={t("noResults")}
+          loadingText={t("Loading")}
           getOptionLabel={(option) => option.name ?? "-"}
+          forcePopupIcon={false}
+          open={nameFilter.length < 3 ? false : open}
+          onOpen={() => setOpen(true)}
+          onClose={() => setOpen(false)}
+          loading={loading}
           renderInput={(params) => (
             <TextField {...params} label={t("YourFriendsName")} fullWidth />
           )}

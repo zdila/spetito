@@ -118,5 +118,6 @@
   "sameDayFromTo": "<to>{{df}}<to> od <from>{{tf}}</from> do <to>{{tt}}</to>",
   "onlyFrom": "od <from>{{df}} {{tf}}</from>",
   "onlyTo": "do <to>{{dt}} {{tt}}</to>",
-  "YourName": "Vaše meno"
+  "YourName": "Vaše meno",
+  "Loading": "Načítavam…"
 }
