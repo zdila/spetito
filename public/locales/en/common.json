@@ -49,7 +49,7 @@
   "notifTranslations": {
     "invite": {
       "title": "Spetito friend request",
-      "body": "<_> is sending you a friend request."
+      "body": "<_> has sent you a friend request."
     },
     "accept": {
       "title": "Spetito friend request accepted",

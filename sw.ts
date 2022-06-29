@@ -31,7 +31,7 @@ self.addEventListener("push", (event) => {
               {
                 body: (
                   m?.invite?.body ??
-                  "<_> is sending you a friend request on Spetito."
+                  "<_> has sent you a friend request on Spetito."
                 ).replace("<_>", data.payload.from.name),
                 // icon: ..., TODO user's avatar
                 data,

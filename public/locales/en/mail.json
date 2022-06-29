@@ -11,7 +11,7 @@
   },
   "friendRequest": {
     "title": "Spetito friend request",
-    "body": "{{requester}} is sending you a <appLink>friend request</appLink>."
+    "body": "{{requester}} has sent you a <appLink>friend request</appLink>."
   },
   "acceptFriendRequest": {
     "title": "Spetito friend request accepted",
