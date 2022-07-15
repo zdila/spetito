@@ -191,12 +191,6 @@ export function MapDialog({ open, onClose, value, readOnly }: Props) {
         </DialogActions>
       ) : (
         <DialogActions>
-          <Button onClick={() => setCenter(undefined)} disabled={!center}>
-            {t("Clear")}
-          </Button>
-
-          <Divider orientation="vertical" flexItem sx={{ ml: 1 }} />
-
           <Button
             onClick={() =>
               onClose(
@@ -215,6 +209,12 @@ export function MapDialog({ open, onClose, value, readOnly }: Props) {
 
           <Button variant="text" onClick={() => onClose()}>
             {t("Cancel")}
+          </Button>
+
+          <Divider orientation="vertical" flexItem sx={{ ml: 1 }} />
+
+          <Button onClick={() => setCenter(undefined)} disabled={!center}>
+            {t("Clear")}
           </Button>
         </DialogActions>
       )}

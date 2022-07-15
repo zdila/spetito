@@ -26,8 +26,8 @@ export default NextAuth({
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
     }),
     GitHubProvider({
-      clientId: process.env.GITHUB_ID,
-      clientSecret: process.env.GITHUB_SECRET,
+      clientId: process.env.GITHUB_ID!,
+      clientSecret: process.env.GITHUB_SECRET!,
     }),
     EmailProvider({
       from: process.env.EMAIL_FROM,
