@@ -34,16 +34,16 @@ export async function multiLimit(
   const p = altPrisma ?? prisma;
 
   const counts = await Promise.all(
-    limits.map(({ key, timeSpan }) =>
-      p.limitLog.count({
+    limits.map(({ key, timeSpan }) => {
+      return p.limitLog.count({
         where: {
           key,
           createdAt: {
-            lt: new Date(Date.now() + timeSpan * 1000),
+            gt: new Date(Date.now() - timeSpan * 1000),
           },
         },
-      })
-    )
+      });
+    })
   );
 
   if (limits.some((limit, i) => counts[i] >= limit.maxCount)) {
