@@ -1,4 +1,3 @@
-import { User } from "@prisma/client";
 import { Trans, useTranslation } from "react-i18next";
 import { MailTemplate } from "./MailTemplate";
 

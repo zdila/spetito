@@ -6,7 +6,7 @@ import { sendMail } from "../../../utility/mail";
 import { sendPushNotifications } from "../../../utility/pushNotifications";
 import { Type } from "@sinclair/typebox";
 import { validateSchemaOrThrow } from "../../../lib/schemaValidation";
-import { days, limit, multiLimit } from "../../../lib/limit";
+import { days, multiLimit } from "../../../lib/limit";
 import { withHttpErrorHandler } from "../../../lib/withHttpErrorHandler";
 import { getSessionUserOrThrow } from "../../../lib/getSessionUserOrThrow";
 import { assertHttpMethod } from "../../../lib/assertHttpMethod";

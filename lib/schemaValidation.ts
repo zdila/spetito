@@ -1,4 +1,4 @@
-import { Static, Type, TSchema } from "@sinclair/typebox";
+import { Static, TSchema } from "@sinclair/typebox";
 import addFormats from "ajv-formats";
 import Ajv from "ajv/dist/2019";
 import { HttpError } from "./withHttpErrorHandler";

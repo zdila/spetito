@@ -18,7 +18,7 @@ import {
 import type { GetServerSideProps, NextPage } from "next";
 import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { SyntheticEvent, useEffect, useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import { Layout } from "../components/Layout";
 import { prisma } from "../lib/prisma";
 import {
@@ -28,7 +28,6 @@ import {
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { Trans, useTranslation } from "next-i18next";
 import { redirectToLogIn } from "../lib/auth";
-import { User } from "@prisma/client";
 import { useDelayedOff } from "../hooks/useDelayedOff";
 import { useFetchFailHandler } from "../hooks/useFetchFailHandler";
 import { UserAvatar } from "../components/UserAvatar";

@@ -1,4 +1,4 @@
-import { Offer, Prisma } from "@prisma/client";
+import { Offer } from "@prisma/client";
 import { User } from "next-auth";
 import type { OfferBody } from "../pages/api/offers";
 import { OfferMail } from "../emails/OfferMail";
