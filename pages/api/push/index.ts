@@ -32,9 +32,21 @@ export default async function handler(
     p256dh: string;
   };
 
-  const auth = Buffer.from(authString, "base64");
+  const authBuffer = Buffer.from(authString, "base64");
 
-  const p256dh = Buffer.from(p256dhString, "base64");
+  const auth = new Uint8Array(
+    authBuffer.buffer,
+    authBuffer.byteOffset,
+    authBuffer.byteLength
+  );
+
+  const p256dhBuffer = Buffer.from(p256dhString, "base64");
+
+  const p256dh = new Uint8Array(
+    p256dhBuffer.buffer,
+    p256dhBuffer.byteOffset,
+    p256dhBuffer.byteLength
+  );
 
   await prisma.pushRegistration.upsert({
     where: {

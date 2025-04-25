@@ -69,7 +69,7 @@ function replaceIcons(str: string) {
     .replace(/(?<!\\)\(n\)/g, "👎")
     .replace(/(?<!\\)\(i\)/g, "ℹ️")
     .replace(/(?<!\\)\(\/\)/g, "✅")
-    .replace(/(?<!\\)\(\x\)/g, "❌")
+    .replace(/(?<!\\)\(x\)/g, "❌")
     .replace(/(?<!\\)\(!\)/g, "⚠️")
     .replace(/(?<!\\)\(\?\)/g, "❓")
     .replace(/(?<!\\)\(flag\)/g, "🚩")

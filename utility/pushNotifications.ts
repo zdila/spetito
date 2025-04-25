@@ -17,8 +17,10 @@ export function sendPushNotifications(
           {
             endpoint: pushRegistration.endpoint,
             keys: {
-              auth: pushRegistration.auth.toString("base64url"),
-              p256dh: pushRegistration.p256dh.toString("base64url"),
+              auth: Buffer.from(pushRegistration.auth).toString("base64url"),
+              p256dh: Buffer.from(pushRegistration.p256dh).toString(
+                "base64url"
+              ),
             },
           },
           pnPayload,
