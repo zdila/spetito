@@ -324,7 +324,7 @@ const Friends: NextPage<Props> = ({
           filterSelectedOptions
           renderOption={(props, option) => {
             return (
-              <li key={option.id} {...props}>
+              <li {...props}>
                 <UserAvatar user={option} />
 
                 <Typography

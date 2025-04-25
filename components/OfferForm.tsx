@@ -240,7 +240,7 @@ export function OfferForm({
           onBlur={() => setFocused(false)}
           ref={tfRef}
           autoFocus={!!offer}
-          inputProps={{ maxLength: 2000 }}
+          slotProps={{ htmlInput: { maxLength: 2000 } }}
         />
 
         <Box
@@ -266,27 +266,35 @@ export function OfferForm({
 
             <DateTimePicker
               label={t("DateFrom")}
-              renderInput={(props) => (
-                <TextField {...props} inputProps={{ ...props.inputProps }} />
-              )}
+              slots={{ textField: TextField }}
+              slotProps={{
+                textField: {
+                  inputProps: {
+                    mask,
+                  },
+                },
+              }}
               onChange={(value) => setValidFrom(value)}
               value={validFrom}
-              mask={mask}
               ampm={locale === "en"}
               minDateTime={now}
-              maxDateTime={validTo}
+              maxDateTime={validTo ?? undefined}
               onOpen={() => setDateTimePickerOpen(true)}
               onClose={() => setDateTimePickerOpen(false)}
             />
 
             <DateTimePicker
               label={t("DateTo")}
-              renderInput={(props) => (
-                <TextField {...props} inputProps={{ ...props.inputProps }} />
-              )}
+              slots={{ textField: TextField }}
+              slotProps={{
+                textField: {
+                  inputProps: {
+                    mask,
+                  },
+                },
+              }}
               onChange={(value) => setValidTo(value)}
               value={validTo}
-              mask={mask}
               ampm={locale === "en"}
               minDateTime={validFrom || now}
               onOpen={() => setDateTimePickerOpen(true)}

@@ -10,24 +10,32 @@ import { appWithTranslation } from "next-i18next";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useRouter } from "next/router";
-import enLocale from "date-fns/locale/en-US";
-import skLocale from "date-fns/locale/sk";
+import { enUS } from "date-fns/locale/en-US";
+import { sk } from "date-fns/locale/sk";
 import Head from "next/head";
 import { SnackbarProvider } from "notistack";
 import { useDarkMode } from "../hooks/useDarkMode";
+import { Locale } from "date-fns";
+import { Session } from "next-auth";
 
 const clientSideEmotionCache = createEmotionCache();
 
 const localeMap: Record<string, Locale> = {
-  en: enLocale,
-  sk: skLocale,
+  en: enUS,
+  sk,
 };
 
 function MyApp({
   Component,
   emotionCache = clientSideEmotionCache,
   pageProps,
-}: AppProps & { emotionCache: EmotionCache }) {
+}: AppProps & {
+  emotionCache: EmotionCache;
+  pageProps: {
+    isDarkMode?: boolean;
+    session: Session;
+  };
+}) {
   const { locale = "en" } = useRouter();
 
   const darkMode = useDarkMode(pageProps.isDarkMode);
@@ -45,7 +53,7 @@ function MyApp({
           <SessionProvider session={pageProps.session}>
             <LocalizationProvider
               dateAdapter={AdapterDateFns}
-              adapterLocale={localeMap[locale] ?? enLocale}
+              adapterLocale={localeMap[locale] ?? enUS}
             >
               <SnackbarProvider
                 maxSnack={3}

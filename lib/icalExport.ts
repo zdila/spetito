@@ -5,7 +5,7 @@ export function exportCalendarEvent(summary: string, offer: OfferExt) {
   const cal = ical();
 
   cal.createEvent({
-    start: offer.validFrom,
+    start: offer.validFrom ?? new Date(),
     end: offer.validTo,
     summary,
     description: { plain: offer.message },
